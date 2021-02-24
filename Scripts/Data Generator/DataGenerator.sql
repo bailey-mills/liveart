@@ -22,6 +22,7 @@ CREATE TABLE LastName (
 GO
 
 -- CREATE Stored Procedures
+-- GET ROWS
 DROP PROCEDURE IF EXISTS GetRows;
 GO
 CREATE PROCEDURE GetRows @Requests int, @SampleRows int, @Table nvarchar(50)
@@ -55,4 +56,13 @@ AS
 	SELECT * FROM #temptable;
 
 	DROP TABLE #temptable;
+GO
+
+-- GET TABLES
+DROP PROCEDURE IF EXISTS GetTables;
+GO
+CREATE PROCEDURE GetTables @db nvarchar(50)
+AS
+	EXEC ('USE ' + @db);
+	SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE'
 GO
