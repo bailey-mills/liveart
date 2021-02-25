@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -131,12 +132,36 @@ namespace DataGenerator
 
 		private void BtnPreview_Click(object sender, EventArgs e)
 		{
-			txtPreview.Text = Database.GenerateQuery(dgvInput, 10, comboDatabase.Text, comboTable.Text);
+			string result = Database.GenerateQuery(dgvInput, 10, comboDatabase.Text, comboTable.Text);
+			if (result != null)
+			{
+				txtPreview.Text = result;
+			}
 		}
 
 		private void BtnOutput_Click(object sender, EventArgs e)
 		{
+			string result = Database.GenerateQuery(dgvInput, Int32.Parse(numCount.Value.ToString()), comboDatabase.Text, comboTable.Text);
+			
+			if (result != null)
+			{
+				// Choose path
+				SaveFileDialog sfd = new SaveFileDialog
+				{
+					InitialDirectory = @"C:\",
+					Title = "Save script",
 
+					DefaultExt = "sql",
+					Filter = "SQL Files (*.sql)|*.sql",
+					FilterIndex = 2
+				};
+
+				if (sfd.ShowDialog() == DialogResult.OK)
+				{
+					string path = sfd.FileName;
+					File.WriteAllText(path, result);
+				}
+			}
 		}
 	}
 }

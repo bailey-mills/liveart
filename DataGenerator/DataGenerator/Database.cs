@@ -300,7 +300,8 @@ namespace DataGenerator
 			}
 			else
 			{
-				output = "ERROR: Invalid Input";
+				output = null;
+				MessageBox.Show("ERROR: Invalid Input");
 			}
 
 			return output;

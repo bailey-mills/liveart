@@ -116,7 +116,7 @@
 			// 
 			this.btnPreview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnPreview.Location = new System.Drawing.Point(12, 503);
+			this.btnPreview.Location = new System.Drawing.Point(12, 513);
 			this.btnPreview.Name = "btnPreview";
 			this.btnPreview.Size = new System.Drawing.Size(436, 23);
 			this.btnPreview.TabIndex = 8;
@@ -128,7 +128,7 @@
 			// 
 			this.btnOutput.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnOutput.Location = new System.Drawing.Point(12, 532);
+			this.btnOutput.Location = new System.Drawing.Point(12, 542);
 			this.btnOutput.Name = "btnOutput";
 			this.btnOutput.Size = new System.Drawing.Size(436, 23);
 			this.btnOutput.TabIndex = 9;
@@ -146,7 +146,7 @@
 			this.txtPreview.Location = new System.Drawing.Point(12, 230);
 			this.txtPreview.Name = "txtPreview";
 			this.txtPreview.ReadOnly = true;
-			this.txtPreview.Size = new System.Drawing.Size(436, 262);
+			this.txtPreview.Size = new System.Drawing.Size(436, 272);
 			this.txtPreview.TabIndex = 10;
 			this.txtPreview.Text = "";
 			// 
@@ -185,7 +185,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(460, 564);
+			this.ClientSize = new System.Drawing.Size(460, 574);
 			this.Controls.Add(this.numCount);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.txtPreview);
