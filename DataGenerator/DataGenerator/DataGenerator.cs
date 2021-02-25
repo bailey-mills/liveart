@@ -13,11 +13,14 @@ namespace DataGenerator
 {
 	public partial class frmDataGenerator : Form
 	{
+		const int MIN_WIDTH = 476;
+
 		public frmDataGenerator()
 		{
 			InitializeComponent();
 			SetupDatabaseComboBox();
 			SetupTableComboBox();
+			ResizeWindow();
 		}
 
 		private void SetupDatabaseComboBox()
@@ -47,19 +50,16 @@ namespace DataGenerator
 			comboTable.SelectedIndex = 0;
 		}
 
-		private void BtnRefresh_Click(object sender, EventArgs e)
-		{
-
-		}
-
 		private void ComboDatabase_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			SetupTableComboBox();
+			ResizeWindow();
 		}
 
 		private void ComboTable_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			Database.SetupTable(dgvInput, comboDatabase.SelectedItem.ToString(), comboTable.SelectedItem.ToString());
+			ResizeWindow();
 		}
 
 		private void DgvInput_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -105,7 +105,38 @@ namespace DataGenerator
 						combo.DataSource = Database.GetColumns(database, table);
 					}
 				}
+
+				// DataType Column
+				if (e.RowIndex == 3)
+				{
+					combo.DataSource = new string[] { "String", "Number" };
+				}
 			}
+		}
+
+		private void ResizeWindow()
+		{
+			// Calculate the width of the window
+			int width = dgvInput.Columns.Count * Database.COL_WIDTH + 3;
+
+			// Ensure it is above max
+			if (width < MIN_WIDTH)
+			{
+				width = MIN_WIDTH;
+			}
+
+			// Set width to requetsed value
+			this.Width = width + 40;
+		}
+
+		private void BtnPreview_Click(object sender, EventArgs e)
+		{
+			txtPreview.Text = Database.GenerateQuery(dgvInput, 10, comboDatabase.Text, comboTable.Text);
+		}
+
+		private void BtnOutput_Click(object sender, EventArgs e)
+		{
+
 		}
 	}
 }

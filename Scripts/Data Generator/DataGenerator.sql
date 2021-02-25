@@ -25,7 +25,7 @@ GO
 -- GET ROWS
 DROP PROCEDURE IF EXISTS GetRows;
 GO
-CREATE PROCEDURE GetRows @Requests int, @SampleRows int, @Table nvarchar(50)
+CREATE PROCEDURE GetRows @Requests int, @SampleRows int, @Table nvarchar(50), @Column nvarchar(50)
 AS
 	DECLARE @loops int = @Requests / @SampleRows;
 	DECLARE @extra int = @Requests % @SampleRows;
@@ -47,7 +47,7 @@ AS
 			SET @curr = @extra;
 
 		-- INSERT into temporary table
-		EXEC('USE [liveart_dg]; INSERT INTO #temptable SELECT TOP (' + @curr + ') * FROM ' + @Table + ' ORDER BY NEWID()');
+		EXEC('USE [liveart_dg]; INSERT INTO #temptable SELECT TOP (' + @curr + ') ' + @Column + ' FROM ' + @Table + ' ORDER BY NEWID()');
 
 		-- Increment loop counter
 		SET @i = @i + 1;
