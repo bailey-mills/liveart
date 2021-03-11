@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -32,6 +33,13 @@ namespace DataGenerator
 			else if (database == Database.DB_EMPTY)
 			{
 				this.column = "''";
+				runQuery = false;
+			}
+			else if (database == Database.DB_CUSTOM)
+			{
+				CustomGenerator cg = new CustomGenerator();
+				MethodInfo method = cg.GetType().GetMethod(table);
+				this.column = method.Invoke(cg, null).ToString();
 				runQuery = false;
 			}
 			else if (database != "" && table != "" && column != "")

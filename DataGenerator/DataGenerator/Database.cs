@@ -15,6 +15,7 @@ namespace DataGenerator
 		public static string DB_NONE = "N/A";
 		public static string DB_NULL = "NULL";
 		public static string DB_EMPTY = "Empty string";
+		public static string DB_CUSTOM = "Custom";
 
 		public static int COL_WIDTH = 100;
 
@@ -145,6 +146,7 @@ namespace DataGenerator
 			items.Add(DB_NONE);
 			items.Add(DB_NULL);
 			items.Add(DB_EMPTY);
+			items.Add(DB_CUSTOM);
 
 			var connectionStrings = ConfigurationManager.ConnectionStrings;
 			foreach (ConnectionStringSettings connectionString in connectionStrings)
@@ -162,7 +164,11 @@ namespace DataGenerator
 		{
 			List<string> tables = new List<string>();
 
-			if (database != DB_NONE && database != DB_NULL && database != DB_EMPTY)
+			if (database == DB_CUSTOM)
+			{
+				tables = CustomGenerator.GetMethods();
+			}
+			else if (database != DB_NONE && database != DB_NULL && database != DB_EMPTY)
 			{
 				tables = GetTables(database);
 			}
