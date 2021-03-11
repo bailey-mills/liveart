@@ -1,0 +1,17 @@
+.App {
+    font-family: sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* height: 50vh; */
+    margin-top: 110px;
+  }
+
+.slideshow-img{
+  width: 10vw;
+  height: 20wh;
+}
+
+.slideshow-img:hover{
+    transform: scale(1.5);
+  }
