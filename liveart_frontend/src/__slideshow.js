@@ -15,7 +15,7 @@ function Slideshow() {
     <>
       {/* <h1 style={{ textAlign: "center" }}>Example to setup your carousel in react</h1> */}
       <div className="App">
-        <Carousel breakPoints={breakPoints}>
+        <Carousel style={{width: "1300px",}}breakPoints={breakPoints}>
           <Item> <img className="slideshow-img" src="https://i.pinimg.com/564x/b6/f4/a0/b6f4a01ddc7d82eff528915c2247207d.jpg" alt="artwork1" style={{width: "100%"}}/> </Item>
           <Item> <img className="slideshow-img" src="https://media.timeout.com/images/105590782/630/472/image.jpg" alt="artwork2" style={{width: "100%"}}/> </Item>
           <Item> <img className="slideshow-img" src="https://static.boredpanda.com/blog/wp-content/uploads/2019/11/Interesting-Stories-Behind-Famous-Masterpieces-5dcd8d865681c__880.jpg" alt="artwork3" style={{width: "100%"}}/> </Item>
