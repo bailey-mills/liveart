@@ -21,15 +21,20 @@
 .navbar-img{
     height: auto;
     width: auto;
-    justify-self: center;
+    justify-self: left;
     max-height: 72px;
     max-width: 250px;
-    position: absolute;
-   left: calc((100% - 250px) / 2);
-    margin: auto; 
+    /* position: absolute; */
+    /* left: calc((100% - 250px) / 2);
+    margin: auto;  */
+    /* margin-left: auto; */
 
 }
 
+.sign-btn{
+    margin-left: auto;
+    margin-right: 20px;
+}
 
 .fa-react {
     margin-left: 0.5rem;

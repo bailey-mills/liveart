@@ -7,12 +7,14 @@ const Event = ({ name, id, url }) => {
         <div>
           <img className="event-img" src={url} alt="event-pic" />
         </div>
-        <div className="event-name">
-            <h2>{name}</h2>
-          
-        </div>
-        <div className="event-info">
-            <p>ID: {id}</p>
+        <div>
+          <div className="event-name">
+              <h2>{name}</h2> 
+            
+          </div>
+          <div className="event-info">
+              <p>ID: {id}</p>
+          </div>
         </div>
       </a>
     );
