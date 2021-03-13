@@ -14,7 +14,12 @@ namespace DataGenerator
 {
 	public partial class frmDataGenerator : Form
 	{
-		const int MIN_WIDTH = 476;
+		const int MIN_WIDTH = 900;
+
+		public static string TYPE_CUSTOM = "custom";
+		public static string TYPE_USER = "user";
+		public static string TYPE_EVENT = "event";
+		string outputType = TYPE_CUSTOM;
 
 		public frmDataGenerator()
 		{
@@ -110,7 +115,7 @@ namespace DataGenerator
 				// DataType Column
 				if (e.RowIndex == 3)
 				{
-					combo.DataSource = new string[] { "String", "Number" };
+					combo.DataSource = new string[] { Database.FORMAT_STRING, Database.FORMAT_NUMBER };
 				}
 			}
 		}
@@ -132,7 +137,7 @@ namespace DataGenerator
 
 		private void BtnPreview_Click(object sender, EventArgs e)
 		{
-			string result = Database.GenerateQuery(dgvInput, 10, comboDatabase.Text, comboTable.Text);
+			string result = GetOutput(5);
 			if (result != null)
 			{
 				txtPreview.Text = result;
@@ -141,7 +146,7 @@ namespace DataGenerator
 
 		private void BtnOutput_Click(object sender, EventArgs e)
 		{
-			string result = Database.GenerateQuery(dgvInput, Int32.Parse(numCount.Value.ToString()), comboDatabase.Text, comboTable.Text);
+			string result = GetOutput(Int32.Parse(numCount.Value.ToString()));
 			
 			if (result != null)
 			{
@@ -162,6 +167,59 @@ namespace DataGenerator
 					File.WriteAllText(path, result);
 				}
 			}
+		}
+
+		private string GetOutput(int count)
+		{
+			string result = "";
+
+			if (outputType == TYPE_USER)
+			{
+				result = Database.GenerateUsers(count, comboDatabase.Text);
+			}
+			else if (outputType == TYPE_EVENT)
+			{
+				result = Database.GenerateEvents(count, comboDatabase.Text);
+			}
+			else
+			{
+				result = Database.GenerateQuery(dgvInput, count, comboDatabase.Text, comboTable.Text);
+			}
+
+			return result;
+		}
+
+		private void BtnCustom_Click(object sender, EventArgs e)
+		{
+			btnCustom.Enabled = false;
+			btnUser.Enabled = true;
+			btnEvent.Enabled = true;
+
+			dgvInput.Enabled = true;
+
+			outputType = TYPE_CUSTOM;
+		}
+
+		private void BtnUser_Click(object sender, EventArgs e)
+		{
+			btnCustom.Enabled = true;
+			btnUser.Enabled = false;
+			btnEvent.Enabled = true;
+
+			dgvInput.Enabled = false;
+
+			outputType = TYPE_USER;
+		}
+
+		private void BtnEvent_Click(object sender, EventArgs e)
+		{
+			btnCustom.Enabled = true;
+			btnUser.Enabled = true;
+			btnEvent.Enabled = false;
+
+			dgvInput.Enabled = false;
+
+			outputType = TYPE_EVENT;
 		}
 	}
 }

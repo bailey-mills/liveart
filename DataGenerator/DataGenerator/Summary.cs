@@ -17,6 +17,7 @@ namespace DataGenerator
 		public bool includeValue = true;
 		public bool valid = true;
 		public bool runQuery = true;
+		public bool customQuery = false;
 
 		public Summary(string database, string table, string column, string format)
 		{
@@ -37,9 +38,8 @@ namespace DataGenerator
 			}
 			else if (database == Database.DB_CUSTOM)
 			{
-				CustomGenerator cg = new CustomGenerator();
-				MethodInfo method = cg.GetType().GetMethod(table);
-				this.column = method.Invoke(cg, null).ToString();
+				this.table = table;
+				customQuery = true;
 				runQuery = false;
 			}
 			else if (database != "" && table != "" && column != "")

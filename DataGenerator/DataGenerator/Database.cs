@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
 using System.Windows.Forms;
+using System.Reflection;
 
 namespace DataGenerator
 {
@@ -16,6 +17,12 @@ namespace DataGenerator
 		public static string DB_NULL = "NULL";
 		public static string DB_EMPTY = "Empty string";
 		public static string DB_CUSTOM = "Custom";
+
+		public static string DB_MAIN = "liveart_test";
+		public static string DB_SAMPLES = "liveart_dg";
+
+		public static string FORMAT_STRING = "String";
+		public static string FORMAT_NUMBER = "Number";
 
 		public static int COL_WIDTH = 100;
 
@@ -222,12 +229,17 @@ namespace DataGenerator
 			// Loop through the columns of the dgv and query the db for sample data
 			foreach (Summary col in data)
 			{
-				string query = "dbo.GetRows";
 				List<string> currResults = new List<string>();
 				
 				if (col.valid)
 				{
-					if (!col.runQuery)
+					if (col.customQuery)
+					{
+						CustomGenerator cg = new CustomGenerator();
+						MethodInfo method = cg.GetType().GetMethod(col.table);
+						currResults = (List<string>)method.Invoke(cg, new object[] { count });
+					}
+					else if (!col.runQuery)
 					{
 						if (col.includeValue)
 						{
@@ -239,40 +251,7 @@ namespace DataGenerator
 					}
 					else
 					{
-						using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[col.database].ConnectionString))
-						{
-							try
-							{
-								using (var command = new SqlCommand(query, conn))
-								{
-									conn.Open();
-									command.CommandType = CommandType.StoredProcedure;
-									command.Parameters.Add(new SqlParameter("@Requests", count));
-									command.Parameters.Add(new SqlParameter("@SampleRows", GetSampleRows(col.database, col.table)));
-									command.Parameters.Add(new SqlParameter("@Table", col.table));
-									command.Parameters.Add(new SqlParameter("@Column", col.column));
-
-									SqlDataReader reader = command.ExecuteReader();
-									while (reader.Read())
-									{
-										string curr = reader[col.column].ToString();
-										if (col.format == "String")
-										{
-											curr = string.Format("'{0}'", curr);
-										}
-										currResults.Add(curr);
-									}
-								}
-							}
-							catch (Exception ex)
-							{
-								Console.WriteLine(ex.Message);
-							}
-							finally
-							{
-								conn.Close();
-							}
-						}
+						currResults = GetRows(count, col.database, col.table, col.column, col.format);
 					}
 
 					// Add the current item to the list of items
@@ -285,32 +264,115 @@ namespace DataGenerator
 				}
 			}
 
-			// Loop through all requested rows and format them into queries
-			string output = "USE " + database + ";\n";
-			if (valid)
+			return PrepareOutputReverse(count, database, table, items, valid);
+		}
+
+		public static List<string> GetRows(int count, string database, string table, string column, string format)
+		{
+			List<string> currResults = new List<string>();
+
+			using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[database].ConnectionString))
 			{
-				for (int i = 0; i < count; i++)
+				try
 				{
-					string line = string.Format("INSERT INTO {0} VALUES (", table);
-					for (int j = 0; j < items.Count; j++)
+					string query = "dbo.GetRows";
+					using (var command = new SqlCommand(query, conn))
 					{
-						if (items[j].Count == count)
+						conn.Open();
+						command.CommandType = CommandType.StoredProcedure;
+						command.Parameters.Add(new SqlParameter("@Requests", count));
+						command.Parameters.Add(new SqlParameter("@SampleRows", GetSampleRows(database, table)));
+						command.Parameters.Add(new SqlParameter("@Table", table));
+						command.Parameters.Add(new SqlParameter("@Column", column));
+
+						SqlDataReader reader = command.ExecuteReader();
+						while (reader.Read())
 						{
-							line += items[j][i] + ",";
+							string curr = reader["Value"].ToString();
+							if (format == FORMAT_STRING)
+							{
+								curr = string.Format("'{0}'", curr);
+							}
+							currResults.Add(curr);
 						}
 					}
-					line = line.Remove(line.Length - 1);
-					line += ");\n";
-					output += line;
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine(ex.Message);
+				}
+				finally
+				{
+					conn.Close();
 				}
 			}
-			else
+
+			return currResults;
+		}
+
+
+
+		public static List<List<string>> GetRows(int count, string database, string table, string[] columns)
+		{
+			List<List<string>> results = new List<List<string>>();
+			
+			// Create list groups
+			for (int i = 0; i < columns.Count(); i++)
 			{
-				output = null;
-				MessageBox.Show("ERROR: Invalid Input");
+				results.Add(new List<string>());
 			}
 
-			return output;
+			int sampleRows = GetSampleRows(database, table);
+			int loops = count / sampleRows;
+			int extra = count % sampleRows;
+
+			if (extra != 0)
+			{
+				loops++;
+			}
+
+			using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[database].ConnectionString))
+			{
+				try
+				{
+					int i = 0;
+					int currCount = 0;
+					while (i < loops)
+					{
+						currCount = sampleRows;
+						if (extra != 0 && i == loops - 1)
+						{
+							currCount = extra;
+						}
+
+						string query = string.Format("USE [{0}]; SELECT TOP ({1}) {2} FROM {3} ORDER BY NEWID();",
+							database, currCount, string.Join(",", columns), table);
+
+						using (var command = new SqlCommand(query, conn))
+						{
+							conn.Open();
+							SqlDataReader reader = command.ExecuteReader();
+							while (reader.Read())
+							{
+								for (int j = 0; j < columns.Count(); j++)
+								{
+									results[j].Add(reader[j].ToString());
+								}
+							}
+						}
+					}
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine(ex.Message);
+				}
+				finally
+				{
+					conn.Close();
+				}
+			}
+
+			return results;
 		}
 
 		private static int GetSampleRows(string database, string table)
@@ -340,6 +402,150 @@ namespace DataGenerator
 			}
 
 			return count;
+		}
+
+		static string PrepareOutputReverse(int count, string database, string table, List<List<string>> items, bool valid)
+		{
+			// Loop through all requested rows and format them into queries
+			string output = "USE " + database + ";\n";
+			if (valid)
+			{
+				for (int i = 0; i < count; i++)
+				{
+					string line = string.Format("INSERT INTO {0} VALUES (", table);
+					for (int j = 0; j < items.Count; j++)
+					{
+						if (items[j].Count == count)
+						{
+							line += items[j][i] + ",";
+						}
+					}
+					line = line.Remove(line.Length - 1);
+					line += ");\n";
+					output += line;
+				}
+			}
+			else
+			{
+				output = null;
+				MessageBox.Show("ERROR: Invalid Input");
+			}
+
+			return output;
+		}
+
+		static string PrepareOutput(int count, string table, List<List<string>> items, bool[] asString)
+		{
+			string result = "\n";
+
+			for (int i = 0; i < count; i++)
+			{
+				string line = string.Format("INSERT INTO {0} VALUES (", table);
+				for (int j = 0; j < items.Count; j++)
+				{
+					if (items[j].Count == count)
+					{
+						string item = items[j][i];
+						if (asString[j])
+						{
+							item = string.Format("'{0}'", item);
+						}
+						line += item + ",";
+					}
+				}
+				line = line.Remove(line.Length - 1);
+				line += ");\n";
+				result += line;
+			}
+
+			return result;
+		}
+
+		static string PrepareOutputTags(string table, List<List<string>> tagGroupList, int startID)
+		{
+			List<List<string>> formattedGroup = new List<List<string>>();
+			List<string> tagIDs = new List<string>();
+			List<string> objectIDs = new List<string>();
+
+			int count = 0;
+			for (int i = 0; i < tagGroupList.Count; i++)
+			{
+				for (int j = 0; j < tagGroupList[i].Count; j++)
+				{
+					tagIDs.Add(tagGroupList[i][j]);
+					objectIDs.Add((startID + i).ToString());
+					count++;
+				}
+			}
+
+			formattedGroup.Add(tagIDs);
+			formattedGroup.Add(objectIDs);
+
+			return PrepareOutput(count, table, formattedGroup, new bool[] { false, false });
+		}
+
+		public static string GenerateEvents(int count, string database)
+		{
+			// Requires users in database
+
+			return null;
+		}
+
+		public static string GenerateUsers(int count, string database)
+		{
+			string result = "USE " + database + ";\n";
+			int startAddressID = GetAutoIncrementID(database, "Address");
+			int startUserID = GetAutoIncrementID(database, "User");
+
+			if (startAddressID < 0)
+			{
+				startAddressID = 1;
+			}
+			if (startUserID < 0)
+			{
+				startUserID = 1;
+			}
+
+			// Container for different tables / insert statement groups
+			List<List<string>> addresses = CustomGenerator.GetAddresses(count);
+			List<List<string>> users = CustomGenerator.GetUsers(count, startAddressID);
+			List<List<string>> userTags = CustomGenerator.GetTags(count);
+
+			// Format lists into query statements
+			result += PrepareOutput(count, "Address", addresses, new bool[] { true, true, false, true });
+			result += PrepareOutput(count, "User", users, new bool[] { true, true, false, true, true, true });
+			result += PrepareOutputTags("UserToTag", userTags, startUserID);
+
+			return result;
+		}
+
+		static int GetAutoIncrementID(string database, string table)
+		{
+			string query = "USE [" + database + "]; SELECT IDENT_CURRENT('" + table + "');";
+			int id = -1;
+
+			using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[database].ConnectionString))
+			{
+				try
+				{
+					using (var command = new SqlCommand(query, conn))
+					{
+						conn.Open();
+						id = (int)command.ExecuteScalar();
+						id++;
+					}
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine(ex.Message);
+				}
+				finally
+				{
+					conn.Close();
+				}
+			}
+
+			return id;
 		}
 	}
 }

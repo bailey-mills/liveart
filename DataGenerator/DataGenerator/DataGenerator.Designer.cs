@@ -39,6 +39,9 @@
 			this.txtPreview = new System.Windows.Forms.RichTextBox();
 			this.label4 = new System.Windows.Forms.Label();
 			this.numCount = new System.Windows.Forms.NumericUpDown();
+			this.btnCustom = new System.Windows.Forms.Button();
+			this.btnUser = new System.Windows.Forms.Button();
+			this.btnEvent = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.dgvInput)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numCount)).BeginInit();
 			this.SuspendLayout();
@@ -86,7 +89,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.dgvInput.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.dgvInput.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
-			this.dgvInput.Location = new System.Drawing.Point(12, 113);
+			this.dgvInput.Location = new System.Drawing.Point(12, 147);
 			this.dgvInput.Name = "dgvInput";
 			this.dgvInput.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
 			this.dgvInput.Size = new System.Drawing.Size(436, 111);
@@ -116,7 +119,7 @@
 			// 
 			this.btnPreview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnPreview.Location = new System.Drawing.Point(12, 513);
+			this.btnPreview.Location = new System.Drawing.Point(12, 562);
 			this.btnPreview.Name = "btnPreview";
 			this.btnPreview.Size = new System.Drawing.Size(436, 23);
 			this.btnPreview.TabIndex = 8;
@@ -128,7 +131,7 @@
 			// 
 			this.btnOutput.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnOutput.Location = new System.Drawing.Point(12, 542);
+			this.btnOutput.Location = new System.Drawing.Point(12, 591);
 			this.btnOutput.Name = "btnOutput";
 			this.btnOutput.Size = new System.Drawing.Size(436, 23);
 			this.btnOutput.TabIndex = 9;
@@ -143,10 +146,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.txtPreview.BackColor = System.Drawing.Color.White;
 			this.txtPreview.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.txtPreview.Location = new System.Drawing.Point(12, 230);
+			this.txtPreview.Location = new System.Drawing.Point(12, 264);
 			this.txtPreview.Name = "txtPreview";
 			this.txtPreview.ReadOnly = true;
-			this.txtPreview.Size = new System.Drawing.Size(436, 272);
+			this.txtPreview.Size = new System.Drawing.Size(436, 287);
 			this.txtPreview.TabIndex = 10;
 			this.txtPreview.Text = "";
 			// 
@@ -181,11 +184,45 @@
             0,
             0});
 			// 
+			// btnCustom
+			// 
+			this.btnCustom.Enabled = false;
+			this.btnCustom.Location = new System.Drawing.Point(12, 118);
+			this.btnCustom.Name = "btnCustom";
+			this.btnCustom.Size = new System.Drawing.Size(75, 23);
+			this.btnCustom.TabIndex = 14;
+			this.btnCustom.Text = "Custom";
+			this.btnCustom.UseVisualStyleBackColor = true;
+			this.btnCustom.Click += new System.EventHandler(this.BtnCustom_Click);
+			// 
+			// btnUser
+			// 
+			this.btnUser.Location = new System.Drawing.Point(93, 118);
+			this.btnUser.Name = "btnUser";
+			this.btnUser.Size = new System.Drawing.Size(75, 23);
+			this.btnUser.TabIndex = 15;
+			this.btnUser.Text = "User";
+			this.btnUser.UseVisualStyleBackColor = true;
+			this.btnUser.Click += new System.EventHandler(this.BtnUser_Click);
+			// 
+			// btnEvent
+			// 
+			this.btnEvent.Location = new System.Drawing.Point(174, 118);
+			this.btnEvent.Name = "btnEvent";
+			this.btnEvent.Size = new System.Drawing.Size(75, 23);
+			this.btnEvent.TabIndex = 16;
+			this.btnEvent.Text = "Event";
+			this.btnEvent.UseVisualStyleBackColor = true;
+			this.btnEvent.Click += new System.EventHandler(this.BtnEvent_Click);
+			// 
 			// frmDataGenerator
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(460, 574);
+			this.ClientSize = new System.Drawing.Size(460, 623);
+			this.Controls.Add(this.btnEvent);
+			this.Controls.Add(this.btnUser);
+			this.Controls.Add(this.btnCustom);
 			this.Controls.Add(this.numCount);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.txtPreview);
@@ -222,6 +259,9 @@
 		private System.Windows.Forms.RichTextBox txtPreview;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.NumericUpDown numCount;
+		private System.Windows.Forms.Button btnCustom;
+		private System.Windows.Forms.Button btnUser;
+		private System.Windows.Forms.Button btnEvent;
 	}
 }
 
