@@ -1,7 +1,7 @@
 import React from "react";
 
 
-class Signin extends React.Component {
+class Register extends React.Component {
 
 
     render(){
@@ -13,4 +13,4 @@ class Signin extends React.Component {
 }
 
 
-export default Signin;
+export default Register;

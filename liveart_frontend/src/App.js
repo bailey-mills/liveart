@@ -1,14 +1,6 @@
 import React from "react";
-import ReactDOM from "react-dom";
-import Slideshow from "./components/SlideShow/__slideshow";
-import Navbar from "./components/Navbar/Navbar";
-import './components/Navbar/Navbar.css';
-import './index.css'
-import EventSection from "./components/EventSection/EventSection"
-import events from "./Assets/sampleEvents.json"
-import { BrowserRouter as Router, Link, Switch, NavLink, Redirect, Prompt} from 'react-router-dom';
+import { BrowserRouter as Router, Switch} from 'react-router-dom';
 import Route from 'react-router-dom/Route';
-// import {Router, IndexRoute, Route} from "react-router-dom"
 import EventsPage from "./components/EventsPage/EventsPage";
 import HomePage from "./components/HomePage/HomePage";
 import Register from "./components/Register/Register";
