@@ -18,7 +18,7 @@ namespace DataGenerator
 		public static string DB_EMPTY = "Empty string";
 		public static string DB_CUSTOM = "Custom";
 
-		public static string DB_MAIN = "liveart_test";
+		public static string DB_MAIN = "LIVEART";
 		public static string DB_SAMPLES = "liveart_dg";
 
 		public static string FORMAT_STRING = "String";
@@ -81,7 +81,7 @@ namespace DataGenerator
 			List<string> items = new List<string>();
 
 			// Setup query (this will return the column names needed for the table)
-			string getQuery = "USE " + database + "; SELECT TOP 0 * FROM " + table;
+			string getQuery = "USE " + database + "; SELECT TOP 0 * FROM [dbo].[" + table + "]";
 
 			// Setup UI with the chosen table
 			using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[database].ConnectionString))
@@ -289,6 +289,7 @@ namespace DataGenerator
 						while (reader.Read())
 						{
 							string curr = reader["Value"].ToString();
+
 							if (format == FORMAT_STRING)
 							{
 								curr = string.Format("'{0}'", curr);
@@ -379,7 +380,7 @@ namespace DataGenerator
 		{
 			int count = -1;
 
-			string query = "USE [" + database + "]; SELECT COUNT(*) FROM " + table;
+			string query = "USE [" + database + "]; SELECT COUNT(*) FROM [" + table + "]";
 
 			using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[database].ConnectionString))
 			{
@@ -412,7 +413,7 @@ namespace DataGenerator
 			{
 				for (int i = 0; i < count; i++)
 				{
-					string line = string.Format("INSERT INTO {0} VALUES (", table);
+					string line = string.Format("INSERT INTO [dbo].[{0}] VALUES (", table);
 					for (int j = 0; j < items.Count; j++)
 					{
 						if (items[j].Count == count)
@@ -440,12 +441,16 @@ namespace DataGenerator
 
 			for (int i = 0; i < count; i++)
 			{
-				string line = string.Format("INSERT INTO {0} VALUES (", table);
+				string line = string.Format("INSERT INTO [dbo].[{0}] VALUES (", table);
 				for (int j = 0; j < items.Count; j++)
 				{
 					if (items[j].Count == count)
 					{
 						string item = items[j][i];
+
+						// Fix ' messing up format of string (ex. St. John's)
+						item = item.Replace("'", "''");
+
 						if (asString[j])
 						{
 							item = string.Format("'{0}'", item);
@@ -486,9 +491,57 @@ namespace DataGenerator
 
 		public static string GenerateEvents(int count, string database)
 		{
-			// Requires users in database
+			string result = "USE " + database + ";\n";
+			int startProductID = GetAutoIncrementID(database, "Product");
+			int startEventID = GetAutoIncrementID(database, "Event");
 
-			return null;
+			if (startProductID < 0)
+			{
+				startProductID = 1;
+			}
+			if (startEventID < 0)
+			{
+				startEventID = 1;
+			}
+
+			// Container for different tables / insert statement groups
+			// List of users (sellers)
+			List<string> sellerIDs = Database.GetRows(count, Database.DB_MAIN, "User", "ID", Database.FORMAT_NUMBER);
+
+			// Product
+			List<List<string>> products = CustomGenerator.GetProducts(count, sellerIDs, startEventID, startProductID);
+			List<List<string>> productTags = CustomGenerator.GetTags(products[0].Count());
+
+			// Event
+			List<List<string>> events = CustomGenerator.GetEvents(count);
+
+			// Product to Events
+			List<List<string>> productsToEvents = new List<List<string>>();
+			List<string> eventIDs = products[products.Count() - 2];
+			List<string> productIDs = products[products.Count() - 1];
+			productsToEvents.Add(eventIDs);
+			productsToEvents.Add(productIDs);
+
+			// Seller to Events
+			List<List<string>> sellerToEvents = new List<List<string>>();
+			List<string> userIDs = products[1];
+			sellerToEvents.Add(userIDs);
+			sellerToEvents.Add(eventIDs);
+
+
+			// Remove temporary data holders (productId, eventId)
+			products.RemoveAt(products.Count() - 1);
+			products.RemoveAt(products.Count() - 1);
+
+			// Format lists into query statements
+			int fullCount = products[0].Count();
+			result += PrepareOutput(fullCount, "Product", products, new bool[] { true, false, true, true, false, false });
+			result += PrepareOutput(count, "Event", events, new bool[] { true, true, true, true, true });
+			result += PrepareOutputTags("ProductToTag", productTags, startProductID);
+			result += PrepareOutput(fullCount, "ProductToEvent", productsToEvents, new bool[] { false, false });
+			result += PrepareOutput(fullCount, "SellerToEvent", sellerToEvents, new bool[] { false, false });
+
+			return result;
 		}
 
 		public static string GenerateUsers(int count, string database)
@@ -513,7 +566,7 @@ namespace DataGenerator
 
 			// Format lists into query statements
 			result += PrepareOutput(count, "Address", addresses, new bool[] { true, true, false, true });
-			result += PrepareOutput(count, "User", users, new bool[] { true, true, false, true, true, true });
+			result += PrepareOutput(count, "User", users, new bool[] { false, true, true, true, true, true });
 			result += PrepareOutputTags("UserToTag", userTags, startUserID);
 
 			return result;
