@@ -6,6 +6,7 @@ import HomePage from "./components/HomePage/HomePage";
 import Register from "./components/Register/Register";
 import Login from "./components/Login/Login";
 
+
 class App extends React.Component {
 
 
@@ -13,12 +14,13 @@ class App extends React.Component {
     render(){
         return(
             <React.StrictMode>
+
                 <Router>
                     <Switch>
-                        <Route path="/" exact> <HomePage /> </Route>    
-                        <Route path="/events" exact> <EventsPage/> </Route>
-                        <Route path="/register" exact> <Register/> </Route>
-                        <Route path="/login" exact> <Login/> </Route>
+                        <Route path="/" exact component={HomePage} />    
+                        <Route path="/events" exact component={EventsPage} />
+                        <Route path="/register" exact component={Register} />
+                        <Route path="/login" exact component={Login} />
                     </Switch>  
 
                 </Router>  

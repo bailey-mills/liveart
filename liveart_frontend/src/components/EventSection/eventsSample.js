@@ -1,17 +1,17 @@
 export const events = [
     {
-      id: 1,
-      name: 'event1',
+      id: "Here is the description of Event1",
+      name: 'Event1',
 
     },
     {
       id: 2,
-      name: 'event2',
+      name: 'Event2',
 
     },
     {
         id: 3,
-        name: 'event3',
+        name: 'Event3',
   
     }
 

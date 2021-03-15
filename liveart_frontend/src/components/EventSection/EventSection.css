@@ -2,7 +2,7 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    grid-gap: 30px;
+    grid-gap: 10px;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
     font-size: 0;
 }
@@ -13,15 +13,16 @@
     margin: 0px;
     margin-left: 10px;
     font-size: 0;
+    align-items: center;
     
 }
 
-.event-frame > div{
+/* .event-frame > div{
     display: flex;
     align-items: center;
     font-size: 18px;
     float: left;
-}
+} */
 
 .event-img{
     width: 400px;
@@ -45,7 +46,12 @@
 .box{
     background-color: #444;
     width: 400px;
-    height: 300px;
+    height: 400px;
     /* padding: 130px;
     margin: 20px; */
+}
+
+.event-img-set{
+    width: 160px;
+    height: 100px;
 }

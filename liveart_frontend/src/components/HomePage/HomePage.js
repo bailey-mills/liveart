@@ -5,7 +5,7 @@ import '../Navbar/Navbar.css';
 import '../../index.css'
 import EventSection from "../EventSection/EventSection"
 import events from "../../Assets/sampleEvents.json"
-
+import "./HomePage.css";
 
 
 class EventsPage extends React.Component {
@@ -20,7 +20,10 @@ class EventsPage extends React.Component {
                 <Slideshow />
                 <hr/>
                 <h1> Events You Subscribed</h1>
-                <EventSection events={events}/>
+                <div className="eventBody">
+                    
+                    <EventSection events={events}/>
+                </div>
                 <hr/>
                 <h1> Events You Might be interested in</h1>
                 <EventSection events={events}/>       
