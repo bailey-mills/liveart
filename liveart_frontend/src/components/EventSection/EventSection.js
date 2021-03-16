@@ -12,9 +12,9 @@ const EventSection = ({ events }) => {
             events.map((user, i) => {
               return (
                 <Event
-                  id={events[i].id}
-                  name={events[i].name}
-                  url={events[i].url}
+                  id={events[i].ID}
+                  name={events[i].Title}
+                  url={events[i].ThumbNailURL}
                   />
               );
             })
