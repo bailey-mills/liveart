@@ -10,8 +10,7 @@ CREATE TABLE dbo.[User] (
 ID INT IDENTITY(1,1) PRIMARY KEY,
 AddressID INT NOT NULL,
 Email NVARCHAR(50) NOT NULL,
-Password NVARCHAR(50) NOT NULL,
-PasswordHash BINARY(64) NOT NULL,
+Password NVARCHAR(64) NOT NULL,
 FirstName NVARCHAR(50),
 LastName NVARCHAR(50),
 Birthday DATE NOT NULL
@@ -25,6 +24,7 @@ Title NVARCHAR(50) NOT NULL,
 Summary NVARCHAR(200),
 StartTime DATETIME NOT NULL, 
 EndTime DATETIME,
+ThumbNailURL NVARCHAR(200)
 )
 
 GO
@@ -166,3 +166,20 @@ REFERENCES dbo.[Product] (ID)
 go
 ALTER TABLE dbo.[ProductToTag] CHECK CONSTRAINT [FK_ProductOfTag_Key]
 go
+
+
+-- Provinces
+INSERT INTO [dbo].[Province] (Name) VALUES ('Ontario'),('Quebec'),('Nova Scotia'),
+('New Brunswick'),('Manitoba'),('British Columbia'),
+('Prince Edward Island'),('Saskatchewan'),('Alberta'),
+('Newfoundland and Labrador'),('Northwest Territories'),('Yukon'),('Nunavut');
+go
+
+
+-- Tags
+INSERT INTO [dbo].[Tag] (Name) VALUES ('Realism'),('Photorealism'),('Abstraction'),
+('Impressionism'),('Expressionism'),('Painterly'),
+('Handcraft'),('Sculpture'),('Flower bouquet'),('Bonsai');
+
+-- reset auto increment IDs
+-- DBCC CHECKIDENT ('Province', RESEED, 0);

@@ -47,7 +47,7 @@ AS
 			SET @curr = @extra;
 
 		-- INSERT into temporary table
-		EXEC('USE [liveart_dg]; INSERT INTO #temptable SELECT TOP (' + @curr + ') ' + @Column + ' FROM ' + @Table + ' ORDER BY NEWID()');
+		EXEC('USE [LIVEART]; INSERT INTO #temptable SELECT TOP (' + @curr + ') ' + @Column + ' FROM [dbo].[' + @Table + '] ORDER BY NEWID()');
 
 		-- Increment loop counter
 		SET @i = @i + 1;

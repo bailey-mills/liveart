@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace DataGenerator
 {
@@ -198,6 +200,20 @@ namespace DataGenerator
 			for (int i = 0; i < count; i++)
 			{
 				string password = firstNames[i] + lastNames[i];
+				// Create a SHA256   
+				using (SHA256 sha256Hash = SHA256.Create())
+				{
+					// ComputeHash - returns byte array  
+					byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(password));
+
+					// Convert byte array to a string   
+					StringBuilder builder = new StringBuilder();
+					for (int j = 0; j < bytes.Length; j++)
+					{
+						builder.Append(bytes[j].ToString("x2"));
+					}
+					password = builder.ToString();
+				}
 				items.Add(password);
 			}
 

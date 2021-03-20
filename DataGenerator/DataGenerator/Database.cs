@@ -380,7 +380,7 @@ namespace DataGenerator
 		{
 			int count = -1;
 
-			string query = "USE [" + database + "]; SELECT COUNT(*) FROM [" + table + "]";
+			string query = "USE [" + database + "]; SELECT COUNT(*) FROM [dbo].[" + table + "]";
 
 			using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[database].ConnectionString))
 			{
