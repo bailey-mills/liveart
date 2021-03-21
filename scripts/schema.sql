@@ -11,8 +11,7 @@ ID INT IDENTITY(1,1) PRIMARY KEY,
 AddressID INT NOT NULL,
 Email NVARCHAR(50) NOT NULL,
 Password NVARCHAR(70) NOT NULL,
-FirstName NVARCHAR(50),
-LastName NVARCHAR(50),
+UserName NVARCHAR(50) NOT NULL,
 Birthday DATE NOT NULL
 )
 
@@ -52,7 +51,7 @@ GO
 
 CREATE TABLE dbo.[Address](
 ID INT IDENTITY(1,1) PRIMARY KEY,
-Address NVARCHAR(50) NOT NULL,
+Street NVARCHAR(50) NOT NULL,
 City NVARCHAR(50) NOT NULL,
 ProvinceID INT NOT NULL,
 PostalCode NVARCHAR(50) NOT NULL
@@ -183,9 +182,9 @@ INSERT INTO [dbo].[Tag] (Name) VALUES ('Realism'),('Photorealism'),('Abstraction
 
 
 -- Events
-Insert into [dbo].[Event] (Title, ThumbNailURL) VALUES ('event1', 'https://kwag.ca/sites/default/files/styles/homepage_slider/public/slider-images/untitled-28.jpg?itok=pd3GJKUg'),
- ('event2', 'https://www.tucmag.net/wp-content/uploads/2018/06/HK_Overview_Exhibitors.jpg'),
-  ('event3', 'https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F84129047%2F197010627980%2F1%2Foriginal.20191210-163245?w=512&auto=format%2Ccompress&q=75&sharp=10&rect=0%2C55%2C2414%2C1207&s=70cba5c497adc17584d57e5818c55872');
+Insert into [dbo].[Event] (Title, StartTime, EndTime, ThumbNailURL) VALUES ('event1', '20210321 10:00:00 AM', '20220321 10:00:00 AM','https://kwag.ca/sites/default/files/styles/homepage_slider/public/slider-images/untitled-28.jpg?itok=pd3GJKUg'),
+ ('event2', '20210321 10:00:00 AM', '20220321 10:00:00 AM','https://www.tucmag.net/wp-content/uploads/2018/06/HK_Overview_Exhibitors.jpg'),
+  ('event3', '20210321 10:00:00 AM', '20220321 10:00:00 AM','https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F84129047%2F197010627980%2F1%2Foriginal.20191210-163245?w=512&auto=format%2Ccompress&q=75&sharp=10&rect=0%2C55%2C2414%2C1207&s=70cba5c497adc17584d57e5818c55872');
 
 -- reset auto increment IDs
 -- DBCC CHECKIDENT ('Province', RESEED, 0);
