@@ -140,6 +140,7 @@ namespace DataGenerator
 			// Get sample data
 			List<string> firstNames = Database.GetRows(count, Database.DB_SAMPLES, "FirstName", "Value", Database.FORMAT_NUMBER);
 			List<string> lastNames = Database.GetRows(count, Database.DB_SAMPLES, "LastName", "Value", Database.FORMAT_NUMBER);
+			List<string> usernames = GetUsernames(count, firstNames, lastNames);
 			List<string> emails = GetEmails(count, firstNames, lastNames);
 			List<string> passwords = GetPasswords(count, firstNames, lastNames);
 			List<string> birthdays = GetBirthday(count);
@@ -156,8 +157,9 @@ namespace DataGenerator
 			items.Add(addressIDs);
 			items.Add(emails);
 			items.Add(passwords);
-			items.Add(firstNames);
-			items.Add(lastNames);
+			//items.Add(firstNames);
+			//items.Add(lastNames);
+			items.Add(usernames);
 			items.Add(birthdays);
 
 			return items;
@@ -173,6 +175,35 @@ namespace DataGenerator
 			{
 				List<string> tagGroup = Database.GetRows(r.Next(1, 5), Database.DB_MAIN, "Tag", "ID", Database.FORMAT_NUMBER);
 				items.Add(tagGroup);
+			}
+
+			return items;
+		}
+
+		public static List<string> GetUsernames(int count, List<string> firstNames, List<string> lastNames)
+		{
+			List<string> items = new List<string>();
+
+			Random r = new Random();
+			for (int i = 0; i < count; i++)
+			{
+				// Example: Bailey_Mills_123
+				string username = string.Format("{0}_{1}_{2}", firstNames[i], lastNames[i], r.Next(1, 1000));
+				items.Add(username);
+			}
+
+			return items;
+		}
+
+		public static List<string> GetEmails(int count, List<string> usernames)
+		{
+			List<string> items = new List<string>();
+
+			for (int i = 0; i < count; i++)
+			{
+				// Example: bailey_mills_123@hotmail.com
+				string email = string.Format("{0}@hotmail.com", usernames[i]);
+				items.Add(email);
 			}
 
 			return items;

@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Manage all interactions with the databases to prepare data.
+
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;

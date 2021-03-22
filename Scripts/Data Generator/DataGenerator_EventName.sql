@@ -1,9 +1,5 @@
 use liveart_dg;
 
-CREATE TABLE EventName (
-    Value varchar(100) NOT NULL
-);
-
 INSERT INTO EventName VALUES ('Selling various paintings');
 INSERT INTO EventName VALUES ('Selling my scupltures');
 INSERT INTO EventName VALUES ('Paintings for sale');
