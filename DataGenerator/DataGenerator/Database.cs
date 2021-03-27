@@ -526,9 +526,14 @@ namespace DataGenerator
 
 			// Seller to Events
 			List<List<string>> sellerToEvents = new List<List<string>>();
-			List<string> userIDs = products[1];
-			sellerToEvents.Add(userIDs);
-			sellerToEvents.Add(eventIDs);
+			List<string> sellerToEventEventIDs = new List<string>();
+			for (int i = 0; i < count; i++)
+			{
+				string eventIDSingle = (i + startEventID).ToString();
+				sellerToEventEventIDs.Add(eventIDSingle);
+			}
+			sellerToEvents.Add(sellerIDs);
+			sellerToEvents.Add(sellerToEventEventIDs);
 
 
 			// Remove temporary data holders (productId, eventId)
@@ -541,7 +546,7 @@ namespace DataGenerator
 			result += PrepareOutput(count, "Event", events, new bool[] { true, true, true, true, true });
 			result += PrepareOutputTags("ProductToTag", productTags, startProductID);
 			result += PrepareOutput(fullCount, "ProductToEvent", productsToEvents, new bool[] { false, false });
-			result += PrepareOutput(fullCount, "SellerToEvent", sellerToEvents, new bool[] { false, false });
+			result += PrepareOutput(count, "SellerToEvent", sellerToEvents, new bool[] { false, false });
 
 			return result;
 		}
