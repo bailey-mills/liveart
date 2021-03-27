@@ -19,10 +19,12 @@ routes.get('/', (req,res) => {
 })
 
 routes.get('/provinces',homePageController.getProvinces);
+routes.get('/active-events', homePageController.activeEvents);
 routes.get('/recommend', homePageController.recommendEvents);
 routes.get('/all-tags', registertionController.getTags);
-routes.post('/register/user', registertionController.createUser);
-routes.get('/active-events', homePageController.activeEvents);
+routes.post('/user/register', registertionController.createUser);
+routes.post('/user/login', homePageController.authenticate, homePageController.createSession);
+routes.get('/user/logout', homePageController.logOut);
 
 
 

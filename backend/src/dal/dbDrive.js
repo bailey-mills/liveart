@@ -1,9 +1,9 @@
-const config = require('./dbconfig');
-var sql = require('mssql');
+const sql = require('mssql');
+const bcrypt = require('bcrypt');
 require('dotenv').config();
+const config = require('./dbconfig');
 
 class DbDrive {
-    
     async executeQuery(queryString) {
 
         try {
@@ -16,6 +16,15 @@ class DbDrive {
         }
 
     }
+
+    async Encrypt(password){
+            const hashedPassword = await bcrypt.hash(password, 10);
+
+            return hashedPassword;
+
+    
+    }
+
 }
  
 

@@ -10,23 +10,83 @@
 module.exports = class QueryBuilder {
 
     insertInto = (table, columns, values) => {
-            let queryBase = `INSERT INTO ${table} ( ${columns.join(', ')} ) VALUES`;
+      let query = `INSERT INTO ${table} ( ${columns.join(', ')} ) VALUES`;
 
-            let querifiedValues = [];
-            if (values.length == 1) {
-              let row = values[0];
-              row.map((field) => {
-                //validate fields
-                if (typeof field === 'string' && field !== 'NULL') {
-                  querifiedValues.push("'" + field + "'");
-                } else {
-                  querifiedValues.push(field);
-                }
+        let querifiedValues = [];
+          if (values.length == 1) {
+            let row = values[0];
+            row.map((field) => {
+              //validate fields
+              if (typeof field === 'string' && field !== 'NULL') {
+                querifiedValues.push("'" + field + "'");
+              } else {
+                querifiedValues.push(field);
+              }
               });
-              queryBase += ` ( ${querifiedValues.join(', ')} )`;
+              query += ` ( ${querifiedValues.join(', ')} )`;
             }
 
             // need to support array of values for bulk insert
-            return queryBase;
+          return query;
     }
+
+    getFrom(table, columns, condition, orderBy){
+      let query = `SELECT ${columns.join(', ')} FROM ${table}`;
+      if (condition !== undefined) {query += ` WHERE ${condition}`};
+      if (orderBy !== undefined) {query += ` ORDER BY ${orderBy}`};
+      return query;
+      
+    }
+
+
+    getFromjoin(tables, columns, joinQueryPairs, condition, orderBy){
+      let query = `SELECT ${columns.join(', ')} FROM ${tables.join(', ')} `;
+      joinQueryPairs.map((pair) => {
+        query += ` INNER JOIN ${pair.joinTable} ON ${pair.referenceKeys} `;
+      });
+      if (condition !== undefined) query += ` WHERE ${condition}`;
+      if (orderBy !== undefined) query += ` ORDER BY ${orderBy}`;
+      return query;     
+
+    }
+
+
+
+      //   queryDB.updateTable(
+      //   'User',
+      //   [{ column: 'email', value: 'test@email.com' }],
+      //   `username = 'userb'`
+      // );
+    updateTable(table, updatePairs, condition){
+      let validatedUpdates = [];
+      let stringifiedUpdates = [];
+      let query = `UPDATE ${table} SET `;
+  
+      updates.map((pair) => {
+        if (typeof pair.value === 'string' && pair.value !== 'NULL') {
+          pair.value = "'" + pair.value + "'";
+        }
+        validatedUpdates.push(pair);
+      });
+  
+      validatedUpdates.map((pair) => {
+        stringifiedUpdates.push(` ${pair.column} = ${pair.value}`);
+      });
+  
+      query += stringifiedUpdates.join(', ');
+  
+      if (condition !== undefined) query += ` WHERE ${condition}`;
+  
+      return query;      
+
+    }
+
+    deleteFrom(table, column, value){
+      let query = `DELETE FROM ${table} WHERE ${column} = '${value}' `;
+      return query;
+
+    }
+
+
+
 }
