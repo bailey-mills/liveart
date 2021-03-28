@@ -6,9 +6,9 @@ module.exports = class HomePageController {
 
     getProvinces = async (req, res)=> {
 
-        if(!req.session.loggedIn){
-            return res.status(403).send({message: 'unauthorized!'})
-        }
+        // if(!req.session.loggedIn){
+        //     return res.status(403).send({message: 'unauthorized!'})
+        // }
           
         let result = await dbDrive.executeQuery('SELECT * FROM Province');
     
@@ -79,6 +79,7 @@ module.exports = class HomePageController {
     }
 
     logOut = async (req, res, next) => {
+        //console.log(req.query.username)
         req.session.destroy(err => {if(err) console.log(err)})
         res.status(205).send({message: 'logged out!'});
     }

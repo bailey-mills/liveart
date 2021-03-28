@@ -14,11 +14,6 @@ module.exports = class RegistrationController {
             return res.send(data[0]);
     }
 
-
-
-
-
-
     // [
     //     {
     //         "Email": "test@email",
@@ -70,18 +65,22 @@ module.exports = class RegistrationController {
             //insert into User Table
             let UserQuery = queryBuilder.insertInto('[dbo].[User]', ['AddressID', 'Email', 'Password', 'UserName', 'Birthday'],
                                                      [[addressID, newUser.Email, hashedPassword, newUser.Username, newUser.Birthday]]);
-            await dbDrive.executeQuery(UserQuery);
 
-            // get userID
+             await dbDrive.executeQuery(UserQuery);
+
+             //get userID
             let userIDResult = await dbDrive.executeQuery(`SELECT ID from [dbo].[User] WHERE Username='${newUser.Username}'`);
             
-            let userID = userIDResult[0][0]['ID'];
+            // let userID = userIDResult[0][0]['ID'];
 
+            console.log(userIDResult);
 
-           // Insert into UserToTag Table
+            //Insert into UserToTag Table
 
             let userToTagPromise = newUser.Tags.map( async tag => {
                 let query = `INSERT INTO [dbo].[UserToTag] (TagID, UserID) VALUES (${tag.ID}, ${userID})`;
+
+                console.log(query);
                  await dbDrive.executeQuery(query);
              });
 

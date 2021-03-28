@@ -13,6 +13,7 @@ module.exports = class QueryBuilder {
       let query = `INSERT INTO ${table} ( ${columns.join(', ')} ) VALUES`;
 
         let querifiedValues = [];
+          // single row insert
           if (values.length == 1) {
             let row = values[0];
             row.map((field) => {
@@ -24,6 +25,11 @@ module.exports = class QueryBuilder {
               }
               });
               query += ` ( ${querifiedValues.join(', ')} )`;
+            }
+            // multi-row insert
+            else {
+                
+
             }
 
             // need to support array of values for bulk insert

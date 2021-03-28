@@ -7,11 +7,11 @@ GO
 -- Tables
 
 CREATE TABLE dbo.[User] (
-ID INT IDENTITY(1,1) PRIMARY KEY,
-AddressID INT NOT NULL,
-Email NVARCHAR(50) NOT NULL,
+ID INT IDENTITY(1,1)   
+Username NVARCHAR(50)  PRIMARY KEY NOT NULL,
 Password NVARCHAR(70) NOT NULL,
-UserName NVARCHAR(50) NOT NULL,
+Email NVARCHAR(50) NOT NULL,
+AddressID INT NOT NULL,
 Birthday DATE NOT NULL
 )
 
@@ -31,7 +31,7 @@ GO
 CREATE TABLE dbo.[Product](
 ID INT IDENTITY(1,1) PRIMARY KEY,
 Name NVARCHAR(50) NOT NULL,
-SellerID INT NOT NULL,
+SellerUsername NVARCHAR(50) NOT NULL,
 Summary NVARCHAR(200),
 PreviewURL NVARCHAR(400),
 BasePrice FLOAT NOT NULL,
@@ -67,14 +67,15 @@ Name NVARCHAR(50) NOT NULL
 GO
 
 CREATE TABLE dbo.[UserToTag](
-TagID INT NOT NULL,
-UserID INT NOT NULL
+Username NVARCHAR(50) NOT NULL,
+TagID INT NOT NULL
+
 )
 
 GO
 
 CREATE TABLE dbo.[SellerToEvent](
-UserID INT NOT NULL,
+SellerUsername NVARCHAR(50) NOT NULL,
 EventID INT NOT NULL
 )
 
@@ -110,8 +111,8 @@ go
 ALTER TABLE dbo.[Address] CHECK CONSTRAINT [FK_Province_Key]
 go
 
-ALTER TABLE dbo.[Product] WITH CHECK ADD CONSTRAINT [FK_Seller_Key] FOREIGN KEY(SellerID)
-REFERENCES dbo.[User] (ID)
+ALTER TABLE dbo.[Product] WITH CHECK ADD CONSTRAINT [FK_Seller_Key] FOREIGN KEY(SellerUsername)
+REFERENCES dbo.[User] (Username)
 go
 ALTER TABLE dbo.[Product] CHECK CONSTRAINT [FK_Seller_Key]
 go
@@ -124,15 +125,15 @@ REFERENCES dbo.[Tag] (ID)
 go
 ALTER TABLE dbo.[UserToTag] CHECK CONSTRAINT [FK_TagOfUser_Key]
 go
-ALTER TABLE dbo.[UserToTag] WITH CHECK ADD CONSTRAINT [FK_UserOfTag_Key] FOREIGN KEY(UserID)
-REFERENCES dbo.[User] (ID)
+ALTER TABLE dbo.[UserToTag] WITH CHECK ADD CONSTRAINT [FK_UserOfTag_Key] FOREIGN KEY(Username)
+REFERENCES dbo.[User] (Username)
 go
 ALTER TABLE dbo.[UserToTag] CHECK CONSTRAINT [FK_UserOfTag_Key]
 go
 
 
-ALTER TABLE dbo.[SellerToEvent] WITH CHECK ADD CONSTRAINT [FK_SellerOfEvent_Key] FOREIGN KEY(UserID)
-REFERENCES dbo.[User] (ID)
+ALTER TABLE dbo.[SellerToEvent] WITH CHECK ADD CONSTRAINT [FK_SellerOfEvent_Key] FOREIGN KEY(SellerUsername)
+REFERENCES dbo.[User] (Username)
 go
 ALTER TABLE dbo.[SellerToEvent] CHECK CONSTRAINT [FK_SellerOfEvent_Key]
 go
