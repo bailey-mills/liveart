@@ -79,7 +79,7 @@ module.exports = class RegistrationController {
 
 
            // Insert into UserToTag Table
-
+            console.log(newUser.Tags);
             let userToTagPromise = newUser.Tags.map( async tag => {
                 let query = `INSERT INTO [dbo].[UserToTag] (TagID, UserID) VALUES (${tag.ID}, ${userID})`;
                  await dbDrive.executeQuery(query);

@@ -5,11 +5,14 @@ import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import "./Login.css";
 import Navbar from "../Navbar/Navbar";
 import { useHistory } from "react-router-dom";
+import axios from "axios";
 
-export default function Login() {
+export default function Login(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   let history = useHistory();
+  let directFromRegister;
+
 
   function validateForm() {
     return email.length > 0 && password.length > 0;
@@ -19,23 +22,59 @@ export default function Login() {
 
     event.preventDefault();
     let formData = {
-        email: event.target[0].value,
-        password: event.target[1].value
+        Username: event.target[0].value,
+        Password: event.target[1].value
     };
 
-    if(formData.email==="lin@test.com" && formData.password==="123")
-    {
-        console.log("correct");
-        localStorage.setItem('user', formData.email);
-        history.push('/')
-    }
 
-    console.log(formData);
+    axios.post('http://localhost:5000/user/login', formData)
+        .then(res=>{
+          if(res.status === 201)
+          {
+            console.log("Logged in!");
+            console.log("correct");
+            localStorage.setItem('user', formData.Username);
+            history.push('/')
+
+          }
+            
+
+        })
+        .catch(function (error) {          
+          if(error.response.status===401){
+            alert("Password is wrong");
+            console.log("Password is wrong");
+          }
+          else if(error.response.status === 404)
+          {
+            alert("User does not exist");
+            console.log("User does not exist");
+          }
+      })
+
+
+
+    // if(formData.email==="lin@test.com" && formData.password==="123")
+    // {
+    //     console.log("correct");
+    //     localStorage.setItem('user', formData.email);
+    //     history.push('/')
+    // }
+
+    // console.log(formData);
 
 
   }
 
+  if(props.location.state.registered === true)
+  {
+    directFromRegister = <div> <h3>Congra. You have just registered an account in Live.art.</h3> </div>;
+  }
+  else
+  {
+    directFromRegister = <div></div>;
 
+  }
 
   return (
     <div className="Login">
@@ -44,14 +83,16 @@ export default function Login() {
         <br/>
         <h1>LIVE.ART Login</h1>
         <br/>
+        {directFromRegister}
         <br/>
+
         
         <Form onSubmit={handleSubmit}>
             <Form.Group size="lg" controlId="email">
-            <Form.Label>Email</Form.Label>
+            <Form.Label>Username</Form.Label>
             <Form.Control
                 autoFocus
-                type="email"
+                type="string"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
             />

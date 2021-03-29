@@ -1,0 +1,60 @@
+
+
+.register-title{
+    text-align: center;
+    margin-top: 100px;
+    margin-bottom: 40px;
+
+}
+
+.register-body{
+    margin-top: 50px;
+    justify-content: center;
+}
+
+.register-row{
+    margin: 0 auto;
+    justify-content: center; 
+
+}
+
+.register-tagbox{
+    /* margin-top: 40px; */
+    width: 500px;
+    margin-bottom: 200px;
+}
+
+.register-page{
+    margin-top: 40px;
+    margin-left: 20px;
+    
+}
+
+.password-notmatch {
+    
+    width: 100%;
+    margin-top: .25rem;
+    font-size: 80%;
+    color: #dc3545;
+}
+
+.confirm-password {
+    display: block;
+    width: 100%;
+    height: calc(1.5em + .75rem + 2px);
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+
+.divide-line{
+    width: 100%;
+}
