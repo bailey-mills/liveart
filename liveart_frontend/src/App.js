@@ -5,6 +5,7 @@ import EventsPage from "./components/EventsPage/EventsPage";
 import HomePage from "./components/HomePage/HomePage";
 import Register from "./components/Register/Register";
 import Login from "./components/Login/Login";
+import AnalyticsPage from "./components/Analytics/AnalyticsPage";
 
 
 class App extends React.Component {
@@ -21,6 +22,8 @@ class App extends React.Component {
                         <Route path="/events" exact component={EventsPage} />
                         <Route path="/register" exact component={Register} />
                         <Route path="/login" exact component={Login} />
+
+                        <Route path="/analytics" exact component={AnalyticsPage} />
                     </Switch>  
 
                 </Router>  
