@@ -27,14 +27,32 @@ module.exports = class QueryBuilder {
               query += ` ( ${querifiedValues.join(', ')} )`;
             }
             // multi-row insert
-            else {
-                
+          else {
+                for(let i = 0; i < values.length; i++){
+                    let row = values[i];
+                    row.map((field) => {
+                      //validate fields
+                      if (typeof field === 'string' && field !== 'NULL') {
+                        querifiedValues.push("'" + field + "'");
+                      } else {
+                        querifiedValues.push(field);
+                      }
+                    });
 
-            }
-
-            // need to support array of values for bulk insert
-          return query;
+                      if(i == values.length - 1){
+                        query += ` ( ${querifiedValues.join(', ')} )`;
+                      }
+                      else {
+                        query += ` ( ${querifiedValues.join(', ')} ), `;
+                      }
+                      querifiedValues = [];
+                }
+          }
+                return query;
     }
+
+      
+    
 
     getFrom(table, columns, condition, orderBy){
       let query = `SELECT ${columns.join(', ')} FROM ${table}`;
@@ -68,7 +86,7 @@ module.exports = class QueryBuilder {
       let stringifiedUpdates = [];
       let query = `UPDATE ${table} SET `;
   
-      updates.map((pair) => {
+      updatePairs.map((pair) => {
         if (typeof pair.value === 'string' && pair.value !== 'NULL') {
           pair.value = "'" + pair.value + "'";
         }

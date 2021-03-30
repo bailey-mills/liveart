@@ -1,5 +1,5 @@
 const DbDrive = require('../dal/dbDrive');
-const bcrypt = require('bcrypt');
+const { sha256 } = require('js-sha256');
 let dbDrive = new DbDrive();
 
 module.exports = class HomePageController {
@@ -43,7 +43,7 @@ module.exports = class HomePageController {
          let dbUserResult = await dbDrive.executeQuery(`SELECT * FROM [dbo].[User] WHERE username='${clientUsername}'`);
 
          let dbUser = dbUserResult[0];
-         //console.log(dbUser);
+         
 
          if(dbUser.length == 0) {
              return res.status(404).send({message: 'User not found!'});
@@ -51,29 +51,22 @@ module.exports = class HomePageController {
 
          let dbHashedPassword = dbUser[0].Password;
 
-
-         bcrypt.compare(clientPassword, dbHashedPassword, (err, isMatched)=> {
-
-            if(err) return console.log(err);
-
-            if(!isMatched){
-                return res.status(401).send({message: 'Incorrent credential!'})
-            }
-            else {
-                res.locals.username = clientUsername;
-                next();
-            }      
-         });
-         
-
+         if(sha256.hmac(process.env.SECRET, clientPassword) === dbHashedPassword){
+            res.locals.username = clientUsername;
+            next();
+         }
+         else {
+            return res.status(401).send({message: 'Incorrent credential!'});
+         }
     }
 
     createSession = (req, res) => {
         req.session.loggedIn = true
         req.session.username = res.locals.username
+        // req.session.test = 'test';
 
-        // console.log(res.locals);
-        // console.log(req.session);
+        //  console.log(res.locals);
+        //  console.log(req.session);
         
         res.status(201).send({message:`Session for user ${res.locals.username} created!`});
     }

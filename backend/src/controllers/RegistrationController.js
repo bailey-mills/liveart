@@ -45,7 +45,7 @@ module.exports = class RegistrationController {
         }
     
         // HASH password
-        let hashedPassword = await dbDrive.Encrypt(newUser.Password);
+        let hashedPassword = dbDrive.Encrypt(newUser.Password);
 
         try {
             //insert into Address Table 
@@ -66,21 +66,17 @@ module.exports = class RegistrationController {
             let UserQuery = queryBuilder.insertInto('[dbo].[User]', ['AddressID', 'Email', 'Password', 'UserName', 'Birthday'],
                                                      [[addressID, newUser.Email, hashedPassword, newUser.Username, newUser.Birthday]]);
 
+
+                           // console.log(UserQuery);
+
              await dbDrive.executeQuery(UserQuery);
-
-             //get userID
-            let userIDResult = await dbDrive.executeQuery(`SELECT ID from [dbo].[User] WHERE Username='${newUser.Username}'`);
-            
-            // let userID = userIDResult[0][0]['ID'];
-
-            console.log(userIDResult);
 
             //Insert into UserToTag Table
 
             let userToTagPromise = newUser.Tags.map( async tag => {
-                let query = `INSERT INTO [dbo].[UserToTag] (TagID, UserID) VALUES (${tag.ID}, ${userID})`;
+                let query = `INSERT INTO [dbo].[UserToTag] (TagID, Username) VALUES (${tag.ID}, ${newUser.Username})`;
 
-                console.log(query);
+                //console.log(query);
                  await dbDrive.executeQuery(query);
              });
 
@@ -90,7 +86,7 @@ module.exports = class RegistrationController {
 
         }catch(error){
             console.log(error);
-            return res.status(500).send({'message': error});
+            return res.status(500).send({'message': 'Server Error!'});
         }
 
         return res.status(201).send({"message": "Successfully created user"})

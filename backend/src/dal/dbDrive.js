@@ -1,5 +1,5 @@
 const sql = require('mssql');
-const bcrypt = require('bcrypt');
+const sha256 = require('js-sha256');
 require('dotenv').config();
 const config = require('./dbconfig');
 
@@ -17,12 +17,10 @@ class DbDrive {
 
     }
 
-    async Encrypt(password){
-            const hashedPassword = await bcrypt.hash(password, 10);
+    Encrypt(password){
 
-            return hashedPassword;
-
-    
+        return sha256.hmac(process.env.SECRET, password);
+  
     }
 
 }
