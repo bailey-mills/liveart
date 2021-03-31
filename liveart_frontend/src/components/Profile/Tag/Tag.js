@@ -39,7 +39,7 @@ export default function Tag(props){
 
     return(
         <div>
-            <Multiselect options={tags} displayValue="Name"  onSelect={selectChange} onRemove={selectChange} avoidHighlightFirstOption="true" closeOnSelect="false" placeholder="Pick your tags!"/>
+            <Multiselect options={tags} displayValue="Name" selectedValues={props.currentTags} onSelect={selectChange} onRemove={selectChange} avoidHighlightFirstOption="true" closeOnSelect="false" placeholder="Pick your tags!"/>
             here: {JSON.stringify(selected)}
         </div>
     );

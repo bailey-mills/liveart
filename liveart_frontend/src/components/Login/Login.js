@@ -68,7 +68,7 @@ export default function Login(props) {
 
   if(props.location.state.registered === true)
   {
-    directFromRegister = <div> <h3>Congra. You have just registered an account in Live.art.</h3> </div>;
+    directFromRegister = <div className="registered-message"> <h5>Congratulations! You have just registered an account in Live.Art!</h5> </div>;
   }
   else
   {
