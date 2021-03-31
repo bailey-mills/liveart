@@ -33,6 +33,8 @@ module.exports = class RegistrationController {
 
         let newUser = data[0];
 
+        // console.log(newUser);
+
         // check if username and email already exists
         let checkUserNameResult = await dbDrive.executeQuery(`SELECT * FROM [dbo].[User] WHERE username='${newUser.Username}'`);
         let checkUserName = checkUserNameResult[0];
@@ -74,13 +76,13 @@ module.exports = class RegistrationController {
             //Insert into UserToTag Table
 
             let userToTagPromise = newUser.Tags.map( async tag => {
-                let query = `INSERT INTO [dbo].[UserToTag] (TagID, Username) VALUES (${tag.ID}, ${newUser.Username})`;
+                let query = `INSERT INTO [dbo].[UserToTag] (TagID, Username) VALUES (${tag.ID}, '${newUser.Username}')`;
 
-                //console.log(query);
+               // console.log(query);
                  await dbDrive.executeQuery(query);
              });
 
-             await Promise.all(userToTagPromise);
+            await Promise.all(userToTagPromise);
 
 
 
