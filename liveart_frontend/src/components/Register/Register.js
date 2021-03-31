@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
@@ -17,27 +17,58 @@ function Register() {
     const [validated, setValidated] = useState(false);
     const [pwdnotmatch, setPwdnotmatch] = useState("");
     const [selectedtags, setSelectedtags] = useState([]);
+    const [allprovince, setAllprovince] = useState([]);
+    const [noprovinceselected, setNoprovinceselected] = useState("");
+
     let pwdFlag = false;
+    let provinceFlag = false;
     let history = useHistory();
+
+    useEffect(()=>{
+        axios.get('http://localhost:5000/provinces').then(res=>{
+            console.log("return code: " +res.status);
+            if(res.status!==200)
+            {
+                alert("Can't connect to the backend");
+                return;
+            }
+            
+            setAllprovince(res.data);
+            // console.log("res.data",res.data);
+        })
+    },[]);
+
 
     const handleSubmit = (event) => {
 
         console.log("from Tag object",selectedtags);
+        console.log("selectedPronviceID",event.target[8].value);
+
+
+        setPwdnotmatch("");
+        setNoprovinceselected("");
         if(pwd!==cfmpwd)
         {
             setPwdnotmatch("Password not match. Please check!")
             setValidated(false);
             pwdFlag = false;
         }
-        else
+        else if(event.target[8].value === "-1")
         {
-            setPwdnotmatch("");
+            console.log("haven't select a pro");
+            setNoprovinceselected("You have to select a province!");
+            setValidated(false);
+            provinceFlag = false;
+        }
+        else
+        {           
             setValidated(true);
             pwdFlag = true;
+            provinceFlag = true;
         }
 
       const form = event.currentTarget;
-      if (form.checkValidity() === false || pwdFlag === false) {
+      if (form.checkValidity() === false || pwdFlag === false || provinceFlag===false) {
         event.preventDefault();
         event.stopPropagation();
       }
@@ -48,11 +79,11 @@ function Register() {
         event.stopPropagation();
 
 
-        let userData = [event.target[0].value,event.target[1].value,event.target[2].value,event.target[4].value,event.target[5].value,event.target[6].value,event.target[7].value,selectedtags];
+        let userData = [event.target[0].value,event.target[1].value,event.target[2].value,event.target[4].value,event.target[5].value,event.target[6].value,event.target[7].value,event.target[8].value,selectedtags];
         console.log("user data", userData);
         //let sampleTags = [1,3,5];
         //add province on UI
-        let newUser = [{'Email': event.target[0].value, 'Username':event.target[1].value, 'Password':event.target[2].value,'Birthday':event.target[4].value,'Street':event.target[5].value,'City':event.target[6].value,'Postalcode': event.target[7].value, 'ProvinceID': 2,'Tags': selectedtags}];
+        let newUser = [{'Email': event.target[0].value, 'Username':event.target[1].value, 'Password':event.target[2].value,'Birthday':event.target[4].value,'Street':event.target[5].value,'City':event.target[6].value,'Postalcode': event.target[7].value, 'ProvinceID': Number(event.target[8].value),'Tags': selectedtags}];
         console.log("new user",newUser);
         console.log("birthday: ", event.target[4].value);
 
@@ -60,15 +91,8 @@ function Register() {
         axios.post('http://localhost:5000/user/register', newUser)
         .then(res=>{
             console.log("post return code: " +res.status);
-            if(res.status===500)
-            {                
-                alert("Can't connect to the backend");
-            }
-            else if(res.status===403)
-            {
-                alert("The email/Username is occupied, Please try another one");
-            }
-            else if(res.status===201)
+            
+            if(res.status===201)
             {
                 console.log("return message", res.data.message);
 
@@ -77,8 +101,17 @@ function Register() {
                 state: { registered: true }
                 });
             }
-
-              
+        
+        })
+        .catch(function (error) {          
+            if(error.response.status===500)
+            {                
+                alert("Can't connect to the backend");
+            }
+            else if(error.response.status===403)
+            {
+                alert("The email/Username is occupied, Please try another one");
+            }
         })
 
 
@@ -231,10 +264,13 @@ function Register() {
         <Form.Row className="register-row">
         <Form.Group as={Col} md="3" controlId="validationCustom08">
             <Form.Label>Province</Form.Label>
-            <Form.Control type="text" placeholder="Province" required />
-            <Form.Control.Feedback type="invalid">
-                Please provide a valid province.
-            </Form.Control.Feedback>
+            {/* <Form.Control type="select" placeholder="Province" required /> */}
+            
+            <select>
+                <option value="-1" selected="selected">-- Select a Province --</option>
+                {allprovince.map((province, index) => <option key={province.ID} value={province.ID}>{province.Name}</option>)}
+            </select>
+            <text   class="password-notmatch">{noprovinceselected}</text>
         </Form.Group>
         </Form.Row>
 
