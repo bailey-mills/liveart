@@ -51,6 +51,10 @@
     margin: 20px; */
 }
 
+.card-body{
+    background-color: #444;
+}
+
 .event-img-set{
     width: 160px;
     height: 100px;

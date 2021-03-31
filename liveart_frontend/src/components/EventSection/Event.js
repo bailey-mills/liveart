@@ -18,9 +18,9 @@ const Event = ({ name, id, url }) => {
       //     </div>
       //   </div>
       // </a>
-      <Card className="box" >
+    <Card className="box" >
       <Card.Img className="event-img" variant="top" src={url} />
-      <Card.Body>
+      <Card.Body className="card-body">
         <Card.Title>{name}</Card.Title>
         <Card.Text>
           {id}

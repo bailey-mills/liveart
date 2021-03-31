@@ -23,7 +23,7 @@ function EventsPage(){
                 return;
             }
             // events = res.data[0];
-            setEvents(res.data[0]);
+            setEvents(res.data);
         })
     },[]);
 

@@ -1,9 +1,9 @@
-const config = require('./dbconfig');
-var sql = require('mssql');
+const sql = require('mssql');
+const sha256 = require('js-sha256');
 require('dotenv').config();
+const config = require('./dbconfig');
 
 class DbDrive {
-    
     async executeQuery(queryString) {
 
         try {
@@ -16,6 +16,13 @@ class DbDrive {
         }
 
     }
+
+    Encrypt(password){
+
+        return sha256.hmac(process.env.SECRET, password);
+  
+    }
+
 }
  
 
