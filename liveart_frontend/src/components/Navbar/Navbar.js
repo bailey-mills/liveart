@@ -6,21 +6,21 @@ import Button from "react-bootstrap/Button";
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import axios from "axios";
 import UserProfile from "../UserProfile/Bio/Bio";
+import { useHistory } from "react-router-dom";
 
-class Navbar extends Component {
-    constructor(props) {
-        super(props);
-    
-        // This binding is necessary to make `this` work in the callback
-        this.logoutuser = this.logoutuser.bind(this);
-      }
-    state = { clicked: false }
 
-    handleClick = () => {
-        this.setState({ clicked: !this.state.clicked })
+function Navbar(){
+         
+    let clicked =  false;
+    let history = useHistory();
+
+    function handleClick(){
+        // this.setState({ clicked: !this.state.clicked })
+        clicked = !clicked;
     }
 
-    logoutuser(){
+    function logoutuser(){
+        
         let username = localStorage.getItem('user');
           
         axios.get('http://localhost:5000/user/logout?Username='+username )
@@ -28,7 +28,13 @@ class Navbar extends Component {
             if(res.status===205)
             {
                 localStorage.removeItem('user');
-                window.location.reload();
+
+                // window.location.reload();
+                
+                history.push({
+                    pathname: '/login',
+                    state: { registered: false }
+                });
             }
             else
             {
@@ -38,7 +44,7 @@ class Navbar extends Component {
         
     }
 
-    render() {
+    
         const user = localStorage.getItem('user');
         let profile;
         if(user=== null)
@@ -59,7 +65,7 @@ class Navbar extends Component {
             profile =   <div className="sign-btn">
              {/* <Button>Log in</Button> */}
              <Link className="nav-links" to={"/userprofile/bio"} > {user} </Link>
-             <Button onClick={this.logoutuser}>Log out</Button>
+             <Button onClick={logoutuser}>Log out</Button>
             </div>;
         }
         return(       
@@ -68,7 +74,7 @@ class Navbar extends Component {
                     {/* logo */}
                     <Link className="navbar-links" to={"/"}><img src={logo} alt="logo" className="navbar-img"/> </Link>
                     {/* options */}
-                    <ul className={this.state.clicked ? 'nav-menu active' : 'nav-menu'}>
+                    <ul className={clicked ? 'nav-menu active' : 'nav-menu'}>
                         <li>
                             <Link className="nav-links" to={"/events"} > Events </Link>
                         </li>
@@ -78,8 +84,8 @@ class Navbar extends Component {
 
                     </ul>
 
-                    <div className="menu-icon" onClick={this.handleClick}>
-                        <i className={this.state.clicked ? 'fas fa-times' : 'fas fa-bars'}></i>
+                    <div className="menu-icon" onClick={handleClick}>
+                        <i className={clicked ? 'fas fa-times' : 'fas fa-bars'}></i>
                     </div>
                     
                     
@@ -97,7 +103,7 @@ class Navbar extends Component {
                 <br/>
             </div>
         )
-    }
+    
 }
 
 export default Navbar
