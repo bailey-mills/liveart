@@ -1,6 +1,11 @@
 const DbDrive = require('../dal/dbDrive');
+const QueryBuilder = require('../dal/queryBuilder');
 const { sha256 } = require('js-sha256');
+const { user } = require('../dal/dbconfig');
+
+
 let dbDrive = new DbDrive();
+let queryBuilder = new QueryBuilder();
 
 module.exports = class HomePageController {
 
@@ -17,11 +22,56 @@ module.exports = class HomePageController {
     }
     
     recommendEvents = async (req, res) => {
-        //recommend algorithm comes later
 
-        let result = await dbDrive.executeQuery('SELECT * FROM Event');
-       
-            return res.json(result[0])
+        let randomRecommendQuery = 'SELECT TOP 6 * FROM [dbo].[Event] order by NEWID()';
+        // not logged in, give random recommendations
+        if(!req.session.loggedIn){
+            let result = await dbDrive.executeQuery(randomRecommendQuery);
+
+            return res.json(result[0]);
+        } else {
+            // get user tags to calcuate weights
+            //let username = 'shawn';
+            let username = req.session.username;
+
+            let weightedCategoriesQuery = 
+            queryBuilder.getFromjoin(['[dbo].[UserToTag]'],['Tag.CategoryID',"Count(UserToTag.TagID) as 'Count'"],
+            [
+            {joinTable:'[dbo].[User]',referenceKeys:'[dbo].[UserToTag].Username=[dbo].[User].Username'},
+            {joinTable:'[dbo].[Tag]',referenceKeys:'[dbo].[UserToTag].TagID=[dbo].[Tag].ID'},
+            {joinTable:'[dbo].[Category]',referenceKeys:'[dbo].[Category].ID=[dbo].[Tag].CategoryID'}
+            ],
+            `UserToTag.Username='${username}' Group By Tag.CategoryID`,
+            "'Count' DESC"
+            );
+
+            let result = await dbDrive.executeQuery(weightedCategoriesQuery);
+
+            let weightedCategoriesResult = result[0];
+
+            
+            if(weightedCategoriesQuery.length == 0){
+                let result = await dbDrive.executeQuery(randomRecommendQuery);
+
+                return res.json(result[0]);
+            } else {
+                let results = [];
+
+                let resultPromise = weightedCategoriesResult.map(async weightedPair => {
+                    let eventsResult = await dbDrive.executeQuery(`SELECT TOP ${weightedPair.Count} * FROM [dbo].[Event] 
+                                        WHERE CategoryID=${weightedPair.CategoryID} AND EndTime > CURRENT_TIMESTAMP
+                                        ORDER BY NEWID()`);
+
+                        results.push(eventsResult[0]);
+                });
+                    
+                await Promise.all(resultPromise);
+
+                return res.json(results);
+
+            }
+            
+        }
     }
 
     activeEvents = async (req, res) => {
