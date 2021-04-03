@@ -31,7 +31,7 @@ module.exports = class HomePageController {
             return res.json(result[0]);
         } else {
             // get user tags to calcuate weights
-            //let username = 'shawn';
+            // let username = 'shawn';
             let username = req.session.username;
 
             let weightedCategoriesQuery = 
@@ -50,7 +50,7 @@ module.exports = class HomePageController {
             let weightedCategoriesResult = result[0];
 
             
-            if(weightedCategoriesQuery.length == 0){
+            if(weightedCategoriesResult.length == 0){
                 let result = await dbDrive.executeQuery(randomRecommendQuery);
 
                 return res.json(result[0]);
@@ -62,7 +62,13 @@ module.exports = class HomePageController {
                                         WHERE CategoryID=${weightedPair.CategoryID} AND EndTime > CURRENT_TIMESTAMP
                                         ORDER BY NEWID()`);
 
-                        results.push(eventsResult[0]);
+                        if(eventsResult[0].length > 0){
+                            eventsResult[0].map( event => {
+
+                                results.push(event);
+
+                            });
+                        }
                 });
                     
                 await Promise.all(resultPromise);
