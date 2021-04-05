@@ -170,20 +170,6 @@ module.exports = class AnalyticsPageController {
 
         res.json(ret);
     }
-    
-    getTagsGlobal = async (req, res)=> {
-        /*
-        SELECT T.Name, COUNT(T.ID) AS 'Count' FROM [dbo].[ProductToTag] PT
-            JOIN [dbo].[Tag] T ON PT.TagID = T.ID
-            GROUP BY T.Name
-            ORDER BY 'Count' DESC;
-        */
-
-        let query = 'SELECT T.Name, COUNT(T.ID) AS \'Count\' FROM [dbo].[ProductToTag] PT JOIN [dbo].[Tag] T ON PT.TagID = T.ID GROUP BY T.Name ORDER BY \'Count\' DESC;';
-        let ret = await this.getTags(query);
-
-        res.json(ret);
-    }
 
     getTagsBoth = async (req, res)=> {
         // Get list of tags
@@ -298,12 +284,58 @@ module.exports = class AnalyticsPageController {
     // -----------------
     // Buyer Tab Methods
     // -----------------
+    
+    getAnalyticsBuyer = async (req, res)=> {
+        /*
+            SELECT PT.TagID, COUNT(PT.TagID) as 'Count' FROM [dbo].[Transaction] Tr
+                JOIN [dbo].[Bid] B ON B.EventID = Tr.EventID
+                JOIN [dbo].[ProductToTag] PT ON PT.ProductID = B.ProductID
+                JOIN [dbo].[Tag] T ON T.ID = PT.ProductID
+                WHERE B.UserID = 7 AND Tr.BuyerID = 7
+                GROUP BY PT.TagID
+                ORDER BY 'Count' DESC
+        */
+        let query = 'SELECT T.Name, COUNT(T.ID) AS \'Count\' FROM [dbo].[ProductToTag] ' +
+            'PT JOIN [dbo].[Tag] T ON PT.TagID = T.ID ' + 
+            'JOIN [dbo].[ProductToEvent] PE ON PE.ProductID = PT.ProductID ' + 
+            'JOIN [dbo].[SellerToEvent] SE ON SE.EventID = PE.EventID ' + 
+            'WHERE SE.UserID = 272 ' +
+            'GROUP BY T.Name ' + 
+            'ORDER BY \'Count\' DESC;';
+        let ret = await this.getTags(query);
 
+        res.json(ret);
+    }
+
+    getTagsBuyer = async (req, res)=> {
+
+    }
+
+    
 
 
     // --------------------
     // Social Media Methods
     // --------------------
 
+
+
+    // -------
+    // General
+    // -------
+    
+    getTagsGlobal = async (req, res)=> {
+        /*
+        SELECT T.Name, COUNT(T.ID) AS 'Count' FROM [dbo].[ProductToTag] PT
+            JOIN [dbo].[Tag] T ON PT.TagID = T.ID
+            GROUP BY T.Name
+            ORDER BY 'Count' DESC;
+        */
+
+        let query = 'SELECT T.Name, COUNT(T.ID) AS \'Count\' FROM [dbo].[ProductToTag] PT JOIN [dbo].[Tag] T ON PT.TagID = T.ID GROUP BY T.Name ORDER BY \'Count\' DESC;';
+        let ret = await this.getTags(query);
+
+        res.json(ret);
+    }
     
 }

@@ -22,6 +22,10 @@ function DoubleBarChart(props) {
                 },
                 textShadowColor: '#000f',
                 textShadowBlur: 10
+            },
+            title: {
+                display: true,
+                text: 'Test',
             }
         },
     }
@@ -48,6 +52,7 @@ function DoubleBarChart(props) {
 
     return(
         <div className={props.class}>
+            <h5>{props.title}</h5>
             <Bar data={settings} options={options} />
         </div>
     );

@@ -63,7 +63,7 @@ function AnalyticsPage(){
 
             <TabPanel>
                 <div>
-                    <h5>Auction Details</h5>
+                    <h4>Auction Details</h4>
                     <div className="horizontalContainer">
                         <Tile title="Gross Revenue" value={singles.GrossRevenue} prefix="$" accent="accent blue" />
                         <Tile title="Average Product Value" value={singles.AverageProductValue} prefix="$" accent="accent blue" />
@@ -71,24 +71,25 @@ function AnalyticsPage(){
 
                     <hr />
 
-                    <h5>Age Demographics</h5>
+                    <h4>Age Demographics</h4>
                     <div className="horizontalContainer">
-                        <BarChart className="chartContainer" data={age} label="Age" class="chart bar" />
-                        <DoubleBarChart className="chartContainer" data={ageBoth} label1="Bailey (left)" label2="Global (right)" class="chart bar right" colours1="#3280e6" colours2="#9ec8ff" />
+                        <BarChart className="chartContainer" data={age} label="Age" class="chart bar" title="Audience Age" />
+                        <DoubleBarChart className="chartContainer" data={ageBoth} label1="Bailey (left)" label2="Global (right)" class="chart bar right" colours1="#3280e6" colours2="#9ec8ff" title="Audience Age Comparison (%)" />
                     </div>
 
                     <hr />
 
-                    <h5>Tag Distribution</h5>
+                    <h4>Tag Distribution</h4>
                     <div className="horizontalContainer">
                         <DoubleBarChart className="chartContainer" data={tagsBoth} label1="Bailey (left)" label2="Global (right)" class="chart bar wide" tilt="true"
                             colours1={getColours(getIDsFromNames(tagList, tagsBoth.labels), true)}
                             colours2={getColours(getIDsFromNames(tagList, tagsBoth.labels), false)}
+                            title="Tag Usage Comparison (%)"
                         />
                     </div>
                     <div className="horizontalContainer">
-                        <DoughnutChart className="chartContainer" data={tags} class="chart doughnut" colours={getColours(getIDsFromNames(tagList, tags.labels), true)} />
-                        <DoughnutChart className="chartContainer" data={tagsGlobal} class="chart doughnut right" colours={getColours(getIDsFromNames(tagList, tagsGlobal.labels), true)} />
+                        <DoughnutChart className="chartContainer" data={tags} class="chart doughnut" colours={getColours(getIDsFromNames(tagList, tags.labels), true)} title="Your Tag Usage" />
+                        <DoughnutChart className="chartContainer" data={tagsGlobal} class="chart doughnut right" colours={getColours(getIDsFromNames(tagList, tagsGlobal.labels), true)} title="Global Tag Usage" />
                     </div>
                 </div>
             </TabPanel>
@@ -117,7 +118,7 @@ function getIDsFromNames(tagList, labelList) {
     
     for (i = 0; i < labelList.length; i++) {        
         let curr = tagList.find(item => {
-            return item.Name == labelList[i];
+            return item.Name === labelList[i];
         });
         ret.push(curr.ID);
     }

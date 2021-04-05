@@ -40,6 +40,7 @@ function BarChart(props) {
 
     return(
         <div className={props.class}>
+            <h5>{props.title}</h5>
             <Bar data={settings} options={options} />
         </div>
     );

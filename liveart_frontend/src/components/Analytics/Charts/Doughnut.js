@@ -1,4 +1,4 @@
-import { Chart, Doughnut } from "react-chartjs-2";
+import { Doughnut } from "react-chartjs-2";
 import '../AnalyticsPage.css';
 require('dotenv').config();
 
@@ -47,6 +47,7 @@ function DoughnutChart(props) {
 
     return(
         <div className={props.class}>
+            <h5>{props.title}</h5>
             <Doughnut data={settings} options={options}/>
         </div>
     );
