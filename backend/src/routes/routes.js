@@ -22,5 +22,12 @@ routes.get('/recommend', homePageController.recommendEvents);
 
 // Analytics
 routes.get('/analytics/artist/age', analyticsPageController.getAge);
+routes.get('/analytics/artist/ageBoth', analyticsPageController.getAgeBoth);
+routes.get('/analytics/artist/location', analyticsPageController.getLocation);
+routes.get('/analytics/artist/tagList', analyticsPageController.getTagList);
+routes.get('/analytics/artist/tags', analyticsPageController.getTagsArtist);
+routes.get('/analytics/artist/tagsGlobal', analyticsPageController.getTagsGlobal);
+routes.get('/analytics/artist/tagsBoth', analyticsPageController.getTagsBoth);
+routes.get('/analytics/artist/singles', analyticsPageController.getAnalyticsArtist);
 
 module.exports = routes;
