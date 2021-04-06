@@ -7,12 +7,11 @@ GO
 -- Tables
 
 CREATE TABLE dbo.[User] (
-ID INT IDENTITY(1,1) PRIMARY KEY,
-AddressID INT NOT NULL,
+ID INT IDENTITY(1,1),  
+Username NVARCHAR(50)  PRIMARY KEY NOT NULL,
+Password NVARCHAR(70) NOT NULL,
 Email NVARCHAR(50) NOT NULL,
-Password NVARCHAR(64) NOT NULL,
-FirstName NVARCHAR(50),
-LastName NVARCHAR(50),
+AddressID INT NOT NULL,
 Birthday DATE NOT NULL
 )
 
@@ -22,9 +21,10 @@ CREATE TABLE dbo.[Event](
 ID INT IDENTITY(1,1) PRIMARY KEY,
 Title NVARCHAR(50) NOT NULL,
 Summary NVARCHAR(200),
-StartTime DATETIME NOT NULL, 
+StartTime DATETIME, 
 EndTime DATETIME,
-ThumbNailURL NVARCHAR(200)
+ThumbNailURL NVARCHAR(400),
+CategoryID INT
 )
 
 GO
@@ -32,9 +32,9 @@ GO
 CREATE TABLE dbo.[Product](
 ID INT IDENTITY(1,1) PRIMARY KEY,
 Name NVARCHAR(50) NOT NULL,
-SellerID INT NOT NULL,
+SellerUsername NVARCHAR(50) NOT NULL,
 Summary NVARCHAR(200),
-PreviewURL NVARCHAR(200),
+PreviewURL NVARCHAR(400),
 BasePrice FLOAT NOT NULL,
 IsSold BIT NOT NULL
 )
@@ -44,7 +44,13 @@ GO
 CREATE TABLE dbo.[Tag](
 ID INT IDENTITY(1,1) PRIMARY KEY, 
 Name NVARCHAR(50) NOT NULL,
-Summary NVARCHAR(200),
+CategoryID INT NOt NULL
+)
+
+
+CREATE TABLE dbo.[Category](
+ID INT IDENTITY(1,1) PRIMARY KEY,
+Name NVARCHAR(50) NOT NULL
 )
 
 GO
@@ -52,7 +58,7 @@ GO
 
 CREATE TABLE dbo.[Address](
 ID INT IDENTITY(1,1) PRIMARY KEY,
-Address NVARCHAR(50) NOT NULL,
+Street NVARCHAR(50) NOT NULL,
 City NVARCHAR(50) NOT NULL,
 ProvinceID INT NOT NULL,
 PostalCode NVARCHAR(50) NOT NULL
@@ -68,14 +74,15 @@ Name NVARCHAR(50) NOT NULL
 GO
 
 CREATE TABLE dbo.[UserToTag](
-TagID INT NOT NULL,
-UserID INT NOT NULL
+Username NVARCHAR(50) NOT NULL,
+TagID INT NOT NULL
+
 )
 
 GO
 
 CREATE TABLE dbo.[SellerToEvent](
-UserID INT NOT NULL,
+SellerUsername NVARCHAR(50) NOT NULL,
 EventID INT NOT NULL
 )
 
@@ -111,10 +118,22 @@ go
 ALTER TABLE dbo.[Address] CHECK CONSTRAINT [FK_Province_Key]
 go
 
-ALTER TABLE dbo.[Product] WITH CHECK ADD CONSTRAINT [FK_Seller_Key] FOREIGN KEY(SellerID)
-REFERENCES dbo.[User] (ID)
+ALTER TABLE dbo.[Product] WITH CHECK ADD CONSTRAINT [FK_Seller_Key] FOREIGN KEY(SellerUsername)
+REFERENCES dbo.[User] (Username)
 go
 ALTER TABLE dbo.[Product] CHECK CONSTRAINT [FK_Seller_Key]
+go
+
+ALTER TABLE dbo.[Tag] WITH CHECK ADD CONSTRAINT [FK_CategoryOfTag_Key] FOREIGN KEY(CategoryID)
+REFERENCES dbo.[Category] (ID)
+go
+ALTER TABLE dbo.[Tag] CHECK CONSTRAINT [FK_CategoryOfTag_Key]
+go
+
+ALTER TABLE dbo.[Event] WITH CHECK ADD CONSTRAINT [FK_CategoryOfEvent_Key] FOREIGN KEY(CategoryID)
+REFERENCES dbo.[Category] (ID)
+go
+ALTER TABLE dbo.[Event] CHECK CONSTRAINT [FK_CategoryOfEvent_Key]
 go
 
 
@@ -125,15 +144,15 @@ REFERENCES dbo.[Tag] (ID)
 go
 ALTER TABLE dbo.[UserToTag] CHECK CONSTRAINT [FK_TagOfUser_Key]
 go
-ALTER TABLE dbo.[UserToTag] WITH CHECK ADD CONSTRAINT [FK_UserOfTag_Key] FOREIGN KEY(UserID)
-REFERENCES dbo.[User] (ID)
+ALTER TABLE dbo.[UserToTag] WITH CHECK ADD CONSTRAINT [FK_UserOfTag_Key] FOREIGN KEY(Username)
+REFERENCES dbo.[User] (Username)
 go
 ALTER TABLE dbo.[UserToTag] CHECK CONSTRAINT [FK_UserOfTag_Key]
 go
 
 
-ALTER TABLE dbo.[SellerToEvent] WITH CHECK ADD CONSTRAINT [FK_SellerOfEvent_Key] FOREIGN KEY(UserID)
-REFERENCES dbo.[User] (ID)
+ALTER TABLE dbo.[SellerToEvent] WITH CHECK ADD CONSTRAINT [FK_SellerOfEvent_Key] FOREIGN KEY(SellerUsername)
+REFERENCES dbo.[User] (Username)
 go
 ALTER TABLE dbo.[SellerToEvent] CHECK CONSTRAINT [FK_SellerOfEvent_Key]
 go
@@ -175,11 +194,47 @@ INSERT INTO [dbo].[Province] (Name) VALUES ('Ontario'),('Quebec'),('Nova Scotia'
 ('Newfoundland and Labrador'),('Northwest Territories'),('Yukon'),('Nunavut');
 go
 
+-- Tag Group
+INSERT INTO [dbo].[Category] (Name) VALUES ('Painting'),('Sculpture'),('Flower'),('Handicraft');
+
 
 -- Tags
-INSERT INTO [dbo].[Tag] (Name) VALUES ('Realism'),('Photorealism'),('Abstraction'),
-('Impressionism'),('Expressionism'),('Painterly'),
-('Handcraft'),('Sculpture'),('Flower bouquet'),('Bonsai');
+INSERT INTO [dbo].[Tag] (Name, CategoryID) VALUES 
+('Realism', 1),('Photorealism', 1),('Abstraction', 1), ('Impressionism',1),
+('Expressionism', 1),('Painterly', 1),('Oil Painting',1),('Sand Painting',1),
+('Humanoid Figure',2),('Wooden Statue', 2),('Metallic Sculpture', 2),('Classic Sculpture', 2),('Abstract Sculpture', 2),
+('Flower bouquet',3),('Pot Plant',3),('Artifical Bonsai', 3),
+('Art Doll',4),('Glass Art Work', 4), ('Jade Art Work', 4), ('Embroidery', 4), ('Cutlery', 4);
+go
+
+
+
+-- Events
+Insert into [dbo].[Event] (Title, StartTime, EndTime, ThumbNailURL, CategoryID) VALUES ('event1', '20210321 10:00:00 AM', '20220321 10:00:00 AM','https://kwag.ca/sites/default/files/styles/homepage_slider/public/slider-images/untitled-28.jpg?itok=pd3GJKUg', 1),
+ ('event2', '20210321 10:00:00 AM', '20220321 10:00:00 AM','https://www.tucmag.net/wp-content/uploads/2018/06/HK_Overview_Exhibitors.jpg', 1),
+  ('event3', '20210321 10:00:00 AM', '20220321 10:00:00 AM','https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F84129047%2F197010627980%2F1%2Foriginal.20191210-163245?w=512&auto=format%2Ccompress&q=75&sharp=10&rect=0%2C55%2C2414%2C1207&s=70cba5c497adc17584d57e5818c55872', 1);
+go
+
+  -- Insert into Event (Title, StartTime, EndTime, CategoryID) values 
+  -- ('event4', '2021-03-21 10:00:00.000', '2022-03-21 10:00:00.000',1),
+  -- ('event5', '2021-03-21 10:00:00.000', '2022-03-21 10:00:00.000',1),
+  -- ('event6', '2021-03-21 10:00:00.000', '2022-03-21 10:00:00.000',1),
+  -- ('event7', '2021-03-21 10:00:00.000', '2022-03-21 10:00:00.000',1),
+  -- ('event8', '2021-03-21 10:00:00.000', '2022-03-21 10:00:00.000',2),
+  -- ('event9', '2021-03-21 10:00:00.000', '2022-03-21 10:00:00.000',2),
+  -- ('event10', '2021-03-21 10:00:00.000', '2022-03-21 10:00:00.000',2),
+  -- ('event11', '2021-03-21 10:00:00.000', '2022-03-21 10:00:00.000',2),
+  -- ('event12', '2021-03-21 10:00:00.000', '2022-03-21 10:00:00.000',3),
+  -- ('event13', '2021-03-21 10:00:00.000', '2022-03-21 10:00:00.000',3),
+  -- ('event14', '2021-03-21 10:00:00.000', '2022-03-21 10:00:00.000',3),
+  -- ('event15', '2021-03-21 10:00:00.000', '2022-03-21 10:00:00.000',4),
+  -- ('event16', '2021-03-21 10:00:00.000', '2022-03-21 10:00:00.000',4),
+  -- ('event17', '2021-03-21 10:00:00.000', '2022-03-21 10:00:00.000',4),
+  -- ('event18', '2021-03-21 10:00:00.000', '2022-03-21 10:00:00.000',4);
+  -- go
+
+
+ 
 
 -- reset auto increment IDs
 -- DBCC CHECKIDENT ('Province', RESEED, 0);
