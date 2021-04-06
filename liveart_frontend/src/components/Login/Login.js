@@ -6,6 +6,9 @@ import "./Login.css";
 import Navbar from "../Navbar/Navbar";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
 
 export default function Login(props) {
   const [email, setEmail] = useState("");
@@ -79,15 +82,15 @@ export default function Login(props) {
   return (
     <div className="Login">
         <Navbar />
-        <br/>
-        <br/>
-        <h1>LIVE.ART Login</h1>
-        <br/>
-        {directFromRegister}
-        <br/>
+        <div className="row mt-5">
+        <div className="col-3">
 
-        
-        <Form onSubmit={handleSubmit}>
+        </div>
+        <Form  onSubmit={handleSubmit} className="col-4 mt-5 mr-2">
+            <h1>LIVE.ART Login</h1>
+            <br/>
+            {directFromRegister}
+            <br/>
             <Form.Group size="lg" controlId="email">
             <Form.Label>Username</Form.Label>
             <Form.Control
@@ -109,7 +112,14 @@ export default function Login(props) {
             Login
             </Button>
         </Form>
-        
+        <div className="col-1">
+
+        </div>
+          <div className="login-img col-4">
+          <img  src="https://i.ibb.co/4RCbB1B/logo.png" alt="logo" border="0" />
+          </div>
+        </div>
     </div>
+    
   );
 }

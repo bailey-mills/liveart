@@ -34,8 +34,8 @@
     /*display:inline-block;*/
     color:#FFF;
     font-size:1em;
-    border-radius:0px;
-    border:0px solid #bbb;
+    /* border-radius:0px; */
+    /* border:0px solid #bbb; */
     transition: all 0.3s linear;
 }
 
@@ -47,15 +47,38 @@
     background-color: #444;
     width: 400px;
     height: 400px;
+    margin: 20px;
     /* padding: 130px;
     margin: 20px; */
 }
 
-.card-body{
+.card-body2{
     background-color: #444;
+    flex: 1 1 auto;
+    min-height: 1px;
+    padding: 5px;
 }
 
 .event-img-set{
     width: 160px;
     height: 100px;
+}
+
+.title{
+    color: white;
+    font-size: 20px;
+    padding: 0px;
+    
+}
+
+.description{
+    color: white;
+    font-size: 15px;
+    padding: 0px;
+}
+
+.tags{
+    color: white;
+    font-size: 15px;
+    padding: 0px;
 }
