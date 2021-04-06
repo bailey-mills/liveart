@@ -5,7 +5,7 @@ export default styled.div`
   justify-content: center;
   align-items: center;
   height: 30vh;
-  width: 30vw;
+  width: 1000px;
   background-color: #30343b;
   color: #fff;
   margin: 0 15px;

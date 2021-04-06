@@ -9,11 +9,11 @@
 
 @media all and (min-width: 480px) {
     .Login {
-      padding: 60px 0;
+      /* padding: 60px 0; */
     }
   
     .Login form {
-      margin: 0 auto;
+      /* margin: 0 auto; */
       max-width: 320px;
     }
 
@@ -23,3 +23,13 @@
     }
     
   }
+
+  /* .login-form{
+    display: flex;
+    margin-left: 20%;
+  }
+
+  .login-img{
+    margin: 0 auto;
+    float: right;
+  } */

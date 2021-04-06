@@ -63,8 +63,7 @@ function EventsPage(){
     return(
         <div>
             <Navbar/>
-            <br/>
-            <br/>
+
             <Select options={TagsDuplicate}  value={selectedtagname} filterOption={false} isSearchable={true} placeholder="--- Select a tag ---" onChange={selectHandler}/>
             <h2>Current Selected Tag: {selectedtagname}</h2>
             <EventSection events={displayevents}/>   

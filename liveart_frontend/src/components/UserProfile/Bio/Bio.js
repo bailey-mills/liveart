@@ -21,7 +21,7 @@ function Bio(props){
     const [province, setProvince] = useState(sampleuser[0].Province);
     const [postalcode, setPostalCode] = useState(sampleuser[0].PostalCode);
     const [selectedtags, setSelectedtags] = useState([]);
-    const [currenttags, setCurrenetTags] = useState([]);
+    const [currenttags, setCurrenetTags] = useState([{"ID":1,"Name":"Realism","Summary":null},{"ID":2,"Name":"Photorealism","Summary":null}]);
 
     // console.log(props.match.params.username);
     let currentUsername = localStorage.getItem('user');;
@@ -32,6 +32,7 @@ function Bio(props){
 
 
     console.log(sampleuser);
+
 
     const handleSubmit = (event) => {
 
@@ -70,7 +71,10 @@ function Bio(props){
             <div className="main-body">
             <Sidebar username={currentUsername}/>
                 <div className="content-body">
-                <Form noValidate validated={validated} onSubmit={handleSubmit} >
+                <div className="text-center pt-5">
+                    <h1>Basic Information</h1>
+                </div>
+                <Form className="mt-3" noValidate validated={validated} onSubmit={handleSubmit} >
                     {/* username and email --- can not be modified */}
                     <Form.Row className="register-row">
                         <Form.Group as={Col} md="3" controlId="validationCustom00">
@@ -182,7 +186,10 @@ function Bio(props){
                             <Tag onSelectedTag={setSelectedtags} currentTags={currenttags}/> 
                         </Form.Group>         
                     </Form.Row>
+                    <Form.Row className="justify-content-md-center mt-5">
                     
+                    <Button type="submit" >Modify</Button>
+                    </Form.Row>
                     
                 </Form>
                     
