@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Sidebar/Sidebar";
-import "./PlannedEvents.css";
-import Button from "react-bootstrap/Button";
+import "./Follower.css";
 
-function PlannedEvents(props){
+
+
+function Follower(props){
 
     // console.log(props.match.params.username);
-    let currentUsername = localStorage.getItem('user');
+    let currentUsername = localStorage.getItem('user');;
     if(currentUsername===null)
     {
         //jump to login page
@@ -21,7 +22,7 @@ function PlannedEvents(props){
             <div className="main-body">
             <Sidebar username={currentUsername}/>
                 <div className="content-body">
-                    <h1>This is the Planned Events page of {currentUsername}</h1>
+                    <h1>This is the Follower page of {currentUsername}</h1>
                 </div>
                 {/* This is UserProfile page for {props.match.params.username} */}
                 {/* This is UserProfile page for {currentUsername} */}
@@ -33,4 +34,4 @@ function PlannedEvents(props){
 
 }
 
-export default PlannedEvents;
+export default Follower;

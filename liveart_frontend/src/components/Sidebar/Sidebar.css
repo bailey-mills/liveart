@@ -8,6 +8,7 @@ ul{
 
 .sidebar-link{
     color: #cccccc;
+    text-decoration: none;
 }
 
 .sidebar-box{
@@ -43,11 +44,14 @@ ul{
     border-top:    1px solid  #000;
     padding-left: 30px;
     height:35px;
+    text-decoration: none;
 
 }
 
 .sidebar-item:hover{
     background-color: #1a242a;
+    text-decoration: none;
+    color: #cccccc;
 }
 
 .sidebar-title{

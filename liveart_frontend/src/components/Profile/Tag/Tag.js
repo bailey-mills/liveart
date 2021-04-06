@@ -23,15 +23,15 @@ export default function Tag(props){
             }
             
             setTags(res.data);
-            console.log("tags",tags);
+            //console.log("tags",tags);
         })
     },[]);
 
     function selectChange(selectedList, selectedItem)
     {
-        console.log(selectedList);
+        //console.log(selectedList);
         setSelected([selectedList]);
-        console.log("local", selected);
+        //console.log("local", selected);
         props.onSelectedTag(selectedList);
     }
 
