@@ -21,13 +21,13 @@ routes.get('/provinces',homePageController.getProvinces);
 routes.get('/recommend', homePageController.recommendEvents);
 
 // Analytics
-routes.get('/analytics/artist/age', analyticsPageController.getAge);
-routes.get('/analytics/artist/ageBoth', analyticsPageController.getAgeBoth);
-routes.get('/analytics/artist/location', analyticsPageController.getLocation);
+routes.get('/analytics/artist/age/:id', analyticsPageController.getAge);
+routes.get('/analytics/artist/ageBoth/:id', analyticsPageController.getAgeBoth);
+routes.get('/analytics/artist/location/:id', analyticsPageController.getLocation);
 routes.get('/analytics/artist/tagList', analyticsPageController.getTagList);
-routes.get('/analytics/artist/tags', analyticsPageController.getTagsArtist);
+routes.get('/analytics/artist/tags/:id', analyticsPageController.getTagsArtist);
 routes.get('/analytics/artist/tagsGlobal', analyticsPageController.getTagsGlobal);
-routes.get('/analytics/artist/tagsBoth', analyticsPageController.getTagsBoth);
-routes.get('/analytics/artist/singles', analyticsPageController.getAnalyticsArtist);
+routes.get('/analytics/artist/tagsBoth/:id', analyticsPageController.getTagsBoth);
+routes.get('/analytics/artist/singles/:id', analyticsPageController.getAnalyticsArtist);
 
 module.exports = routes;

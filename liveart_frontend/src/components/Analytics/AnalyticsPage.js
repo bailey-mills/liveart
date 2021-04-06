@@ -35,17 +35,20 @@ function AnalyticsPage(){
     const [tagsGlobal, setTagsGlobal] = useState();
     const [tagsBoth, setTagsBoth] = useState();
 
+    // Get the userID
+    let userID = 1;
+
     // Get the data
     useEffect(() => {
-        getData("artist/singles", setSingles);
+        getData("artist/singles/" + userID, setSingles);
 
-        getData("artist/age", setAge);
-        getData("artist/ageBoth", setAgeBoth);
+        getData("artist/age/" + userID, setAge);
+        getData("artist/ageBoth/" + userID, setAgeBoth);
 
         getData("artist/tagList", setTagList);
-        getData("artist/tags", setTags);
+        getData("artist/tags/" + userID, setTags);
         getData("artist/tagsGlobal", setTagsGlobal);
-        getData("artist/tagsBoth", setTagsBoth);
+        getData("artist/tagsBoth/" + userID, setTagsBoth);
     }, []);
 
     // Display a loading screen if data isn't ready

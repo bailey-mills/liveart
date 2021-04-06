@@ -68,7 +68,8 @@ module.exports = class AnalyticsPageController {
         var globalData = [0, 0, 0, 0, 0, 0];
 
         // User Data
-        let userResult = await dbOps.executeQuery('SELECT U.Birthday FROM [dbo].[Transaction] T JOIN [dbo].[User] U ON U.ID = T.BuyerID WHERE U.ID = 6');
+        let userID = req.params.id;
+        let userResult = await dbOps.executeQuery('SELECT U.Birthday FROM [dbo].[Transaction] T JOIN [dbo].[User] U ON U.ID = T.BuyerID WHERE U.ID = ' + userID);
         if (userResult) {
             userData = this.calculateAgeSet(userResult, userData);
         }
@@ -111,7 +112,8 @@ module.exports = class AnalyticsPageController {
         // 18-24, 25-34, 45-54, 55-64, 65+
         var data = [0, 0, 0, 0, 0, 0];
 
-        let result = await dbOps.executeQuery('SELECT U.Birthday FROM [dbo].[Transaction] T JOIN [dbo].[User] U ON U.ID = T.BuyerID WHERE U.ID = 6');
+        let userID = req.params.id;
+        let result = await dbOps.executeQuery('SELECT U.Birthday FROM [dbo].[Transaction] T JOIN [dbo].[User] U ON U.ID = T.BuyerID WHERE U.ID = ' + userID);
         if (result) {
             data = this.calculateAgeSet(result, data);
         }
@@ -159,11 +161,12 @@ module.exports = class AnalyticsPageController {
             ORDER BY 'Count' DESC
         */
 
+        let userID = req.params.id;
         let query = 'SELECT T.Name, COUNT(T.ID) AS \'Count\' FROM [dbo].[ProductToTag] ' +
             'PT JOIN [dbo].[Tag] T ON PT.TagID = T.ID ' + 
             'JOIN [dbo].[ProductToEvent] PE ON PE.ProductID = PT.ProductID ' + 
             'JOIN [dbo].[SellerToEvent] SE ON SE.EventID = PE.EventID ' + 
-            'WHERE SE.UserID = 272 ' +
+            'WHERE SE.UserID = ' + userID + ' ' +
             'GROUP BY T.Name ' + 
             'ORDER BY \'Count\' DESC;';
         let ret = await this.getTags(query);
@@ -177,6 +180,7 @@ module.exports = class AnalyticsPageController {
         let tagData = await dbOps.executeQuery(tagQuery);
         let tagNames = [];
         let ret = null;
+
         if (tagData && tagData.length > 0 && tagData[0].length > 0) {
             let tagList = tagData[0];
 
@@ -185,7 +189,7 @@ module.exports = class AnalyticsPageController {
             let globalList = [];
 
             // Get User ID
-            let userID = 272;
+            let userID = req.params.id;
 
             // Loop through TagIDs
             let i = 0;
@@ -198,7 +202,7 @@ module.exports = class AnalyticsPageController {
                 let userQuery = 'SELECT COUNT(PT.TagID) AS \'Count\' FROM [dbo].[ProductToTag] PT ' +
                     'JOIN [dbo].[ProductToEvent] PE ON PE.ProductID = PT.ProductID ' + 
                     'JOIN [dbo].[SellerToEvent] SE ON SE.EventID = PE.EventID ' + 
-                    'WHERE SE.UserID = ' + userID.toString() + ' AND PT.TagID = ' + currID + ';';
+                    'WHERE SE.UserID = ' + userID + ' AND PT.TagID = ' + currID + ';';
                 let userData = await dbOps.executeQuery(userQuery);
                 if (userData) {
                     userList.push(userData[0][0].Count);
@@ -295,11 +299,12 @@ module.exports = class AnalyticsPageController {
                 GROUP BY PT.TagID
                 ORDER BY 'Count' DESC
         */
+        let userID = req.params.id;
         let query = 'SELECT T.Name, COUNT(T.ID) AS \'Count\' FROM [dbo].[ProductToTag] ' +
             'PT JOIN [dbo].[Tag] T ON PT.TagID = T.ID ' + 
             'JOIN [dbo].[ProductToEvent] PE ON PE.ProductID = PT.ProductID ' + 
             'JOIN [dbo].[SellerToEvent] SE ON SE.EventID = PE.EventID ' + 
-            'WHERE SE.UserID = 272 ' +
+            'WHERE SE.UserID = ' + userID + ' ' +
             'GROUP BY T.Name ' + 
             'ORDER BY \'Count\' DESC;';
         let ret = await this.getTags(query);
