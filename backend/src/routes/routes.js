@@ -21,13 +21,19 @@ routes.get('/provinces',homePageController.getProvinces);
 routes.get('/recommend', homePageController.recommendEvents);
 
 // Analytics
+// Artist
 routes.get('/analytics/artist/age/:id', analyticsPageController.getAge);
 routes.get('/analytics/artist/ageBoth/:id', analyticsPageController.getAgeBoth);
 routes.get('/analytics/artist/location/:id', analyticsPageController.getLocation);
-routes.get('/analytics/artist/tagList', analyticsPageController.getTagList);
 routes.get('/analytics/artist/tags/:id', analyticsPageController.getTagsArtist);
-routes.get('/analytics/artist/tagsGlobal', analyticsPageController.getTagsGlobal);
 routes.get('/analytics/artist/tagsBoth/:id', analyticsPageController.getTagsBoth);
 routes.get('/analytics/artist/singles/:id', analyticsPageController.getAnalyticsArtist);
+
+// Buyer
+routes.get('/analytics/buyer/singles/:id', analyticsPageController.getAnalyticsBuyer);
+
+// Global
+routes.get('/analytics/artist/tagList', analyticsPageController.getTagList);
+routes.get('/analytics/artist/tagsGlobal', analyticsPageController.getTagsGlobal);
 
 module.exports = routes;

@@ -138,17 +138,6 @@ module.exports = class AnalyticsPageController {
     getLocation = async (req, res)=> {
         res.json("Incomplete");
     }
-
-    getTagList = async (req, res)=> {
-        let query = 'SELECT ID, Name FROM [dbo].[Tag];';
-        let ret = await dbOps.executeQuery(query);
-
-        if (ret) {
-            ret = ret[0];
-        }
-
-        res.json(ret);
-    }
     
     getTagsArtist = async (req, res)=> {
         /*
@@ -272,9 +261,10 @@ module.exports = class AnalyticsPageController {
 
     getAnalyticsArtist = async (req, res)=> {
         /*
-            EXEC GetAnalyticsArtist
+            EXEC GetAnalyticsArtist @userID = 1
         */
-        let result = await dbOps.executeQuery('EXEC GetAnalyticsArtist');
+        let userID = req.params.id;
+        let result = await dbOps.executeQuery('EXEC GetAnalyticsArtist @userID = ' + userID);
         let ret = [];
         if (result && result.length > 0 && result[0].length > 0) {
             ret = result[0][0];
@@ -291,24 +281,14 @@ module.exports = class AnalyticsPageController {
     
     getAnalyticsBuyer = async (req, res)=> {
         /*
-            SELECT PT.TagID, COUNT(PT.TagID) as 'Count' FROM [dbo].[Transaction] Tr
-                JOIN [dbo].[Bid] B ON B.EventID = Tr.EventID
-                JOIN [dbo].[ProductToTag] PT ON PT.ProductID = B.ProductID
-                JOIN [dbo].[Tag] T ON T.ID = PT.ProductID
-                WHERE B.UserID = 7 AND Tr.BuyerID = 7
-                GROUP BY PT.TagID
-                ORDER BY 'Count' DESC
+            EXEC GetAnalyticsArtist @userID = 1
         */
         let userID = req.params.id;
-        let query = 'SELECT T.Name, COUNT(T.ID) AS \'Count\' FROM [dbo].[ProductToTag] ' +
-            'PT JOIN [dbo].[Tag] T ON PT.TagID = T.ID ' + 
-            'JOIN [dbo].[ProductToEvent] PE ON PE.ProductID = PT.ProductID ' + 
-            'JOIN [dbo].[SellerToEvent] SE ON SE.EventID = PE.EventID ' + 
-            'WHERE SE.UserID = ' + userID + ' ' +
-            'GROUP BY T.Name ' + 
-            'ORDER BY \'Count\' DESC;';
-        let ret = await this.getTags(query);
-
+        let result = await dbOps.executeQuery('EXEC GetAnalyticsBuyer @userID = ' + userID);
+        let ret = [];
+        if (result && result.length > 0 && result[0].length > 0) {
+            ret = result[0][0];
+        }
         res.json(ret);
     }
 
@@ -341,6 +321,16 @@ module.exports = class AnalyticsPageController {
         let ret = await this.getTags(query);
 
         res.json(ret);
+    }    
+
+    getTagList = async (req, res)=> {
+        let query = 'SELECT ID, Name FROM [dbo].[Tag];';
+        let ret = await dbOps.executeQuery(query);
+
+        if (ret) {
+            ret = ret[0];
+        }
+
+        res.json(ret);
     }
-    
 }
