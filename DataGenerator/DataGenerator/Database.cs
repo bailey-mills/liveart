@@ -613,7 +613,7 @@ namespace DataGenerator
 					using (var command = new SqlCommand(query, conn))
 					{
 						conn.Open();
-						id = (int)command.ExecuteScalar();
+						id = int.Parse(command.ExecuteScalar().ToString());
 						id++;
 					}
 				}
@@ -727,9 +727,12 @@ namespace DataGenerator
 			List<string> basePrices = new List<string>();
 			List<string> startTimes = new List<string>();
 			int sum = 0;
-			
+
+			// Get current time to update events before now
+			DateTime now = DateTime.Now;
+
 			// Get all events that happened in the past (ProductID, EventID, CategoryID)
-			string eventQuery = "USE [" + database + "]; SELECT PE.EventID, PE.ProductID, E.CategoryID, P.BasePrice, E.StartTime FROM [dbo].[Event] E JOIN [ProductToEvent] PE ON PE.EventID = E.ID JOIN [Product] P ON P.ID = PE.ProductID WHERE E.StartTime < GETDATE();";
+			string eventQuery = string.Format("USE [{0}]; SELECT PE.EventID, PE.ProductID, E.CategoryID, P.BasePrice, E.StartTime FROM [dbo].[Event] E JOIN [ProductToEvent] PE ON PE.EventID = E.ID JOIN [Product] P ON P.ID = PE.ProductID WHERE E.StartTime < '{1}' AND P.IsSold = '0';", database, now.ToString());
 			using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[database].ConnectionString))
 			{
 				try
@@ -779,6 +782,8 @@ namespace DataGenerator
 			// Loop through all the events that need bids/transactions
 			Random r = new Random();
 			int totalBids = 0;
+			DateTime prevTime = DateTime.Now;
+			string prevEventID = "";
 			for (int i = 0; i < sum; i++)
 			{
 				// Get {count} users who have a tag with the same category ID for each event
@@ -790,6 +795,10 @@ namespace DataGenerator
 				int prevBidderIndex = -1;
 				float currBid = float.Parse(basePrices[i]);
 				DateTime currTime = DateTime.Parse(startTimes[i]);
+				if (prevEventID == eventIDs[i])
+				{
+					currTime = prevTime.AddSeconds(r.Next(40, 120));
+				}
 				float basePrice = currBid;
 
 				// If there's only one bidder, don't let them bid against themselves
@@ -807,8 +816,11 @@ namespace DataGenerator
 					if (bidderIndex != prevBidderIndex)
 					{
 						// Add an amount to the price (based on the base price)
-						float increse = (float)r.Next(50, 100) / 100 * basePrice * 0.2f;
-						currBid += (int)increse;
+						if (bidCount != 0)
+						{
+							float increase = (float)r.Next(50, 100) / 100 * basePrice * 0.2f;
+							currBid += (int)increase;
+						}
 
 						// Add add some seconds to the current time
 						currTime = currTime.AddSeconds(r.Next(4, 46));
@@ -831,10 +843,24 @@ namespace DataGenerator
 				// Create the transaction
 				string transactionLine = string.Format("INSERT INTO [Transaction] VALUES ({0})\n\n", totalBids - 1 + startBidID);
 				result += transactionLine;
+
+				// Save the current event ID, so that if there's another product in this event,
+				//	the starttime is based on how long the previous product took
+				prevTime = currTime;
+				prevEventID = eventIDs[i];
 			}
 
 			// Update all products to IsSold = 1
-
+			/*
+			UPDATE P
+				SET IsSold = '1'
+				FROM [Product] P
+				JOIN [ProductToEvent] PE ON PE.ProductID = P.ID
+				JOIN [Event] E ON E.ID = PE.EventID
+				WHERE E.StartTime < GETDATE(); 
+			*/
+			string queryIsSold = string.Format("UPDATE P\n\tSET IsSold = '1'\n\tFROM [Product] P\n\tJOIN [ProductToEvent] PE ON PE.ProductID = P.ID\n\tJOIN [Event] E ON E.ID = PE.EventID\n\tWHERE E.StartTime < '{0}';", now.ToString());
+			result += queryIsSold;
 
 			return result;
 		}
