@@ -108,7 +108,7 @@ namespace DataGenerator
 			return items;
 		}
 
-		public static List<List<string>> GetEvents(int count)
+		public static List<List<string>> GetEvents(int count, List<string> categoryIDs)
 		{
 			List<List<string>> items = new List<List<string>>();
 
@@ -119,7 +119,7 @@ namespace DataGenerator
 			{
 				summaries.Add("Summary of the event here");
 			}
-			List<string> startTimes = GetDates(count, DateTime.Today, 14, 9, 20);
+			List<string> startTimes = GetDates(count, DateTime.Today.AddDays(-30), 50, 9, 20);
 			List<string> endTimes = GetDatesFromReference(count, startTimes, 10, 120);
 			List<string> thumbnails = GetImageURL(count);
 
@@ -129,6 +129,7 @@ namespace DataGenerator
 			items.Add(startTimes);
 			items.Add(endTimes);
 			items.Add(thumbnails);
+			items.Add(categoryIDs);
 
 			return items;
 		}
@@ -165,7 +166,7 @@ namespace DataGenerator
 			return items;
 		}
 
-		public static List<List<string>> GetTags(int count)
+		public static List<List<string>> GetTags(int count, int tagCount, List<string> categoryID)
 		{
 			List<List<string>> items = new List<List<string>>();
 
@@ -173,7 +174,7 @@ namespace DataGenerator
 			Random r = new Random();
 			for (int i = 0; i < count; i++)
 			{
-				List<string> tagGroup = Database.GetRows(r.Next(1, 5), Database.DB_MAIN, "Tag", "ID", Database.FORMAT_NUMBER);
+				List<string> tagGroup = Database.GetRows(r.Next(1, tagCount), Database.DB_MAIN, "Tag", new string[] { "ID" }, string.Format("WHERE CategoryID = {0}", categoryID[i]))[0];
 				items.Add(tagGroup);
 			}
 

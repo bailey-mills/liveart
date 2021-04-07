@@ -42,6 +42,9 @@
 			this.btnCustom = new System.Windows.Forms.Button();
 			this.btnUser = new System.Windows.Forms.Button();
 			this.btnEvent = new System.Windows.Forms.Button();
+			this.btnSubscriber = new System.Windows.Forms.Button();
+			this.btnBid = new System.Windows.Forms.Button();
+			this.lblNote = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.dgvInput)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numCount)).BeginInit();
 			this.SuspendLayout();
@@ -89,7 +92,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.dgvInput.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.dgvInput.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
-			this.dgvInput.Location = new System.Drawing.Point(12, 147);
+			this.dgvInput.Location = new System.Drawing.Point(12, 173);
 			this.dgvInput.Name = "dgvInput";
 			this.dgvInput.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
 			this.dgvInput.Size = new System.Drawing.Size(436, 111);
@@ -146,10 +149,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.txtPreview.BackColor = System.Drawing.Color.White;
 			this.txtPreview.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.txtPreview.Location = new System.Drawing.Point(12, 264);
+			this.txtPreview.Location = new System.Drawing.Point(12, 290);
 			this.txtPreview.Name = "txtPreview";
 			this.txtPreview.ReadOnly = true;
-			this.txtPreview.Size = new System.Drawing.Size(436, 287);
+			this.txtPreview.Size = new System.Drawing.Size(436, 261);
 			this.txtPreview.TabIndex = 10;
 			this.txtPreview.Text = "";
 			// 
@@ -201,7 +204,7 @@
 			this.btnUser.Name = "btnUser";
 			this.btnUser.Size = new System.Drawing.Size(75, 23);
 			this.btnUser.TabIndex = 15;
-			this.btnUser.Text = "User";
+			this.btnUser.Text = "Users";
 			this.btnUser.UseVisualStyleBackColor = true;
 			this.btnUser.Click += new System.EventHandler(this.BtnUser_Click);
 			// 
@@ -211,15 +214,48 @@
 			this.btnEvent.Name = "btnEvent";
 			this.btnEvent.Size = new System.Drawing.Size(75, 23);
 			this.btnEvent.TabIndex = 16;
-			this.btnEvent.Text = "Event";
+			this.btnEvent.Text = "Events";
 			this.btnEvent.UseVisualStyleBackColor = true;
 			this.btnEvent.Click += new System.EventHandler(this.BtnEvent_Click);
+			// 
+			// btnSubscriber
+			// 
+			this.btnSubscriber.Location = new System.Drawing.Point(255, 118);
+			this.btnSubscriber.Name = "btnSubscriber";
+			this.btnSubscriber.Size = new System.Drawing.Size(75, 23);
+			this.btnSubscriber.TabIndex = 17;
+			this.btnSubscriber.Text = "Subscribers";
+			this.btnSubscriber.UseVisualStyleBackColor = true;
+			this.btnSubscriber.Click += new System.EventHandler(this.BtnSubscriber_Click);
+			// 
+			// btnBid
+			// 
+			this.btnBid.Location = new System.Drawing.Point(336, 118);
+			this.btnBid.Name = "btnBid";
+			this.btnBid.Size = new System.Drawing.Size(75, 23);
+			this.btnBid.TabIndex = 18;
+			this.btnBid.Text = "Bids";
+			this.btnBid.UseVisualStyleBackColor = true;
+			this.btnBid.Click += new System.EventHandler(this.BtnBid_Click);
+			// 
+			// lblNote
+			// 
+			this.lblNote.AutoSize = true;
+			this.lblNote.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblNote.ForeColor = System.Drawing.Color.Red;
+			this.lblNote.Location = new System.Drawing.Point(20, 149);
+			this.lblNote.Name = "lblNote";
+			this.lblNote.Size = new System.Drawing.Size(0, 13);
+			this.lblNote.TabIndex = 19;
 			// 
 			// frmDataGenerator
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(460, 623);
+			this.Controls.Add(this.lblNote);
+			this.Controls.Add(this.btnBid);
+			this.Controls.Add(this.btnSubscriber);
 			this.Controls.Add(this.btnEvent);
 			this.Controls.Add(this.btnUser);
 			this.Controls.Add(this.btnCustom);
@@ -262,6 +298,9 @@
 		private System.Windows.Forms.Button btnCustom;
 		private System.Windows.Forms.Button btnUser;
 		private System.Windows.Forms.Button btnEvent;
+		private System.Windows.Forms.Button btnSubscriber;
+		private System.Windows.Forms.Button btnBid;
+		private System.Windows.Forms.Label lblNote;
 	}
 }
 
