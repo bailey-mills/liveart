@@ -19,36 +19,52 @@ require('dotenv').config();
 
 // Determine if all of the data sets have been gathered
 let loaded = 0;
-const loadRequired = 7;
+const loadRequired = 9;
 
 function AnalyticsPage(){
     Chart.plugins.register(ChartDataLabels);
     
-    // Data sets
-    const [singles, setSingles] = useState();
-
+    // -----------------
+    //  ARTIST DATASETS
+    // -----------------
+    const [artistSingles, setArtistSingles] = useState();
     const [age, setAge] = useState();
     const [ageBoth, setAgeBoth] = useState();
+    const [artistTags, setArtistTags] = useState();
+    const [artistTagsBoth, setArtistTagsBoth] = useState();
 
+    // ----------------
+    //  BUYER DATASETS
+    // ----------------
+    const [buyerSingles, setBuyerSingles] = useState();    
+    const [buyerTags, setBuyerTags] = useState();
+    
+    // -----------------
+    //  MUTUAL DATASETS
+    // -----------------
     const [tagList, setTagList] = useState();
-    const [tags, setTags] = useState();
     const [tagsGlobal, setTagsGlobal] = useState();
-    const [tagsBoth, setTagsBoth] = useState();
 
     // Get the userID
-    let userID = 278;
+    let userID = 33;
+    // 611 , 4321
 
     // Get the data
     useEffect(() => {
-        getData("artist/singles/" + userID, setSingles);
-
+        // Artist Data
+        getData("artist/singles/" + userID, setArtistSingles);
         getData("artist/age/" + userID, setAge);
         getData("artist/ageBoth/" + userID, setAgeBoth);
+        getData("artist/tags/" + userID, setArtistTags);
+        getData("artist/tagsBoth/" + userID, setArtistTagsBoth);
 
-        getData("artist/tagList", setTagList);
-        getData("artist/tags/" + userID, setTags);
-        getData("artist/tagsGlobal", setTagsGlobal);
-        getData("artist/tagsBoth/" + userID, setTagsBoth);
+        // Buyer Data
+        getData("buyer/singles/" + userID, setBuyerSingles);
+        getData("buyer/tags/" + userID, setBuyerTags);
+
+        // Mutual Data
+        getData("global/tagList", setTagList);
+        getData("global/tagsGlobal", setTagsGlobal);
     }, []);
 
     // Display a loading screen if data isn't ready
@@ -56,6 +72,14 @@ function AnalyticsPage(){
         return <div>Loading ({loaded}/{loadRequired})...</div>;
     }
     
+    // Not an artist
+    //let artistChartsClass = artistTags.data.length === 0 ? "hidden" : "";
+    //let artistEmptyClass = artistTags.data.length === 0 ? "" : "hidden";
+
+    // Not a buyer
+    //let buyerChartsClass = buyerTags.data.length === 0 ? "hidden" : "";
+    //let buyerEmptyClass = buyerTags.data.length === 0 ? "" : "hidden";
+
     // Display the charts
     return(
         <Tabs className="analytics">
@@ -66,42 +90,69 @@ function AnalyticsPage(){
 
             <TabPanel>
                 <div>
-                    <h4>Auction Details</h4>
-                    <div className="horizontalContainer">
-                        <Tile title="Gross Revenue" value={singles.GrossRevenue} prefix="$" accent="accent blue" />
-                        <Tile title="Average Product Value" value={singles.AverageProductValue} prefix="$" accent="accent blue" />
-                    </div>
+                    <div>
+                        <h4 class="sectionTitle">Auction Listing Details</h4>
+                        <div className="horizontalContainer">
+                            <Tile title="Gross Revenue" value={artistSingles.GrossRevenue} prefix="$" accent="accent green" />
+                            <Tile title="Average Product Value" value={artistSingles.AverageProductValue} prefix="$" accent="accent green" />
+                        </div>
 
-                    <hr />
+                        <hr />
 
-                    <h4>Age Demographics</h4>
-                    <div className="horizontalContainer">
-                        <BarChart className="chartContainer" data={age} label="Age" class="chart bar" title="Audience Age" />
-                        <DoubleBarChart className="chartContainer" data={ageBoth} label1="Bailey (left)" label2="Global (right)" class="chart bar right" colours1="#3280e6" colours2="#9ec8ff" title="Audience Age Comparison (%)" />
-                    </div>
+                        <h4 class="sectionTitle">Age Demographics</h4>
+                        <div className="horizontalContainer">
+                            <BarChart className="chartContainer" data={age} label="Age" class="chart bar" title="Audience Age" />
+                            <DoubleBarChart className="chartContainer" data={ageBoth} label1="You (left)" label2="Global (right)" class="chart bar right" colours1="#3280e6" colours2="#9ec8ff" title="Audience Age Comparison (%)" />
+                        </div>
 
-                    <hr />
+                        <hr />
 
-                    <h4>Tag Distribution</h4>
-                    <div className="horizontalContainer">
-                        <DoubleBarChart className="chartContainer" data={tagsBoth} label1="Bailey (left)" label2="Global (right)" class="chart bar wide" tilt="true"
-                            colours1={getColours(getIDsFromNames(tagList, tagsBoth.labels), true)}
-                            colours2={getColours(getIDsFromNames(tagList, tagsBoth.labels), false)}
-                            title="Tag Usage Comparison (%)"
-                        />
-                    </div>
-                    <div className="horizontalContainer">
-                        <DoughnutChart className="chartContainer" data={tags} class="chart doughnut" colours={getColours(getIDsFromNames(tagList, tags.labels), true)} title="Your Tag Usage" />
-                        <DoughnutChart className="chartContainer" data={tagsGlobal} class="chart doughnut right" colours={getColours(getIDsFromNames(tagList, tagsGlobal.labels), true)} title="Global Tag Usage" />
+                        <h4 class="sectionTitle">Tag Distribution</h4>
+                        <div className="horizontalContainer">
+                            <DoubleBarChart className="chartContainer" data={artistTagsBoth} label1="You (left)" label2="Global (right)" class="chart bar wide" tilt="true"
+                                colours1={getColours(getIDsFromNames(tagList, artistTagsBoth.labels), true)}
+                                colours2={getColours(getIDsFromNames(tagList, artistTagsBoth.labels), false)}
+                                title="Tag Usage Comparison (%)"
+                                hasSecondaryAxis
+                            />
+                        </div>
+                        <div className="horizontalContainer">
+                            <DoughnutChart className="chartContainer" data={artistTags} class="chart doughnut" colours={getColours(getIDsFromNames(tagList, artistTags.labels), true)} title="Your Tag Usage" />
+                            <DoughnutChart className="chartContainer" data={tagsGlobal} class="chart doughnut right" colours={getColours(getIDsFromNames(tagList, tagsGlobal.labels), true)} title="Global Tag Usage" />
+                        </div>
                     </div>
                 </div>
             </TabPanel>
             <TabPanel>
                 <div>
-                    Buyer Activity
+                    <div>
+                        <h4 class="sectionTitle">Auction Purchase Details</h4>
+                        <div className="horizontalContainer">
+                            <Tile title="Sum of Transactions" value={buyerSingles.TotalSpent} prefix="$" accent="accent blue" />
+                            <Tile title="Average Product Price" value={buyerSingles.AverageProductPrice} prefix="$" accent="accent blue" />
+                        </div>
+
+                        <hr />
+
+                        <h4 class="sectionTitle">Tag Distribution</h4>
+                        <div className="horizontalContainer">
+                            <DoughnutChart className="chartContainer" data={buyerTags} class="chart doughnut" colours={getColours(getIDsFromNames(tagList, buyerTags.labels), true)} title="Your Tag Interest" />
+                            <DoughnutChart className="chartContainer" data={tagsGlobal} class="chart doughnut right" colours={getColours(getIDsFromNames(tagList, tagsGlobal.labels), true)} title="Global Tag Interest" />
+                        </div>
+                    </div>
                 </div>
             </TabPanel>
         </Tabs>
+    );
+}
+
+function emptyDisplayOverlay() {
+    return(
+        <div class="overlay">
+            <h4 class="overlayText">
+                No data to display
+            </h4>
+        </div>
     );
 }
 
@@ -135,7 +186,7 @@ function getColours(idList, dark) {
 
     let i = 0;
     for (i = 0; i < idList.length; i++) {
-        ret.push(baseList[idList[i]]);
+        ret.push(baseList[idList[i] - 1]);
     }
 
     return ret;

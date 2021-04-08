@@ -37,11 +37,11 @@
 }
 
 .bar {
-    height: 400px;
+    height: 450px;
 }
 
 .doughnut {
-    height: 400px;
+    height: 450px;
 }
 
 .right {
@@ -55,4 +55,17 @@
 
 h5 {
    text-align: center; 
+}
+
+.hidden {
+    display: none;
+}
+
+.sectionTitle {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.react-tabs__tab-list {
+    margin-bottom: 0px;
 }

@@ -3,6 +3,17 @@ const moment =  require('moment');
 
 let dbOps = new DbDrive();
 
+
+/*
+SELECT U.Birthday FROM [dbo].[Transaction] T
+    JOIN [dbo].[Bid] B ON B.ID = T.BidID
+    JOIN [dbo].[User] U ON U.ID = B.UserID
+    JOIN [dbo].[Event] E ON E.ID = B.EventID
+    JOIN [dbo].[SellerToEvent] SE ON SE.EventID = E.ID
+    WHERE SE.UserID = 611
+*/
+const QUERY_ARTIST_AGE = "SELECT U.Birthday FROM [dbo].[Transaction] T JOIN [dbo].[Bid] B ON B.ID = T.BidID JOIN [dbo].[User] U ON U.ID = B.UserID JOIN [dbo].[Event] E ON E.ID = B.EventID JOIN [dbo].[SellerToEvent] SE ON SE.EventID = E.ID WHERE SE.UserID = ";
+
 module.exports = class AnalyticsPageController {
     //let result = await dbOps.executeQuery('SELECT * from Province');
     //res.json(result);
@@ -60,22 +71,19 @@ module.exports = class AnalyticsPageController {
     }
 
     getAgeBoth = async (req, res)=> {
-        /*
-        SELECT U.Birthday FROM [dbo].[Transaction] T JOIN [dbo].[User] U ON U.ID = T.BuyerID WHERE U.ID = ___;
-        */        
         // 18-24, 25-34, 45-54, 55-64, 65+
         var userData = [0, 0, 0, 0, 0, 0];
         var globalData = [0, 0, 0, 0, 0, 0];
 
         // User Data
         let userID = req.params.id;
-        let userResult = await dbOps.executeQuery('SELECT U.Birthday FROM [dbo].[Transaction] T JOIN [dbo].[User] U ON U.ID = T.BuyerID WHERE U.ID = ' + userID);
+        let userResult = await dbOps.executeQuery(QUERY_ARTIST_AGE + userID);
         if (userResult) {
             userData = this.calculateAgeSet(userResult, userData);
         }
         
         // Global Data
-        let globalResult = await dbOps.executeQuery('SELECT U.Birthday FROM [dbo].[Transaction] T JOIN [dbo].[User] U ON U.ID = T.BuyerID');
+        let globalResult = await dbOps.executeQuery('SELECT U.Birthday FROM [dbo].[Transaction] T JOIN [dbo].[Bid] B ON B.ID = T.BidID JOIN [dbo].[User] U ON U.ID = B.UserID');
         if (globalResult) {
             globalData = this.calculateAgeSet(globalResult, globalData);
         }
@@ -106,14 +114,11 @@ module.exports = class AnalyticsPageController {
     }
 
     getAge = async (req, res)=> {
-        /*
-        SELECT U.Birthday FROM [dbo].[Transaction] T JOIN [dbo].[User] U ON U.ID = T.BuyerID WHERE U.ID = ___;
-        */        
         // 18-24, 25-34, 45-54, 55-64, 65+
         var data = [0, 0, 0, 0, 0, 0];
 
         let userID = req.params.id;
-        let result = await dbOps.executeQuery('SELECT U.Birthday FROM [dbo].[Transaction] T JOIN [dbo].[User] U ON U.ID = T.BuyerID WHERE U.ID = ' + userID);
+        let result = await dbOps.executeQuery(QUERY_ARTIST_AGE + userID);
         if (result) {
             data = this.calculateAgeSet(result, data);
         }
@@ -281,7 +286,7 @@ module.exports = class AnalyticsPageController {
     
     getAnalyticsBuyer = async (req, res)=> {
         /*
-            EXEC GetAnalyticsArtist @userID = 1
+            EXEC GetAnalyticsBuyer @userID = 1
         */
         let userID = req.params.id;
         let result = await dbOps.executeQuery('EXEC GetAnalyticsBuyer @userID = ' + userID);
@@ -293,7 +298,27 @@ module.exports = class AnalyticsPageController {
     }
 
     getTagsBuyer = async (req, res)=> {
+        /*
+	    SELECT T.Name, COUNT(T.ID) AS 'Count' FROM [dbo].[ProductToTag] PT
+            JOIN [dbo].[Tag] T ON PT.TagID = T.ID
+            JOIN [dbo].[ProductToEvent] PE ON PE.ProductID = PT.ProductID
+            JOIN [dbo].[Bid] B ON B.EventID = PE.EventID
+            WHERE B.UserID = 4321
+            GROUP BY T.Name
+            ORDER BY 'Count' DESC
+        */
 
+        let userID = req.params.id;
+        let query = 'SELECT T.Name, COUNT(T.ID) AS \'Count\' FROM [dbo].[ProductToTag] ' +
+            'PT JOIN [dbo].[Tag] T ON PT.TagID = T.ID ' + 
+            'JOIN [dbo].[ProductToEvent] PE ON PE.ProductID = PT.ProductID ' + 
+            'JOIN [dbo].[Bid] B ON B.EventID = PE.EventID ' + 
+            'WHERE B.UserID = ' + userID + ' ' +
+            'GROUP BY T.Name ' + 
+            'ORDER BY \'Count\' DESC;';
+        let ret = await this.getTags(query);
+
+        res.json(ret);
     }
 
     
@@ -317,7 +342,7 @@ module.exports = class AnalyticsPageController {
             ORDER BY 'Count' DESC;
         */
 
-        let query = 'SELECT T.Name, COUNT(T.ID) AS \'Count\' FROM [dbo].[ProductToTag] PT JOIN [dbo].[Tag] T ON PT.TagID = T.ID GROUP BY T.Name ORDER BY \'Count\' DESC;';
+        let query = 'SELECT TOP 10 T.Name, COUNT(T.ID) AS \'Count\' FROM [dbo].[ProductToTag] PT JOIN [dbo].[Tag] T ON PT.TagID = T.ID GROUP BY T.Name ORDER BY \'Count\' DESC;';
         let ret = await this.getTags(query);
 
         res.json(ret);

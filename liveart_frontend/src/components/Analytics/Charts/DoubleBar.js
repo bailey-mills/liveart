@@ -6,6 +6,9 @@ function DoubleBarChart(props) {
     const options = {
         scales: {
             yAxes: [{
+                id: 'A',
+                type: 'linear',
+                position: 'left',
                 ticks: {
                     beginAtZero: true,
                     stepSize: 10
@@ -29,7 +32,23 @@ function DoubleBarChart(props) {
             }
         },
     }
-            
+
+    let scaleA = 'A';
+    let scaleB = 'A';
+    if (props.hasSecondaryAxis) {
+        options.scales.yAxes.push({
+            id: 'B',
+            type: 'linear',
+            position: 'right',
+            ticks: {
+                beginAtZero: true,
+                stepSize: 10
+            }
+        });
+        scaleB = 'B';
+    }
+    
+    
     const settings = {
         labels: props.data.labels,
         datasets: [
@@ -39,6 +58,7 @@ function DoubleBarChart(props) {
                 fill: false,
                 lineTension: 0.1,
                 backgroundColor: props.colours1,
+                yAxisID: scaleA
             },
             {
                 data: props.data.data2,
@@ -46,6 +66,7 @@ function DoubleBarChart(props) {
                 fill: false,
                 lineTension: 0.1,
                 backgroundColor: props.colours2,
+                yAxisID: scaleB
             }
         ]
     };

@@ -7,7 +7,7 @@
 }
 
 .accent {
-    width: 5px;
+    width: 6px;
 }
 
 .content {
@@ -31,4 +31,8 @@
 
 .blue {
     background-color: rgba(0, 153, 255, 0.692);
+}
+
+.green {
+    background-color: rgba(0, 202, 61, 0.692);
 }

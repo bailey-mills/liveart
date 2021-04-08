@@ -31,9 +31,10 @@ routes.get('/analytics/artist/singles/:id', analyticsPageController.getAnalytics
 
 // Buyer
 routes.get('/analytics/buyer/singles/:id', analyticsPageController.getAnalyticsBuyer);
+routes.get('/analytics/buyer/tags/:id', analyticsPageController.getTagsBuyer);
 
 // Global
-routes.get('/analytics/artist/tagList', analyticsPageController.getTagList);
-routes.get('/analytics/artist/tagsGlobal', analyticsPageController.getTagsGlobal);
+routes.get('/analytics/global/tagList', analyticsPageController.getTagList);
+routes.get('/analytics/global/tagsGlobal', analyticsPageController.getTagsGlobal);
 
 module.exports = routes;
