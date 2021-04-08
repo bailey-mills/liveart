@@ -258,10 +258,10 @@ namespace DataGenerator
 
 		public static List<string> GetBirthday(int count)
 		{
-			// 1960-2000
+			// 1950-2000
 			List<string> items = new List<string>();
 
-			DateTime start = new DateTime(1960, 1, 1);
+			DateTime start = new DateTime(1950, 1, 1);
 			DateTime end = new DateTime(2000, 1, 1);
 			int range = (end - start).Days;
 
