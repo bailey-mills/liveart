@@ -116,15 +116,14 @@ module.exports = class HomePageController {
          }
     }
 
-    createSession = (req, res) => {
-        req.session.loggedIn = true
-        req.session.username = res.locals.username
-        // req.session.test = 'test';
+    createSession = async (req, res) => {
+        req.session.loggedIn = true;
+        req.session.username = res.locals.username;
+        let userIDResult = await dbDrive.executeQuery(`SELECT ID from [dbo].[User] WHERE username='${req.session.username}'`)
 
-        //  console.log(res.locals);
-        //  console.log(req.session);
+        let userID = userIDResult[0][0].ID;
         
-        res.status(201).send({message:`Session for user ${res.locals.username} created!`});
+        res.status(201).send({UserID:userID, username: req.session.username});
     }
 
     logOut = async (req, res, next) => {
