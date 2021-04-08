@@ -11,7 +11,7 @@ function DoughnutChart(props) {
                 color: '#fff',
                 font: {
                     weight: 'bold',
-                    size: 14
+                    size: 0
                 },
                 textShadowColor: '#000F',
                 textShadowBlur: 4
