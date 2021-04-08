@@ -523,7 +523,7 @@ namespace DataGenerator
 			string prevEventID = "";
 			for (int i = 0; i < products[0].Count(); i++)
 			{
-				string currEventID = products[6][i];
+				string currEventID = products[5][i];
 
 				if (i != 0 && prevEventID != currEventID)
 				{
@@ -537,6 +537,10 @@ namespace DataGenerator
 
 			// Event
 			List<List<string>> events = CustomGenerator.GetEvents(count, categoryIDsEvent);
+
+			// Update products to have the correct images
+			List<string> productImages = CustomGenerator.GetRowsByCategoryID(products[0].Count(), categoryIDsProduct, DB_SAMPLES, "ProductImages", "Value");
+			products.Insert(3, productImages);
 
 			// Product to Events
 			List<List<string>> productsToEvents = new List<List<string>>();
@@ -565,9 +569,15 @@ namespace DataGenerator
 			int fullCount = products[0].Count();
 			result += PrepareOutput(fullCount, "Product", products, new bool[] { true, false, true, true, false, false });
 			result += PrepareOutput(count, "Event", events, new bool[] { true, true, true, true, true, false });
+			//result += PrepareOutputTags("ProductToTag", productTags, startProductID);
+			//result += PrepareOutput(fullCount, "ProductToEvent", productsToEvents, new bool[] { false, false });
+			//result += PrepareOutput(count, "SellerToEvent", sellerToEvents, new bool[] { false, false });
+
+			//result += CompactQueries("Product", products.ToArray(), new bool[] { true, false, true, true, false, false });
+			//result += CompactQueries("Event", events.ToArray(), new bool[] { true, true, true, true, true, false });
 			result += PrepareOutputTags("ProductToTag", productTags, startProductID);
-			result += PrepareOutput(fullCount, "ProductToEvent", productsToEvents, new bool[] { false, false });
-			result += PrepareOutput(count, "SellerToEvent", sellerToEvents, new bool[] { false, false });
+			result += CompactQueries("ProductToEvent", productsToEvents.ToArray(), new bool[] { false, false });
+			result += CompactQueries("SellerToEvent", sellerToEvents.ToArray(), new bool[] { false, false });
 
 			return result;
 		}
@@ -598,6 +608,10 @@ namespace DataGenerator
 			result += PrepareOutput(count, "User", users, new bool[] { false, true, true, true, true, true });
 			result += PrepareOutputTags("UserToTag", userTags, startUserID);
 
+			//result += CompactQueries("Address", addresses.ToArray(), new bool[] { true, true, false, true });
+			//result += CompactQueries("User", users.ToArray(), new bool[] { false, true, true, true, true, true });
+			//result += PrepareOutputTags("UserToTag", userTags, startUserID);
+
 			return result;
 		}
 
@@ -614,7 +628,6 @@ namespace DataGenerator
 					{
 						conn.Open();
 						id = int.Parse(command.ExecuteScalar().ToString());
-						id++;
 					}
 				}
 				catch (Exception ex)
@@ -633,7 +646,8 @@ namespace DataGenerator
 		public static string GenerateSubscribers(int count, string database)
 		{
 			// Prepare output statement
-			string result = "USE " + database + ";\n\n";
+			StringBuilder sb = new StringBuilder();
+			sb.Append("USE " + database + ";\n\n");
 
 			// Select the count of events for every user that has at least one event
 			/*
@@ -651,6 +665,9 @@ namespace DataGenerator
 			List<string> targetIDs = new List<string>();
 			List<int> targetFollowerCount = new List<int>();
 			int sum = 0;
+
+			List<string> bigUserList = new List<string>();
+			List<string> bigTargetUserList = new List<string>();
 
 			// Generate {count} subscriptions for each event +- 50%
 			using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[database].ConnectionString))
@@ -686,19 +703,37 @@ namespace DataGenerator
 							// Get users that will follow
 							List<string> userList = GetRows(targetFollowerCount[i], Database.DB_MAIN, "User", "ID", Database.FORMAT_NUMBER);
 
+							for (int j = 0; j < userList.Count; j++)
+							{
+								bigUserList.Add(userList[j]);
+								bigTargetUserList.Add(targetIDs[i]);
+							}
 							// Write line
+							/*
 							for (int j = 0; j < userList.Count; j++)
 							{
 								string userID = userList[j];
 								string targetUserID = targetIDs[i];
 
-								/*
-								IF NOT EXISTS(SELECT 1 FROM [dbo].[Subscription] WHERE UserID = {0} AND TargetUserID = {1})
-									INSERT INTO [dbo].[Subscription] VALUES ({0}, {1})\n
-								*/
-								string line = string.Format("IF NOT EXISTS(SELECT 1 FROM [dbo].[Subscription] WHERE UserID = {0} AND TargetUserID = {1})\n\tINSERT INTO [dbo].[Subscription] VALUES ({0}, {1})\n", userID, targetUserID);
-								result += line;
-							}
+								
+								//IF NOT EXISTS(SELECT 1 FROM [dbo].[Subscription] WHERE UserID = {0} AND TargetUserID = {1})
+								//	INSERT INTO [dbo].[Subscription] VALUES ({0}, {1})\n
+								
+								
+								//sb.Append(string.Format("IF NOT EXISTS(SELECT 1 FROM [dbo].[Subscription] WHERE UserID = {0} AND TargetUserID = {1})\n\tINSERT INTO [dbo].[Subscription] VALUES ({0}, {1})\n", userID, targetUserID));
+								
+								//sb.Append("IF NOT EXISTS(SELECT 1 FROM [dbo].[Subscription] WHERE UserID = ");
+								//sb.Append(userID);
+								//sb.Append(" AND TargetUserID = ");
+								//sb.Append(targetUserID);
+								//sb.Append(")\n\t");
+								//sb.Append("INSERT INTO [dbo].[Subscription] VALUES (");
+								//sb.Append(userID);
+								//sb.Append(",");
+								//sb.Append(targetUserID);
+								//sb.Append(");\n");
+							}*/
+
 						}
 					}
 				}
@@ -712,13 +747,77 @@ namespace DataGenerator
 				}
 			}
 
-			return result;
+			// Generate script compactly
+			sb.Append(CompactQueries("Subscription", new List<string>[] { bigUserList, bigTargetUserList }, new bool[] { false, false }));
+
+			return sb.ToString();
+		}
+
+		public static string CompactQueries(string table, List<string>[] columns, bool[] isString)
+		{
+			const int max = 1000;
+			int count = columns[0].Count();
+			int loops = count / max;
+			int extra = count % max;
+
+			if (extra != 0)
+			{
+				loops++;
+			}
+			
+			int i = 0;
+			int currCount;
+
+			StringBuilder sb = new StringBuilder();
+
+			while (i < loops)
+			{
+				currCount = 1000;
+				if (extra != 0 && i == loops - 1)
+				{
+					currCount = extra;
+				}
+
+				sb.Append(string.Format("INSERT INTO [{0}] VALUES ", table));
+				for (int j = 0; j < currCount; j++)
+				{
+					sb.Append("(");
+					for (int k = 0; k < columns.Count(); k++)
+					{
+						string value = columns[k][j + (i * max)];
+
+						if (isString[k])
+						{
+							sb.Append(string.Format("'{0}'", value));
+						}
+						else
+						{
+							sb.Append(string.Format("{0}", value));
+						}
+
+						if (k + 1 < columns.Count())
+						{
+							sb.Append(",");
+						}
+					}
+					sb.Append(")");
+					if (j + 1 < currCount)
+					{
+						sb.Append(",");
+					}
+				}
+				sb.Append(";\n");
+				i++;
+			}
+
+			return sb.ToString();
 		}
 
 		public static string GenerateBids(int count, string database)
 		{
 			// Prepare output statement
 			string result = "USE " + database + ";\n\n";
+			result += "ALTER TABLE [Transaction] DROP CONSTRAINT [FK_Transaction_BidID]\n\n";
 
 			// Store event query data
 			List<string> eventIDs = new List<string>();
@@ -849,6 +948,8 @@ namespace DataGenerator
 				prevTime = currTime;
 				prevEventID = eventIDs[i];
 			}
+
+			result += "ALTER TABLE dbo.[Transaction] WITH CHECK ADD CONSTRAINT [FK_Transaction_BidID] FOREIGN KEY(BidID) REFERENCES dbo.[Bid] (ID)\n\n";
 
 			// Update all products to IsSold = 1
 			/*

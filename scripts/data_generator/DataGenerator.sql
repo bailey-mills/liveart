@@ -11,21 +11,6 @@ CREATE DATABASE liveart_dg;
 GO
 USE liveart_dg;
 
--- CREATE Tables
-CREATE TABLE FirstName (
-	Value nvarchar(50) NOT NULL PRIMARY KEY
-);
-CREATE TABLE LastName (
-	Value nvarchar(50) NOT NULL PRIMARY KEY
-);
-CREATE TABLE EventName (
-    Value varchar(100) NOT NULL
-);
-
-GO
-
-
-
 -- [liveart_dg] Stored Procedures
 -- GET TABLES
 DROP PROCEDURE IF EXISTS GetTables;

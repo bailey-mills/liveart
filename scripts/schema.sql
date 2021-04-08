@@ -12,7 +12,8 @@ CREATE TABLE dbo.[User] (
 	Email NVARCHAR(50) NOT NULL,
 	Password NVARCHAR(70) NOT NULL,
 	Username NVARCHAR(50) NOT NULL,
-	Birthday DATE NOT NULL
+	Birthday DATE NOT NULL,
+	ProfileImage NVARCHAR(500) NOT NULL
 )
 
 GO
