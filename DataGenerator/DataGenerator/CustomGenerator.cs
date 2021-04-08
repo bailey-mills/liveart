@@ -145,7 +145,7 @@ namespace DataGenerator
 			List<string> lastNames = Database.GetRows(count, Database.DB_SAMPLES, "LastName", "Value", Database.FORMAT_NUMBER);
 			List<string> usernames = GetUsernames(count, firstNames, lastNames);
 			List<string> emails = GetEmails(count, firstNames, lastNames);
-			List<string> passwords = GetPasswords(count, firstNames, lastNames);
+			List<string> passwords = GetPasswords(count, usernames);
 			List<string> birthdays = GetBirthday(count);
 			List<string> profileImages = GetRepeat(count, "https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg");
 
@@ -229,20 +229,21 @@ namespace DataGenerator
 			return items;
 		}
 
-		public static List<string> GetPasswords(int count, List<string> firstNames, List<string> lastNames)
+		public static List<string> GetPasswords(int count, List<string> usernames)
 		{
 			List<string> items = new List<string>();
 
 			for (int i = 0; i < count; i++)
 			{
-				string password = firstNames[i] + lastNames[i];
+				string password = usernames[i];
+				byte[] secret = Encoding.ASCII.GetBytes(ConfigurationManager.AppSettings["SECRET"]);
 				// Create a SHA256   
-				using (SHA256 sha256Hash = SHA256.Create())
+				using (HMACSHA256 sha256Hash = new HMACSHA256(secret))
 				{
 					// ComputeHash - returns byte array  
 					byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(password));
 
-					// Convert byte array to a string   
+					// Convert byte array to a string
 					StringBuilder builder = new StringBuilder();
 					for (int j = 0; j < bytes.Length; j++)
 					{
