@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Sidebar/Sidebar";
-import Analytics from "../../Analytics/AnalyticsPage"
+import AnalyticsPage from "../../Analytics/AnalyticsPage"
 import "./DataVis.css";
 
 
@@ -23,7 +23,7 @@ function DataVis(props){
             <div className="main-body">
             <Sidebar username={currentUsername}/>
                 <div className="content-body">
-                    <Analytics />
+                    <AnalyticsPage />
                 </div>
                 {/* This is UserProfile page for {props.match.params.username} */}
                 {/* This is UserProfile page for {currentUsername} */}
