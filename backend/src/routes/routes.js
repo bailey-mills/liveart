@@ -29,7 +29,7 @@ routes.get('/', (req,res) => {
 routes.post('/user/register', registrationController.createUser);
 routes.post('/user/login', homePageController.authenticate, homePageController.createSession);
 routes.get('/user/logout', homePageController.logOut);
-routes.patch('/user/updatePassword/:username', userProfileController.updatePassword);
+routes.patch('/user/updatePassword', userProfileController.updatePassword);
 
 // ---------
 //  GENERAL
@@ -41,7 +41,8 @@ routes.get('/all-tags', registrationController.getTags);
 //  USERS
 // -------
 routes.get('/user/bio/:username', userProfileController.getBio);
-routes.get('/user/:username', userProfileController.getUser);
+routes.get('/user/getUser/:username', userProfileController.getUser);
+routes.get('/user/getSubscribers/:username', userProfileController.getSubscribers);
 
 // --------
 //  EVENTS
@@ -49,7 +50,7 @@ routes.get('/user/:username', userProfileController.getUser);
 routes.get('/event/getRecommended', eventController.getRecommendEvents);
 routes.get('/event/getSubscribed/:username', eventController.getSubscribedEvents);
 routes.get('/event/getPlanned/:username', eventController.getPlannedEvents);
-routes.post('/event/createEvent/', eventController.createEvent);
+routes.post('/event/createEvent', eventController.createEvent);
 
 // ----------
 //  PRODUCTS

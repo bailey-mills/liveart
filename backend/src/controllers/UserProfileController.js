@@ -1,26 +1,15 @@
 const DbDrive = require('../dal/dbDrive');
 const QueryBuilder = require('../dal/queryBuilder');
+const EventController = require('./EventController');
+
+const { sha256 } = require('js-sha256');
 
 let dbDrive = new DbDrive();
 let queryBuilder = new QueryBuilder();
+let eventController = new EventController();
 
 module.exports = class UserProfileController {
     getBio = async (req, res)=> {
-        /*
-        SELECT TOP 1 U.Username, U.ProfileImage AS 'AvatarURL', U.Email, U.Birthday, A.Street AS 'Address', A.City, A.ProvinceID, P.Name AS 'Province'
-            FROM [User] U
-            JOIN [Address] A ON A.ID = U.AddressID
-            JOIN [Province] P ON P.ID = A.ProvinceID
-            WHERE U.Username = 'Trista_Kastor_252'
-        */
-        /*
-        SELECT T.ID, T.Name
-            FROM [UserToTag] UT
-            JOIN [Tag] T ON T.ID = UT.TagID
-            JOIN [User] U ON U.ID = UT.UserID
-            WHERE U.Username = 'Trista_Kastor_252'
-        */
-        
         let username = req.params.username;
 
         let userInfo = await dbDrive.executeQuery(
@@ -70,43 +59,7 @@ module.exports = class UserProfileController {
         );
         
         // GET PLANNED EVENTS
-        /*        
-        Returns all events that a user has created. Unfiltered
-
-            SELECT E.ID AS 'EventID', E.Title AS 'EventName', E.StartTime, E.EndTime, E.CategoryID, C.Name AS 'CategoryName', U.Username FROM [Event] E
-                JOIN [SellerToEvent] SE ON SE.EventID = E.ID
-                JOIN [Category] C ON C.ID = E.CategoryID
-                JOIN [User] U ON U.ID = SE.UserID
-                WHERE U.Username = 'Trista_Kastor_252'
-        */
-        let plannedEvents = await dbDrive.executeQuery(
-            "SELECT E.ID AS 'EventID', E.Title AS 'EventName', E.StartTime, E.EndTime, E.CategoryID, C.Name AS 'CategoryName', U.Username AS 'EventHostUsername' " + 
-            "FROM [Event] E " +
-            "JOIN [SellerToEvent] SE ON SE.EventID = E.ID " + 
-            "JOIN [Category] C ON C.ID = E.CategoryID " + 
-            "JOIN [User] U ON U.ID = SE.UserID " + 
-            "WHERE U.Username = '" + username + "'"
-        );
-        
-        // GET EVENT TAGS (from each product in the event(s))
-        if (plannedEvents[0].length > 0) {
-            let i = 0;
-            // Get the tags for each product in each event in the array of events
-            for (i = 0; i < plannedEvents[0].length; i++) {
-                let event = plannedEvents[0][i];
-                let eventID = event.EventID;
-                let eventProductTags = await dbDrive.executeQuery(
-                    "SELECT T.ID, T.Name " + 
-                    "FROM [ProductToTag] PT " +
-                    "JOIN [Tag] T ON T.ID = PT.TagID " + 
-                    "JOIN [ProductToEvent] PE ON PE.ProductID = PT.ProductID " + 
-                    "WHERE PE.EventID = " + eventID
-                );
-                if (eventProductTags[0].length > 0) {
-                    plannedEvents[0][i].EventTags = eventProductTags[0];
-                }
-            }
-        }
+        let plannedEvents = await eventController.methodPlannedEvents(username);
 
         // GET SOLD PRODUCTS
         let soldProducts = await dbDrive.executeQuery(
@@ -125,7 +78,7 @@ module.exports = class UserProfileController {
         if (userInfo[0].length > 0) {
             ret = userInfo[0][0];
             ret.Tags = tagList[0];
-            ret.PlannedEvents = plannedEvents[0];
+            ret.PlannedEvents = plannedEvents;
             ret.SoldProducts = soldProducts[0];
         }
         else {
@@ -136,16 +89,45 @@ module.exports = class UserProfileController {
     }
     
     updatePassword = async (req, res)=> {
-        /*
-            [
-                {
-                    OldPassword,
-                    NewPassword
-                }
-            ]
-        */
+        let oldPass = req.body.OldPassword;
+        let oldPassHash = sha256.hmac(process.env.SECRET, oldPass);
+
+        let newPass = req.body.NewPassword;
+        let newPassHash = sha256.hmac(process.env.SECRET, newPass);
+
+        let username = 'Lenora_Trafford_523';
         
-        let result = await dbDrive.executeQuery('');
-        return res.json(result[0]);
+        // Try to find the user
+        let dbUserResult = await dbDrive.executeQuery(`SELECT TOP 1 Password FROM [dbo].[User] WHERE username='${username}'`);
+        let dbUser = dbUserResult[0];
+
+        // Cancel if the user is not found
+        if(dbUser.length == 0) {
+            return res.status(404).send({ message: 'User not found!' });
+        }
+        // Cancel if their old password wasn't correctly provided
+        if (oldPassHash != dbUser[0].Password) {
+            return res.status(401).send({ message: 'Password does not match' });
+        }
+
+        // Update database password to new password hash
+        await dbDrive.executeQuery(`UPDATE [dbo].[User] SET Password = '${newPassHash}' WHERE Username = '${username}'`);
+        
+        return res.json({ message: 'Password updated successfully'});
+    }
+
+    getSubscribers = async (req, res)=> {
+        let username = req.params.username;
+
+        let subscribers = await dbDrive.executeQuery(
+            "SELECT UBuyer.Username, P.ID AS 'ProvinceID', P.Name AS 'Province' " + 
+            "FROM [Subscription] S " +
+            "JOIN [User] UBuyer ON UBuyer.ID = S.UserID " + 
+            "JOIN [Address] A ON A.ID = UBuyer.AddressID " + 
+            "JOIN [Province] P ON P.ID = A.ProvinceID " + 
+            "JOIN [User] UArtist ON UArtist.ID = S.TargetUserID " + 
+            "WHERE UArtist.Username = '" + username + "'"
+        );
+        return res.json(subscribers[0]);
     }
 }
