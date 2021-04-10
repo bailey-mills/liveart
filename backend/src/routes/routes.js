@@ -1,17 +1,28 @@
 const express = require('express');
 const routes =  express.Router();
 const HomePageController = require('../controllers/HomePageController');
-const RegistrationController = require('../controllers/RegistrationController');
+const AnalyticsPageController = require('../controllers/AnalyticsPageController');
+const RegistrationPageController = require('../controllers/RegistrationController');
 const UserProfileController = require('../controllers/UserProfileController');
 const EventController = require('../controllers/EventController');
 const ProductController = require('../controllers/ProductController');
-
+const DAL = require('../dal/dbDrive');
 
 let homePageController = new HomePageController();
 let registrationController = new RegistrationController();
 let userProfileController = new UserProfileController();
 let eventController = new EventController();
 let productController = new ProductController();
+
+routes.use((req, res, next) => {
+=======
+const AnalyticsPageController = require('../controllers/AnalyticsPageController');
+const RegistrationPageController = require('../controllers/RegistrationController');
+const DAL = require('../dal/dbDrive');
+
+let homePageController = new HomePageController();
+let analyticsPageController = new AnalyticsPageController();
+let registrationPageController = new RegistrationPageController();
 
 routes.use((req, res, next) => {
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
@@ -58,5 +69,22 @@ routes.post('/event/createEvent', eventController.createEvent);
 routes.get('/product/getSold/:username', productController.getSoldProducts);
 routes.get('/product/getPurchased/:username', productController.getPurchasedProducts);
 
+
+// Analytics
+// Artist
+routes.get('/analytics/artist/age/:id', analyticsPageController.getAge);
+routes.get('/analytics/artist/ageBoth/:id', analyticsPageController.getAgeBoth);
+routes.get('/analytics/artist/location/:id', analyticsPageController.getLocation);
+routes.get('/analytics/artist/tags/:id', analyticsPageController.getTagsArtist);
+routes.get('/analytics/artist/tagsBoth/:id', analyticsPageController.getTagsBoth);
+routes.get('/analytics/artist/singles/:id', analyticsPageController.getAnalyticsArtist);
+
+// Buyer
+routes.get('/analytics/buyer/singles/:id', analyticsPageController.getAnalyticsBuyer);
+routes.get('/analytics/buyer/tags/:id', analyticsPageController.getTagsBuyer);
+
+// Global
+routes.get('/analytics/global/tagList', analyticsPageController.getTagList);
+routes.get('/analytics/global/tagsGlobal', analyticsPageController.getTagsGlobal);
 
 module.exports = routes;

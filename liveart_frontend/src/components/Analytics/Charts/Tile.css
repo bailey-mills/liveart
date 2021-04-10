@@ -1,0 +1,39 @@
+.tile {
+    display: flex;
+    flex-direction: row;
+    border: 1px solid #f1f1f1;
+    background-color: #fff;
+    box-shadow: 1px 3px 4px 1px rgba(0, 0, 0, 0.1);
+}
+
+.accent {
+    width: 6px;
+}
+
+.content {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 18px;
+    padding-right: 18px;
+}
+
+.title {
+    color: black;
+    font-size: large;
+}
+
+.value {
+    font-weight: bold;
+}
+
+.red {
+    background-color: red;
+}
+
+.blue {
+    background-color: rgba(0, 153, 255, 0.692);
+}
+
+.green {
+    background-color: rgba(0, 202, 61, 0.692);
+}

@@ -19,6 +19,8 @@ namespace DataGenerator
 		public static string TYPE_CUSTOM = "custom";
 		public static string TYPE_USER = "user";
 		public static string TYPE_EVENT = "event";
+		public static string TYPE_SUBSCRIBER = "subscriber";
+		public static string TYPE_BID = "bid";
 		string outputType = TYPE_CUSTOM;
 
 		public frmDataGenerator()
@@ -181,6 +183,14 @@ namespace DataGenerator
 			{
 				result = Database.GenerateEvents(count, comboDatabase.Text);
 			}
+			else if (outputType == TYPE_SUBSCRIBER)
+			{
+				result = Database.GenerateSubscribers(count, comboDatabase.Text);
+			}
+			else if (outputType == TYPE_BID)
+			{
+				result = Database.GenerateBids(count, comboDatabase.Text);
+			}
 			else
 			{
 				result = Database.GenerateQuery(dgvInput, count, comboDatabase.Text, comboTable.Text);
@@ -194,10 +204,14 @@ namespace DataGenerator
 			btnCustom.Enabled = false;
 			btnUser.Enabled = true;
 			btnEvent.Enabled = true;
+			btnSubscriber.Enabled = true;
+			btnBid.Enabled = true;
 
 			dgvInput.Enabled = true;
 
 			outputType = TYPE_CUSTOM;
+
+			lblNote.Text = "";
 		}
 
 		private void BtnUser_Click(object sender, EventArgs e)
@@ -205,10 +219,14 @@ namespace DataGenerator
 			btnCustom.Enabled = true;
 			btnUser.Enabled = false;
 			btnEvent.Enabled = true;
+			btnSubscriber.Enabled = true;
+			btnBid.Enabled = true;
 
 			dgvInput.Enabled = false;
 
 			outputType = TYPE_USER;
+
+			lblNote.Text = "";
 		}
 
 		private void BtnEvent_Click(object sender, EventArgs e)
@@ -216,10 +234,43 @@ namespace DataGenerator
 			btnCustom.Enabled = true;
 			btnUser.Enabled = true;
 			btnEvent.Enabled = false;
+			btnSubscriber.Enabled = true;
+			btnBid.Enabled = true;
 
 			dgvInput.Enabled = false;
 
 			outputType = TYPE_EVENT;
+			lblNote.Text = "";
+		}
+
+		private void BtnSubscriber_Click(object sender, EventArgs e)
+		{
+			btnCustom.Enabled = true;
+			btnUser.Enabled = true;
+			btnEvent.Enabled = true;
+			btnSubscriber.Enabled = false;
+			btnBid.Enabled = true;
+
+			dgvInput.Enabled = false;
+
+			outputType = TYPE_SUBSCRIBER;
+
+			lblNote.Text = "IMPORTANT: Very slow. Test out in preview mode first (uses 5 count each time)";
+		}
+
+		private void BtnBid_Click(object sender, EventArgs e)
+		{
+			btnCustom.Enabled = true;
+			btnUser.Enabled = true;
+			btnEvent.Enabled = true;
+			btnSubscriber.Enabled = true;
+			btnBid.Enabled = false;
+
+			dgvInput.Enabled = false;
+
+			outputType = TYPE_BID;
+
+			lblNote.Text = "IMPORTANT: Only generate bids/transactions if there are no bids/transactions already";
 		}
 	}
 }
