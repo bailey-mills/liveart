@@ -289,7 +289,6 @@ module.exports = class EventController {
         
         // Input looks valid, insert the event
         let userID = req.session.userID;
-        userID = 1;
 
         if (userID && userID > 0) {
             // EVENT
