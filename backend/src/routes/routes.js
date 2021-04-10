@@ -6,23 +6,13 @@ const RegistrationPageController = require('../controllers/RegistrationControlle
 const UserProfileController = require('../controllers/UserProfileController');
 const EventController = require('../controllers/EventController');
 const ProductController = require('../controllers/ProductController');
-const DAL = require('../dal/dbDrive');
 
 let homePageController = new HomePageController();
-let registrationController = new RegistrationController();
+let registrationController = new RegistrationPageController();
 let userProfileController = new UserProfileController();
 let eventController = new EventController();
 let productController = new ProductController();
-
-routes.use((req, res, next) => {
-=======
-const AnalyticsPageController = require('../controllers/AnalyticsPageController');
-const RegistrationPageController = require('../controllers/RegistrationController');
-const DAL = require('../dal/dbDrive');
-
-let homePageController = new HomePageController();
 let analyticsPageController = new AnalyticsPageController();
-let registrationPageController = new RegistrationPageController();
 
 routes.use((req, res, next) => {
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
