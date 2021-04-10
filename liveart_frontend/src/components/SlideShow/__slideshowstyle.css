@@ -7,11 +7,31 @@
     margin-top: 45px;
   }
 
-.slideshow-img{
-  width: 150px;
+/* .slideshow-img{
+  width: 150;
   height: 300px;
 }
 
 .slideshow-img:hover{
     transform: scale(1.5);
+    transition: all .7s ease-in-out;
   }
+
+  .carousel {
+    width:900px;
+    height:500px;
+    margin: auto;
+  }
+
+============================================== */
+
+.slideshow-img-size{
+  width: 800px;
+  height: 400px;
+}
+
+.carousel-cus-size{
+  width: 800px;
+  height: 420;
+}
+

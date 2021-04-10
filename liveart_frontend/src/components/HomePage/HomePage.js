@@ -7,6 +7,7 @@ import EventSection from "../EventSection/EventSection"
 // import events from "../../Assets/sampleEvents.json"
 import "./HomePage.css";
 import axios from "axios";
+import Footer from "../Footer/Footer";
 
 
 function EventsPage(){
@@ -23,7 +24,7 @@ function EventsPage(){
                 return;
             }
             // events = res.data[0];
-            setEvents(res.data[0]);
+            setEvents(res.data);
         })
     },[]);
 
@@ -60,7 +61,8 @@ function EventsPage(){
                 </div>
                 <hr/>
                 <h1> Events You Might be interested in</h1>
-                <EventSection events={events}/>       
+                <EventSection events={events}/>  
+                <Footer/>     
             </React.StrictMode>
         );
 

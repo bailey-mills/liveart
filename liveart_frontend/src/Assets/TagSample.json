@@ -1,0 +1,38 @@
+[
+    { 
+        "id" : 1 ,
+        "tag" : "Realism" 
+    },
+    { 
+        "id" : 2 ,
+        "tag" : "Photorealism" 
+    },
+    { 
+        "id" : 3 ,
+        "tag" : "Abstraction" 
+    },
+    { 
+        "id" : 4 ,
+        "tag" : "Impressionism" 
+    },
+    { 
+        "id" : 5 ,
+        "tag" : "Expressionism" 
+    },
+    { 
+        "id" : 6 ,
+        "tag" : "Painterly" 
+    },
+    { 
+        "id" : 7 ,
+        "tag" : "Handcraft" 
+    },
+    { 
+        "id" : 8 ,
+        "tag" : "Sculpture" 
+    },
+    { 
+        "id" : 9 ,
+        "tag" : "Bonsai" 
+    }
+]
