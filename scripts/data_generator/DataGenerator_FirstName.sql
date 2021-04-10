@@ -4,6 +4,11 @@
 -- 	   DESCRIPTION	:	Inserts FIRST NAME sample data
 
 USE liveart_dg;
+
+CREATE TABLE FirstName (
+	Value nvarchar(50) NOT NULL PRIMARY KEY
+);
+
 INSERT INTO FirstName VALUES ('Aaron');
 INSERT INTO FirstName VALUES ('Abbey');
 INSERT INTO FirstName VALUES ('Abbie');

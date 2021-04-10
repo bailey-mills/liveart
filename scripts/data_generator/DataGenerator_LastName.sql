@@ -4,6 +4,11 @@
 -- 	   DESCRIPTION	:	Inserts LAST NAME sample data
 
 USE liveart_dg;
+
+CREATE TABLE LastName (
+	Value nvarchar(50) NOT NULL PRIMARY KEY
+);
+
 INSERT INTO LastName VALUES ('Aaby');
 INSERT INTO LastName VALUES ('Aadland');
 INSERT INTO LastName VALUES ('Aagaard');

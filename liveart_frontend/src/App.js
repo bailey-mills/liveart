@@ -17,7 +17,6 @@ import PasswordReset from "./components/UserProfile/PasswordReset/PasswordReset"
 import NewEvent from "./components/UserProfile/NewEvent/NewEvent";
 import Contactus from "./components/Contactus/Contactus";
 
-
 import Auction from "./components/Auction/Auction";
 
 
@@ -49,7 +48,6 @@ class App extends React.Component {
                         <Route path="/userprofile/newevent" exact component ={NewEvent} />
 
                         <Route path="/auction/:username" exact component ={Auction} />
-
                     </Switch>  
 
                 </Router>  

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -53,7 +55,7 @@ namespace DataGenerator
 			List<string> names = new List<string>();
 			List<string> sellerIDs = new List<string>();
 			List<string> descriptions = new List<string>();
-			List<string> previewURLs = new List<string>();
+			//List<string> previewURLs = new List<string>();
 			List<string> basePrices = new List<string>();
 			List<string> isSold = new List<string>();
 			List<string> tempEventID = new List<string>();
@@ -66,7 +68,7 @@ namespace DataGenerator
 			{
 				int currCount = r.Next(1, 4);
 				names = names.Concat(Database.GetRows(currCount, Database.DB_SAMPLES, "ProductName", "Value", Database.FORMAT_NUMBER)).ToList();
-				previewURLs = previewURLs.Concat(GetImageURL(currCount)).ToList();
+				//previewURLs = previewURLs.Concat(GetImageURL(currCount, null)).ToList();
 				basePrices = basePrices.Concat(GetNumber(currCount)).ToList();
 
 				// IsSold (all not sold)
@@ -99,7 +101,7 @@ namespace DataGenerator
 			items.Add(names);
 			items.Add(sellerIDs);
 			items.Add(descriptions);
-			items.Add(previewURLs);
+			//items.Add(previewURLs);
 			items.Add(basePrices);
 			items.Add(isSold);
 			items.Add(tempEventID);
@@ -108,20 +110,20 @@ namespace DataGenerator
 			return items;
 		}
 
-		public static List<List<string>> GetEvents(int count)
+		public static List<List<string>> GetEvents(int count, List<string> categoryIDs)
 		{
 			List<List<string>> items = new List<List<string>>();
 
 			// Get sample data
-			List<string> titles = Database.GetRows(count, Database.DB_SAMPLES, "EventName", "Value", Database.FORMAT_NUMBER);
+			List<string> titles = GetRowsByCategoryID(count, categoryIDs, Database.DB_SAMPLES, "EventName", "Value");
 			List<string> summaries = new List<string>();
 			for (int j = 0; j < count; j++)
 			{
 				summaries.Add("Summary of the event here");
 			}
-			List<string> startTimes = GetDates(count, DateTime.Today, 14, 9, 20);
+			List<string> startTimes = GetDates(count, DateTime.Today.AddDays(-30), 50, 9, 20);
 			List<string> endTimes = GetDatesFromReference(count, startTimes, 10, 120);
-			List<string> thumbnails = GetImageURL(count);
+			List<string> thumbnails = GetRowsByCategoryID(count, categoryIDs, Database.DB_SAMPLES, "ProductImages", "Value");
 
 			// Add items to the list of data
 			items.Add(titles);
@@ -129,6 +131,7 @@ namespace DataGenerator
 			items.Add(startTimes);
 			items.Add(endTimes);
 			items.Add(thumbnails);
+			items.Add(categoryIDs);
 
 			return items;
 		}
@@ -142,8 +145,9 @@ namespace DataGenerator
 			List<string> lastNames = Database.GetRows(count, Database.DB_SAMPLES, "LastName", "Value", Database.FORMAT_NUMBER);
 			List<string> usernames = GetUsernames(count, firstNames, lastNames);
 			List<string> emails = GetEmails(count, firstNames, lastNames);
-			List<string> passwords = GetPasswords(count, firstNames, lastNames);
+			List<string> passwords = GetPasswords(count, usernames);
 			List<string> birthdays = GetBirthday(count);
+			List<string> profileImages = GetRepeat(count, "https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg");
 
 			// Address ID
 			List<string> addressIDs = new List<string>();
@@ -161,11 +165,12 @@ namespace DataGenerator
 			//items.Add(lastNames);
 			items.Add(usernames);
 			items.Add(birthdays);
+			items.Add(profileImages);
 
 			return items;
 		}
 
-		public static List<List<string>> GetTags(int count)
+		public static List<List<string>> GetTags(int count, int tagCount, List<string> categoryID)
 		{
 			List<List<string>> items = new List<List<string>>();
 
@@ -173,7 +178,7 @@ namespace DataGenerator
 			Random r = new Random();
 			for (int i = 0; i < count; i++)
 			{
-				List<string> tagGroup = Database.GetRows(r.Next(1, 5), Database.DB_MAIN, "Tag", "ID", Database.FORMAT_NUMBER);
+				List<string> tagGroup = Database.GetRows(r.Next(1, tagCount), Database.DB_MAIN, "Tag", new string[] { "ID" }, string.Format("WHERE CategoryID = {0}", categoryID[i]))[0];
 				items.Add(tagGroup);
 			}
 
@@ -224,20 +229,21 @@ namespace DataGenerator
 			return items;
 		}
 
-		public static List<string> GetPasswords(int count, List<string> firstNames, List<string> lastNames)
+		public static List<string> GetPasswords(int count, List<string> usernames)
 		{
 			List<string> items = new List<string>();
 
 			for (int i = 0; i < count; i++)
 			{
-				string password = firstNames[i] + lastNames[i];
+				string password = usernames[i];
+				byte[] secret = Encoding.ASCII.GetBytes(ConfigurationManager.AppSettings["SECRET"]);
 				// Create a SHA256   
-				using (SHA256 sha256Hash = SHA256.Create())
+				using (HMACSHA256 sha256Hash = new HMACSHA256(secret))
 				{
 					// ComputeHash - returns byte array  
 					byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(password));
 
-					// Convert byte array to a string   
+					// Convert byte array to a string
 					StringBuilder builder = new StringBuilder();
 					for (int j = 0; j < bytes.Length; j++)
 					{
@@ -253,10 +259,10 @@ namespace DataGenerator
 
 		public static List<string> GetBirthday(int count)
 		{
-			// 1960-2000
+			// 1950-2000
 			List<string> items = new List<string>();
 
-			DateTime start = new DateTime(1960, 1, 1);
+			DateTime start = new DateTime(1950, 1, 1);
 			DateTime end = new DateTime(2000, 1, 1);
 			int range = (end - start).Days;
 
@@ -301,13 +307,54 @@ namespace DataGenerator
 			return items;
 		}
 
-		public static List<string> GetImageURL(int count)
+		public static List<string> GetRowsByCategoryID(int count, List<string> categoryIDs, string database, string table, string column)
 		{
 			List<string> items = new List<string>();
 
+			// Get all images in groups
+			List<List<string>> itemGroups = new List<List<string>>();
+			for (int i = 0; i < 4; i++)
+			{
+				List<string> itemsInCategory = new List<string>();
+
+				string query = string.Format("SELECT {0} FROM [{1}] WHERE CategoryID = {2}", column, table, i + 1);
+				using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[database].ConnectionString))
+				{
+					try
+					{
+						using (var command = new SqlCommand(query, conn))
+						{
+							conn.Open();
+							SqlDataReader reader = command.ExecuteReader();
+							while (reader.Read())
+							{
+								string url = reader["Value"].ToString();
+								itemsInCategory.Add(url);
+							}
+						}
+					}
+					catch (Exception ex)
+					{
+						Console.WriteLine(ex.Message);
+					}
+					finally
+					{
+						conn.Close();
+					}
+				}
+
+				itemGroups.Add(itemsInCategory);
+			}
+			Random r = new Random();
+
+			// Choose a random item for each categoryID
 			for (int i = 0; i < count; i++)
 			{
-				items.Add("/image.png");
+				int categoryID = int.Parse(categoryIDs[i]);
+				List<string> itemGroup = itemGroups[categoryID - 1];
+				int index = r.Next(0, itemGroup.Count);
+				string item = itemGroup[index];
+				items.Add(item);
 			}
 
 			return items;
