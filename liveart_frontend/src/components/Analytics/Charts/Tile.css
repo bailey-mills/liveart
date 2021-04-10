@@ -18,7 +18,8 @@
 }
 
 .title {
-
+    color: black;
+    font-size: large;
 }
 
 .value {

@@ -2,11 +2,12 @@ const express = require('express');
 const routes =  express.Router();
 const HomePageController = require('../controllers/HomePageController');
 const AnalyticsPageController = require('../controllers/AnalyticsPageController');
+const RegistrationPageController = require('../controllers/RegistrationController');
 const DAL = require('../dal/dbDrive');
 
 let homePageController = new HomePageController();
 let analyticsPageController = new AnalyticsPageController();
-const RegistrationController = require('../controllers/RegistrationController');
+let registrationPageController = new RegistrationPageController();
 
 routes.use((req, res, next) => {    
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
@@ -21,8 +22,8 @@ routes.get('/', (req,res) => {
 routes.get('/provinces',homePageController.getProvinces);
 routes.get('/active-events', homePageController.activeEvents);
 routes.get('/recommend', homePageController.recommendEvents);
-routes.get('/all-tags', registertionController.getTags);
-routes.post('/user/register', registertionController.createUser);
+routes.get('/all-tags', registrationPageController.getTags);
+routes.post('/user/register', registrationPageController.createUser);
 routes.post('/user/login', homePageController.authenticate, homePageController.createSession);
 routes.get('/user/logout', homePageController.logOut);
 

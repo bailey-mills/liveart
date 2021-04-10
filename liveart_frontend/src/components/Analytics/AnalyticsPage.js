@@ -46,7 +46,7 @@ function AnalyticsPage(){
     const [tagsGlobal, setTagsGlobal] = useState();
 
     // Get the userID
-    let userID = 33;
+    let userID = localStorage.getItem('userID');
     // 611 , 4321
 
     // Get the data

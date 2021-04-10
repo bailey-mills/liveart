@@ -122,6 +122,7 @@ module.exports = class HomePageController {
         let userIDResult = await dbDrive.executeQuery(`SELECT ID from [dbo].[User] WHERE username='${req.session.username}'`)
 
         let userID = userIDResult[0][0].ID;
+        req.session.userID = userID;
         
         res.status(201).send({UserID:userID, username: req.session.username});
     }
