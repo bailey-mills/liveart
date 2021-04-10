@@ -34,22 +34,19 @@ export default function Login(props) {
         .then(res=>{
           if(res.status === 201)
           {
-            console.log("Logged in!");
-            console.log("correct");
             localStorage.setItem('user', formData.Username);
             localStorage.setItem('userID', res.data.UserID);
             history.push('/')
-
           }
             
 
         })
         .catch(function (error) {          
-          if(error.response.status===401){
+          if(error.response && error.response.status===401){
             alert("Password is wrong");
             console.log("Password is wrong");
           }
-          else if(error.response.status === 404)
+          else if(error.response && error.response.status === 404)
           {
             alert("User does not exist");
             console.log("User does not exist");

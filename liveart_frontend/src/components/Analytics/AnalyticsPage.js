@@ -81,6 +81,7 @@ function AnalyticsPage(){
     //let buyerEmptyClass = buyerTags.data.length === 0 ? "" : "hidden";
 
     // Display the charts
+    loaded = 0;
     return(
         <Tabs className="analytics">
             <TabList>
