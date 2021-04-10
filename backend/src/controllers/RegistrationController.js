@@ -65,8 +65,8 @@ module.exports = class RegistrationController {
             
 
             //insert into User Table
-            let UserQuery = queryBuilder.insertInto('[dbo].[User]', ['AddressID', 'Email', 'Password', 'UserName', 'Birthday'],
-                                                     [[addressID, newUser.Email, hashedPassword, newUser.Username, newUser.Birthday]]);
+            let UserQuery = queryBuilder.insertInto('[dbo].[User]', ['AddressID', 'Email', 'Password', 'UserName', 'Birthday', 'ProfileImage'],
+                                                     [[addressID, newUser.Email, hashedPassword, newUser.Username, newUser.Birthday, process.env.DEFAULT_PROFILE]]);
 
 
                            // console.log(UserQuery);
