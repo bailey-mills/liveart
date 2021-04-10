@@ -37,6 +37,7 @@ export default function Login(props) {
             console.log("Logged in!");
             console.log("correct");
             localStorage.setItem('user', formData.Username);
+            localStorage.setItem('userID', res.data.UserID);
             history.push('/')
 
           }
