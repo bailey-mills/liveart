@@ -45,8 +45,8 @@
 
 .box{
     background-color: #444;
-    width: 400px;
-    height: 400px;
+    width: 420px;
+    height: 460px;
     margin: 20px;
     /* padding: 130px;
     margin: 20px; */
@@ -81,4 +81,12 @@
     color: white;
     font-size: 15px;
     padding: 0px;
+    margin: 0;
+}
+
+.event-tags-ul > li{
+    float: left;
+    margin: 3px;
+    padding: 1px;
+    border: 1px solid;
 }

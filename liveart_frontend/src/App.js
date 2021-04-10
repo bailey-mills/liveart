@@ -16,7 +16,8 @@ import Following from "./components/UserProfile/Following/Following";
 import PasswordReset from "./components/UserProfile/PasswordReset/PasswordReset";
 import NewEvent from "./components/UserProfile/NewEvent/NewEvent";
 import Contactus from "./components/Contactus/Contactus";
-
+import UserSearch from "./components/UserSearch/UserSearch";
+import UserInfo from "./components/UserInfo/UserInfo";
 
 import Auction from "./components/Auction/Auction";
 
@@ -35,8 +36,9 @@ class App extends React.Component {
                         <Route path="/events" exact component={EventsPage} />
                         <Route path="/register" exact component={Register} />
                         <Route path="/contactus" exact component={Contactus} />
+                        <Route path="/usersearch" exact component={UserSearch} />
                         <Route path="/login" exact component={Login} />
-                        <Route path="/user/:username" exact component ={HomePage} />
+                        <Route path="/user/:username" exact component ={UserInfo} />
                         <Route path="/userprofile/bio" exact component ={Bio} />
                         <Route path="/userprofile/datavis" exact component ={DataVis} />
                         <Route path="/userprofile/subsevents" exact component ={SubsEvents} />
@@ -49,6 +51,7 @@ class App extends React.Component {
                         <Route path="/userprofile/newevent" exact component ={NewEvent} />
 
                         <Route path="/auction/:username" exact component ={Auction} />
+                        {/* search User */}
 
                     </Switch>  
 

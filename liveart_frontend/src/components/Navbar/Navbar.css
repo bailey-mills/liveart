@@ -11,6 +11,16 @@
     z-index: 1;
 }
 
+.navbar-avatar{
+    width: 56px;
+    height: 56px;
+}
+
+.logout-btn{
+    height: 50%;
+}
+
+
 .navbar-logo {
     color: #fff;
     justify-self: center;

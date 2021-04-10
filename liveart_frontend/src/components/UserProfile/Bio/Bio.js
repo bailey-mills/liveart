@@ -10,11 +10,22 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import '../../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import axios from "axios";
 import Tag from "../../Profile/Tag/Tag";
+import Image from 'react-bootstrap/Image';
+import Modal from 'react-bootstrap/Modal';
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+
 
 
 
 function Bio(props){
+    const [show, setShow] = useState(false);
+    const handleClose = () => {setChangeAvatar(""); setShow(false)};
+    const handleShow = () => setShow(true);
+    const [changeavatar, setChangeAvatar] = useState("");
+
     const [validated, setValidated] = useState(false);
+    const [avatar, setAvatar] = useState(sampleuser[0].AvatarURL);
     const [birthday, setBirthday] = useState(sampleuser[0].Birthday);
     const [street, setStreet] = useState(sampleuser[0].Street);
     const [city, setCity] = useState(sampleuser[0].City);
@@ -62,7 +73,10 @@ function Bio(props){
       
     };
 
-
+    function handleChangeAvatar(){
+        setAvatar(changeavatar);
+        setShow(false);
+    }
 
     return(
         <div>
@@ -76,6 +90,14 @@ function Bio(props){
                 </div>
                 <Form className="mt-3" noValidate validated={validated} onSubmit={handleSubmit} >
                     {/* username and email --- can not be modified */}
+                    
+                    <Form.Row className="register-row">        
+                        <Image src={avatar} roundedCircle alt="avatar" className="bio-avatar"/>                
+                    </Form.Row>
+                    <Form.Row className="register-row">
+                        <Button onClick={handleShow}>Change Avatar</Button>                 
+                    </Form.Row>
+
                     <Form.Row className="register-row">
                         <Form.Group as={Col} md="3" controlId="validationCustom00">
                         <Form.Label>Username</Form.Label>
@@ -197,6 +219,42 @@ function Bio(props){
                 
 
             </div>
+
+        <Modal
+            show={show}
+            onHide={handleClose}
+            backdrop="static"
+            keyboard={false}
+            size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+            >
+                <Modal.Header closeButton>
+                <Modal.Title>Add an Item</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                <Container>
+                    <Row>
+                    <h4>Enter the URL of your new Avatar</h4>
+                    </Row>
+                    <Row>                       
+                        <input value={changeavatar} onChange={(e) => setChangeAvatar(e.target.value)} className="form-control input-lg"></input>
+                    </Row>                   
+                    <Row>
+                        <Image src={changeavatar} roundedCircle alt="avatar" className="bio-avatar"/>                
+
+                    </Row>
+                </Container>
+                </Modal.Body>
+                <Modal.Footer>             
+                <Button variant="secondary" onClick={handleClose}>
+                    Close
+                </Button>
+                <Button variant="success" onClick={handleChangeAvatar}>Add</Button>
+                
+                </Modal.Footer>
+        </Modal>
+
         </div>
     );
 

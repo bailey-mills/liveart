@@ -5,3 +5,13 @@
 .content-body{
     margin-left: 300px;
 }
+
+.purchasedproducts-cards{
+    display: flex;
+    
+}
+
+.purchasedproducts-title{
+    padding-left: 20px;
+    padding-top: 10px;
+}

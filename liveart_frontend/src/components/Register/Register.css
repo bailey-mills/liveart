@@ -54,7 +54,7 @@
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
 
-select{
+.province-select{
     display: block;
     width: 100%;
     height: calc(1.5em + .75rem + 2px);
