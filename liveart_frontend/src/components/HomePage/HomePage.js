@@ -16,7 +16,7 @@ function EventsPage(){
     // let events = [];
 
     useEffect(()=>{
-        axios.get('http://localhost:5000/recommend').then(res=>{
+        axios.get('http://localhost:5000/event/getRecommended').then(res=>{
             console.log("return code: " +res.status);
             if(res.status!==200)
             {
@@ -33,7 +33,7 @@ function EventsPage(){
 
     // function getData(){
     //     console.log("getdata");
-    //     axios.get('http://localhost:5000/recommend').then(res=>{
+    //     axios.get('http://localhost:5000/event/getRecommended').then(res=>{
     //         console.log("return code: " +res.status);
     //         if(res.status!==200)
     //         {

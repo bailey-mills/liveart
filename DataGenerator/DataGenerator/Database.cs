@@ -315,7 +315,7 @@ namespace DataGenerator
 
 
 
-		public static List<List<string>> GetRows(int count, string database, string table, string[] columns)
+		public static List<List<string>> GetRows(int count, string database, string table, string[] columns, string whereClause = "")
 		{
 			List<List<string>> results = new List<List<string>>();
 			
@@ -348,8 +348,8 @@ namespace DataGenerator
 							currCount = extra;
 						}
 
-						string query = string.Format("USE [{0}]; SELECT TOP ({1}) {2} FROM {3} ORDER BY NEWID();",
-							database, currCount, string.Join(",", columns), table);
+						string query = string.Format("USE [{0}]; SELECT TOP ({1}) {2} FROM [{3}] {4} ORDER BY NEWID();",
+							database, currCount, string.Join(",", columns), table, whereClause);
 
 						using (var command = new SqlCommand(query, conn))
 						{
@@ -362,7 +362,9 @@ namespace DataGenerator
 									results[j].Add(reader[j].ToString());
 								}
 							}
+							conn.Close();
 						}
+						i++;
 					}
 				}
 				catch (Exception ex)
@@ -512,10 +514,33 @@ namespace DataGenerator
 
 			// Product
 			List<List<string>> products = CustomGenerator.GetProducts(count, sellerIDs, startEventID, startProductID);
-			List<List<string>> productTags = CustomGenerator.GetTags(products[0].Count());
+			List<string> categoryIDsEvent = Database.GetRows(count, Database.DB_MAIN, "Category", "ID", Database.FORMAT_NUMBER);
+
+			// Loop through and create a categoryID for each product set
+			// (one item for each product, needed so that events have the same product types, ex. (1, 1, 5, 3, 3, 3, 2, 2))
+			List<string> categoryIDsProduct = new List<string>();
+			int j = 0;
+			string prevEventID = "";
+			for (int i = 0; i < products[0].Count(); i++)
+			{
+				string currEventID = products[5][i];
+
+				if (i != 0 && prevEventID != currEventID)
+				{
+					j++;
+				}
+
+				categoryIDsProduct.Add(categoryIDsEvent[j]);
+				prevEventID = currEventID;
+			}
+			List<List<string>> productTags = CustomGenerator.GetTags(products[0].Count(), 1, categoryIDsProduct);
 
 			// Event
-			List<List<string>> events = CustomGenerator.GetEvents(count);
+			List<List<string>> events = CustomGenerator.GetEvents(count, categoryIDsEvent);
+
+			// Update products to have the correct images
+			List<string> productImages = CustomGenerator.GetRowsByCategoryID(products[0].Count(), categoryIDsProduct, DB_SAMPLES, "ProductImages", "Value");
+			products.Insert(3, productImages);
 
 			// Product to Events
 			List<List<string>> productsToEvents = new List<List<string>>();
@@ -543,10 +568,16 @@ namespace DataGenerator
 			// Format lists into query statements
 			int fullCount = products[0].Count();
 			result += PrepareOutput(fullCount, "Product", products, new bool[] { true, false, true, true, false, false });
-			result += PrepareOutput(count, "Event", events, new bool[] { true, true, true, true, true });
+			result += PrepareOutput(count, "Event", events, new bool[] { true, true, true, true, true, false });
+			//result += PrepareOutputTags("ProductToTag", productTags, startProductID);
+			//result += PrepareOutput(fullCount, "ProductToEvent", productsToEvents, new bool[] { false, false });
+			//result += PrepareOutput(count, "SellerToEvent", sellerToEvents, new bool[] { false, false });
+
+			//result += CompactQueries("Product", products.ToArray(), new bool[] { true, false, true, true, false, false });
+			//result += CompactQueries("Event", events.ToArray(), new bool[] { true, true, true, true, true, false });
 			result += PrepareOutputTags("ProductToTag", productTags, startProductID);
-			result += PrepareOutput(fullCount, "ProductToEvent", productsToEvents, new bool[] { false, false });
-			result += PrepareOutput(count, "SellerToEvent", sellerToEvents, new bool[] { false, false });
+			result += CompactQueries("ProductToEvent", productsToEvents.ToArray(), new bool[] { false, false });
+			result += CompactQueries("SellerToEvent", sellerToEvents.ToArray(), new bool[] { false, false });
 
 			return result;
 		}
@@ -569,12 +600,17 @@ namespace DataGenerator
 			// Container for different tables / insert statement groups
 			List<List<string>> addresses = CustomGenerator.GetAddresses(count);
 			List<List<string>> users = CustomGenerator.GetUsers(count, startAddressID);
-			List<List<string>> userTags = CustomGenerator.GetTags(count);
+			List<string> categoryIDs = Database.GetRows(count, Database.DB_MAIN, "Category", "ID", Database.FORMAT_NUMBER);
+			List<List<string>> userTags = CustomGenerator.GetTags(count, 4, categoryIDs);
 
 			// Format lists into query statements
 			result += PrepareOutput(count, "Address", addresses, new bool[] { true, true, false, true });
 			result += PrepareOutput(count, "User", users, new bool[] { false, true, true, true, true, true });
 			result += PrepareOutputTags("UserToTag", userTags, startUserID);
+
+			//result += CompactQueries("Address", addresses.ToArray(), new bool[] { true, true, false, true });
+			//result += CompactQueries("User", users.ToArray(), new bool[] { false, true, true, true, true, true });
+			//result += PrepareOutputTags("UserToTag", userTags, startUserID);
 
 			return result;
 		}
@@ -591,8 +627,7 @@ namespace DataGenerator
 					using (var command = new SqlCommand(query, conn))
 					{
 						conn.Open();
-						id = (int)command.ExecuteScalar();
-						id++;
+						id = int.Parse(command.ExecuteScalar().ToString());
 					}
 				}
 				catch (Exception ex)
@@ -606,6 +641,329 @@ namespace DataGenerator
 			}
 
 			return id;
+		}
+
+		public static string GenerateSubscribers(int count, string database)
+		{
+			// Prepare output statement
+			StringBuilder sb = new StringBuilder();
+			sb.Append("USE " + database + ";\n\n");
+
+			// Select the count of events for every user that has at least one event
+			/*
+			SELECT U.ID, COUNT(*) AS 'Count' FROM Product P
+				JOIN [dbo].ProductToEvent PE ON PE.ProductID = P.ID
+				JOIN [dbo].[SellerToEvent] SE ON SE.EventID = PE.EventID
+				JOIN [dbo].[User] U ON U.ID = SE.UserID
+				GROUP BY U.ID
+			*/
+			string productCountQuery = "SELECT U.ID, COUNT(*) AS 'Count' FROM Product P JOIN [dbo].ProductToEvent PE ON PE.ProductID = P.ID " +
+				"JOIN [dbo].[SellerToEvent] SE ON SE.EventID = PE.EventID JOIN [dbo].[User] U ON U.ID = SE.UserID GROUP BY U.ID";
+
+			Random r = new Random();
+
+			List<string> targetIDs = new List<string>();
+			List<int> targetFollowerCount = new List<int>();
+			int sum = 0;
+
+			List<string> bigUserList = new List<string>();
+			List<string> bigTargetUserList = new List<string>();
+
+			// Generate {count} subscriptions for each event +- 50%
+			using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[database].ConnectionString))
+			{
+				try
+				{
+					// Get target data
+					using (var command = new SqlCommand(productCountQuery, conn))
+					{
+						conn.Open();
+						SqlDataReader reader = command.ExecuteReader();
+						while (reader.Read())
+						{
+							// Get user info
+							string id = reader["ID"].ToString();
+							string productCount = reader["Count"].ToString();
+
+							// Get a random scale
+							int followers = (int)(r.NextDouble() * (double)count * Double.Parse(productCount));
+
+							// Store the data
+							targetIDs.Add(id);
+							targetFollowerCount.Add(followers);
+							sum += followers;
+						}
+					}
+
+					// Generate insert statements
+					for (int i = 0; i < targetIDs.Count; i++)
+					{
+						if (targetFollowerCount[i] > 0)
+						{
+							// Get users that will follow
+							List<string> userList = GetRows(targetFollowerCount[i], Database.DB_MAIN, "User", "ID", Database.FORMAT_NUMBER);
+
+							for (int j = 0; j < userList.Count; j++)
+							{
+								bigUserList.Add(userList[j]);
+								bigTargetUserList.Add(targetIDs[i]);
+							}
+							// Write line
+							/*
+							for (int j = 0; j < userList.Count; j++)
+							{
+								string userID = userList[j];
+								string targetUserID = targetIDs[i];
+
+								
+								//IF NOT EXISTS(SELECT 1 FROM [dbo].[Subscription] WHERE UserID = {0} AND TargetUserID = {1})
+								//	INSERT INTO [dbo].[Subscription] VALUES ({0}, {1})\n
+								
+								
+								//sb.Append(string.Format("IF NOT EXISTS(SELECT 1 FROM [dbo].[Subscription] WHERE UserID = {0} AND TargetUserID = {1})\n\tINSERT INTO [dbo].[Subscription] VALUES ({0}, {1})\n", userID, targetUserID));
+								
+								//sb.Append("IF NOT EXISTS(SELECT 1 FROM [dbo].[Subscription] WHERE UserID = ");
+								//sb.Append(userID);
+								//sb.Append(" AND TargetUserID = ");
+								//sb.Append(targetUserID);
+								//sb.Append(")\n\t");
+								//sb.Append("INSERT INTO [dbo].[Subscription] VALUES (");
+								//sb.Append(userID);
+								//sb.Append(",");
+								//sb.Append(targetUserID);
+								//sb.Append(");\n");
+							}*/
+
+						}
+					}
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine(ex.Message);
+				}
+				finally
+				{
+					conn.Close();
+				}
+			}
+
+			// Generate script compactly
+			sb.Append(CompactQueries("Subscription", new List<string>[] { bigUserList, bigTargetUserList }, new bool[] { false, false }));
+
+			return sb.ToString();
+		}
+
+		public static string CompactQueries(string table, List<string>[] columns, bool[] isString)
+		{
+			const int max = 1000;
+			int count = columns[0].Count();
+			int loops = count / max;
+			int extra = count % max;
+
+			if (extra != 0)
+			{
+				loops++;
+			}
+			
+			int i = 0;
+			int currCount;
+
+			StringBuilder sb = new StringBuilder();
+
+			while (i < loops)
+			{
+				currCount = 1000;
+				if (extra != 0 && i == loops - 1)
+				{
+					currCount = extra;
+				}
+
+				sb.Append(string.Format("INSERT INTO [{0}] VALUES ", table));
+				for (int j = 0; j < currCount; j++)
+				{
+					sb.Append("(");
+					for (int k = 0; k < columns.Count(); k++)
+					{
+						string value = columns[k][j + (i * max)];
+
+						if (isString[k])
+						{
+							sb.Append(string.Format("'{0}'", value));
+						}
+						else
+						{
+							sb.Append(string.Format("{0}", value));
+						}
+
+						if (k + 1 < columns.Count())
+						{
+							sb.Append(",");
+						}
+					}
+					sb.Append(")");
+					if (j + 1 < currCount)
+					{
+						sb.Append(",");
+					}
+				}
+				sb.Append(";\n");
+				i++;
+			}
+
+			return sb.ToString();
+		}
+
+		public static string GenerateBids(int count, string database)
+		{
+			// Prepare output statement
+			string result = "USE " + database + ";\n\n";
+			result += "ALTER TABLE [Transaction] DROP CONSTRAINT [FK_Transaction_BidID]\n\n";
+
+			// Store event query data
+			List<string> eventIDs = new List<string>();
+			List<string> productIDs = new List<string>();
+			List<string> categoryIDs = new List<string>();
+			List<string> basePrices = new List<string>();
+			List<string> startTimes = new List<string>();
+			int sum = 0;
+
+			// Get current time to update events before now
+			DateTime now = DateTime.Now;
+
+			// Get all events that happened in the past (ProductID, EventID, CategoryID)
+			string eventQuery = string.Format("USE [{0}]; SELECT PE.EventID, PE.ProductID, E.CategoryID, P.BasePrice, E.StartTime FROM [dbo].[Event] E JOIN [ProductToEvent] PE ON PE.EventID = E.ID JOIN [Product] P ON P.ID = PE.ProductID WHERE E.StartTime < '{1}' AND P.IsSold = '0';", database, now.ToString());
+			using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[database].ConnectionString))
+			{
+				try
+				{
+					using (var command = new SqlCommand(eventQuery, conn))
+					{
+						conn.Open();
+						SqlDataReader reader = command.ExecuteReader();
+						while (reader.Read())
+						{
+							// Get user info
+							string eventID = reader["EventID"].ToString();
+							string productID = reader["ProductID"].ToString();
+							string categoryID = reader["CategoryID"].ToString();
+							string basePrice = reader["BasePrice"].ToString();
+							string startTime = reader["StartTime"].ToString();
+
+							// Store the data
+							eventIDs.Add(eventID);
+							productIDs.Add(productID);
+							categoryIDs.Add(categoryID);
+							basePrices.Add(basePrice);
+							startTimes.Add(startTime);
+
+							sum++;
+						}
+					}
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine(ex.Message);
+				}
+				finally
+				{
+					conn.Close();
+				}
+			}
+
+			// Get the starting ID for the bids when creating transactions
+			int startBidID = GetAutoIncrementID(database, "Bid");
+			if (startBidID < 0)
+			{
+				startBidID = 1;
+			}
+
+
+			// Loop through all the events that need bids/transactions
+			Random r = new Random();
+			int totalBids = 0;
+			DateTime prevTime = DateTime.Now;
+			string prevEventID = "";
+			for (int i = 0; i < sum; i++)
+			{
+				// Get {count} users who have a tag with the same category ID for each event
+				List<string> bidders = GetRows(count, Database.DB_MAIN, "User", new string[] {"U.ID"}, "U JOIN [UserToTag] UT ON UT.UserID = U.ID JOIN [Tag] T ON T.ID = UT.TagID WHERE T.CategoryID = " + categoryIDs[i])[0];
+
+				// Generate a random number of bids per product
+				int maxBids = r.Next(3, 7);
+				int bidCount = 0;
+				int prevBidderIndex = -1;
+				float currBid = float.Parse(basePrices[i]);
+				DateTime currTime = DateTime.Parse(startTimes[i]);
+				if (prevEventID == eventIDs[i])
+				{
+					currTime = prevTime.AddSeconds(r.Next(40, 120));
+				}
+				float basePrice = currBid;
+
+				// If there's only one bidder, don't let them bid against themselves
+				if (count <= 1)
+				{
+					maxBids = 1;
+				}
+
+				while (bidCount < maxBids)
+				{
+					// Choose a random bidder
+					int bidderIndex = r.Next(0, count);
+
+					// If the bid isn't against themself, 'calculate' their bid
+					if (bidderIndex != prevBidderIndex)
+					{
+						// Add an amount to the price (based on the base price)
+						if (bidCount != 0)
+						{
+							float increase = (float)r.Next(50, 100) / 100 * basePrice * 0.2f;
+							currBid += (int)increase;
+						}
+
+						// Add add some seconds to the current time
+						currTime = currTime.AddSeconds(r.Next(4, 46));
+
+						// Create the bid
+						string bidLine = string.Format("INSERT INTO [Bid] VALUES ({0}, {1}, {2}, {3}, '{4}')\n", 
+							productIDs[i], eventIDs[i], bidders[bidderIndex], currBid, currTime.ToString());
+
+						result += bidLine;
+
+						bidCount++;
+					}
+
+					prevBidderIndex = bidderIndex;
+				}
+
+				// Save the number of bids the generator has written
+				totalBids += maxBids;
+
+				// Create the transaction
+				string transactionLine = string.Format("INSERT INTO [Transaction] VALUES ({0})\n\n", totalBids - 1 + startBidID);
+				result += transactionLine;
+
+				// Save the current event ID, so that if there's another product in this event,
+				//	the starttime is based on how long the previous product took
+				prevTime = currTime;
+				prevEventID = eventIDs[i];
+			}
+
+			result += "ALTER TABLE dbo.[Transaction] WITH CHECK ADD CONSTRAINT [FK_Transaction_BidID] FOREIGN KEY(BidID) REFERENCES dbo.[Bid] (ID)\n\n";
+
+			// Update all products to IsSold = 1
+			/*
+			UPDATE P
+				SET IsSold = '1'
+				FROM [Product] P
+				JOIN [ProductToEvent] PE ON PE.ProductID = P.ID
+				JOIN [Event] E ON E.ID = PE.EventID
+				WHERE E.StartTime < GETDATE(); 
+			*/
+			string queryIsSold = string.Format("UPDATE P\n\tSET IsSold = '1'\n\tFROM [Product] P\n\tJOIN [ProductToEvent] PE ON PE.ProductID = P.ID\n\tJOIN [Event] E ON E.ID = PE.EventID\n\tWHERE E.StartTime < '{0}';", now.ToString());
+			result += queryIsSold;
+
+			return result;
 		}
 	}
 }

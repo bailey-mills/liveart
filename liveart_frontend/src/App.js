@@ -19,6 +19,7 @@ import Contactus from "./components/Contactus/Contactus";
 import UserSearch from "./components/UserSearch/UserSearch";
 import UserInfo from "./components/UserInfo/UserInfo";
 
+
 import Auction from "./components/Auction/Auction";
 
 
@@ -51,8 +52,6 @@ class App extends React.Component {
                         <Route path="/userprofile/newevent" exact component ={NewEvent} />
 
                         <Route path="/auction/:username" exact component ={Auction} />
-                        {/* search User */}
-
                     </Switch>  
 
                 </Router>  

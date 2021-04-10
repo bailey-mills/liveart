@@ -33,6 +33,7 @@ function MyNavbar(){
             if(res.status===205)
             {
                 localStorage.removeItem('user');
+                localStorage.removeItem('userID');
 
                 // window.location.reload();
                 
