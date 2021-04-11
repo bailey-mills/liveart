@@ -21,7 +21,7 @@ class AuctionController {
     getHighestBid = async (req, res) => {
         let productID = req.params.productID;
 
-        let highestBidQuery = queryBuilder.getFromjoin(['Bid'], ['TOP 1 ','[dbo].[User].Username', '[dbo].[Bid].Amount', '[dbo].[Bid].Timestamp'],
+        let highestBidQuery = queryBuilder.getFromjoin(['Bid'], ['TOP 1 Bid.ID','[dbo].[User].Username', '[dbo].[Bid].Amount', '[dbo].[Bid].Timestamp'],
         [{joinTable: '[dbo].[User]', referenceKeys: '[dbo].[User].ID = Bid.userID'}], 
         `Bid.ProductID = ${productID}`, '[dbo].[Bid].Amount DESC');
 
@@ -35,7 +35,7 @@ class AuctionController {
 
         let currentProductResult = await dbDrive.executeQuery(`SELECT CurrentBiddingProductID FROM Event WHERE ID = ${eventID}`);
 
-          return res.send(currentProductResult[0]);
+        return res.send(currentProductResult[0]);
     }
 
 
