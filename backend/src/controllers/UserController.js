@@ -10,7 +10,7 @@ let queryBuilder = new QueryBuilder();
 let eventController = new EventController();
 let productController = new ProductController();
 
-module.exports = class UserProfileController {
+module.exports = class UserController {
     getBio = async (req, res)=> {
         let username = req.params.username;
 
@@ -126,6 +126,21 @@ module.exports = class UserProfileController {
         );
         return res.json(subscribers[0]);
     }
+    
+    getSubscribedTo = async (req, res)=> {
+        let username = req.params.username;
+
+        let subscribers = await dbDrive.executeQuery(
+            "SELECT UArtist.Username, P.ID AS 'ProvinceID', P.Name AS 'Province' " + 
+            "FROM [Subscription] S " +
+            "JOIN [User] UArtist ON UArtist.ID = S.TargetUserID " + 
+            "JOIN [Address] A ON A.ID = UArtist.AddressID " + 
+            "JOIN [Province] P ON P.ID = A.ProvinceID " + 
+            "JOIN [User] UBuyer ON UBuyer.ID = S.UserID " + 
+            "WHERE UBuyer.Username = '" + username + "'"
+        );
+        return res.json(subscribers[0]);
+    }
 
     // Get number of profiles subscribed to this user
     async methodSubscriberCount(username) {
@@ -157,5 +172,120 @@ module.exports = class UserProfileController {
         }
 
         return parseInt(subscribers[0][0].Count);
+    }
+    
+    toggleSubscription = async (req, res)=> {
+        let user = req.body.User;
+        let target = req.body.Target;
+
+        let subbed = await this.methodCheckSubscription(user, target);
+
+        // Unsubscribe
+        if (subbed) {
+            let userID = await dbDrive.executeQuery(
+                `SELECT TOP 1 ID FROM [User] U WHERE U.Username = '${user}'`
+            );
+            let targetID = await dbDrive.executeQuery(
+                `SELECT TOP 1 ID FROM [User] U WHERE U.Username = '${target}'`
+            );
+
+            await dbDrive.executeQuery(
+                `DELETE
+                FROM [Subscription]
+                WHERE UserID = ${userID[0][0].ID} AND TargetUserID = ${targetID[0][0].ID}`
+            );
+        }
+        // Subscribe
+        else {
+            let userID = await dbDrive.executeQuery(
+                `SELECT TOP 1 ID FROM [User] U WHERE U.Username = '${user}'`
+            );
+            let targetID = await dbDrive.executeQuery(
+                `SELECT TOP 1 ID FROM [User] U WHERE U.Username = '${target}'`
+            );
+            
+            await dbDrive.executeQuery(
+                `INSERT INTO [Subscription] (UserID, TargetUserID)
+                VALUES (${userID[0][0].ID}, ${targetID[0][0].ID})`
+            );
+        }
+
+        subbed = await this.methodCheckSubscription(user, target);
+
+        return res.json({
+            Subscribed: subbed
+        });
+    }
+    
+    checkSubscription = async (req, res)=> {
+        let user = req.body.User;
+        let target = req.body.Target;
+
+        let subbed = await this.methodCheckSubscription(user, target);
+
+        return res.json({
+            Subscribed: subbed
+        });
+    }
+
+    async methodCheckSubscription(user, target) {
+        let subscription = await dbDrive.executeQuery(
+            `SELECT TOP 1 UUser.ID
+            FROM [Subscription] S
+            JOIN [User] UUser ON UUser.ID = S.UserID
+            JOIN [User] UTarget ON UTarget.ID = S.TargetUserID
+            WHERE UUser.Username = '${user}' AND UTarget.Username = '${target}'`
+        );
+        let subscribed = false;
+
+        if (subscription[0].length > 0) {
+            subscribed = true;
+        }
+
+        return subscribed;
+    }
+    
+    search = async (req, res)=> {
+        let input = req.body.Input;
+        let count = req.body.Count;
+
+        let result = await dbDrive.executeQuery(
+            `SELECT TOP ${count} U.ID, U.Username, U.Birthday, P.ID AS 'ProvinceID', P.Name AS 'ProvinceName'
+            FROM [User] U
+            JOIN [Address] A ON A.ID = U.AddressID
+            JOIN [Province] P ON P.ID = A.ProvinceID
+            WHERE U.Username LIKE '${input}%'
+            `
+        );
+
+        // Get more of each user's info
+        if (result[0].length > 0) {
+            let i = 0;
+            for (i = 0; i < result[0].length; i++) {
+                let user = result[0][i];
+
+                // Subscribed count
+                let subscribedTo = await this.methodSubscribedCount(user.Username);
+
+                // Subscriber count
+                let subscribedBy = await this.methodSubscriberCount(user.Username);
+                
+                // Tags
+                let tagList = await dbDrive.executeQuery(
+                    "SELECT T.ID, T.Name " + 
+                    "FROM [UserToTag] UT " +
+                    "JOIN [Tag] T ON T.ID = UT.TagID " + 
+                    "JOIN [User] U ON U.ID = UT.UserID " + 
+                    "WHERE U.Username = '" + user.Username + "'"
+                );
+
+                // Apply data to user
+                user.SubscribedToCount = subscribedTo;
+                user.SubscribedByCount = subscribedBy;
+                user.Tags = tagList[0];
+            }
+        }
+
+        return res.json(result[0]);
     }
 }

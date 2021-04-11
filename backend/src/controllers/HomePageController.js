@@ -8,19 +8,6 @@ let dbDrive = new DbDrive();
 let queryBuilder = new QueryBuilder();
 
 module.exports = class HomePageController {
-
-    getProvinces = async (req, res)=> {
-
-        // if(!req.session.loggedIn){
-        //     return res.status(403).send({message: 'unauthorized!'})
-        // }
-          
-        let result = await dbDrive.executeQuery('SELECT * FROM Province');
-    
-        return res.json(result[0]);
-           
-    }
-
     // {
     //     "Username":"userb",
     //     "Password" : "123"
