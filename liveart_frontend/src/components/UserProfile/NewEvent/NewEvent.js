@@ -14,17 +14,27 @@ import '../../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import Modal from 'react-bootstrap/Modal';
 import Tag from "../../Profile/Tag/Tag";
 import ImageUploader from 'react-images-upload';
-
+import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 
 
 function NewEvent(props) {
+
+    const CategorySample = [{"name": "category1", "id":"1"},{"name": "category2","id":"2"},{"name": "category3","id":"3"}];
 
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    const [title, setTitle] = useState("");
+    const [startdate, setStartdate] = useState("");
+    const [starttime, setStarttime] = useState("");
+    const [enddate, setEnddate] = useState("");
+    const [endtime, setEndtime] = useState("");
+    const [category, setCategory] = useState(-1);
+    const [thumbnail, setThumbnail] = useState("");
     const [newitemname, setNewitemname] = useState("");
     const [newitemdescrption, setNewitemdescription] = useState("");
     const [newitemprice, setNewitemprice] = useState(0);
@@ -33,7 +43,7 @@ function NewEvent(props) {
     const [newitemimages, setNewitemimages] = useState("");
 
     const [newitems,setNewitems] = useState([]);
-
+    let history = useHistory();
 
     let currentUsername = localStorage.getItem('user');
     if(currentUsername===null)
@@ -53,7 +63,7 @@ function NewEvent(props) {
         //     return;
         // }
 
-        const newitem = {'ItemName': newitemname, 'ItemDescription': newitemdescrption, 'BasePrice': newitemprice, 'Tags': newitemtags, 'Images': newitemimages};
+        const newitem = {'Name': newitemname, 'Description': newitemdescrption, 'BasePrice': newitemprice, 'Tags': newitemtags, 'URL': newitemimages};
         console.log(newitem);
         
         setNewitems(newitems.concat(newitem));
@@ -92,6 +102,46 @@ function NewEvent(props) {
         
     }
 
+    function handleCreate()
+    {
+        console.log("create clicked");
+        const event = {
+            "EventTitle" : title,
+            "StartTime" : startdate + " " + starttime,
+            "EndTime" : enddate + " " + endtime,
+            "CategoryID": category,
+            "ThumbNailURL": thumbnail,
+            "Items" : newitems
+        };
+
+        console.log(event);
+
+        //set to backend
+
+        //redirect to event page
+        axios.post('http://localhost:5000/event/createEvent', event)
+        .then(res=>{
+            
+            if(res.status===200)
+            {
+                console.log("return message", res.data.message);
+
+                history.push({
+                pathname: '/userprofile/plannedevents',
+                });
+            }
+        
+        })
+        .catch(function (error) {          
+            if(error.response.status===400)
+            {                
+                alert("Can't connect to the backend");
+            }
+        })
+
+
+    }
+
   return (
     <div >
         <Navbar />
@@ -110,6 +160,24 @@ function NewEvent(props) {
                 </InputGroup.Prepend>
                 <FormControl
                 placeholder="Event Title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                // aria-label="Username"
+                // aria-describedby="basic-addon1"
+                />
+            </InputGroup>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+            <InputGroup className="mb-3">
+                <InputGroup.Prepend>
+                <InputGroup.Text id="basic-addon1">Event ThumbNail</InputGroup.Text>
+                </InputGroup.Prepend>
+                <FormControl
+                placeholder="Event ThumbNailURL"
+                value={thumbnail}
+                onChange={(e) => setThumbnail(e.target.value)}
                 // aria-label="Username"
                 // aria-describedby="basic-addon1"
                 />
@@ -124,6 +192,8 @@ function NewEvent(props) {
                     </InputGroup.Prepend>
                     <FormControl
                     type="date"
+                    value={startdate}
+                    onChange={(e) => setStartdate(e.target.value)}
                     // aria-label="Username"
                     // aria-describedby="basic-addon1"
                     />
@@ -136,6 +206,8 @@ function NewEvent(props) {
                     </InputGroup.Prepend>
                     <FormControl
                     type="time"
+                    value={starttime}
+                    onChange={(e) => setStarttime(e.target.value)}
                     // aria-label="Username"
                     // aria-describedby="basic-addon1"
                     />
@@ -150,6 +222,8 @@ function NewEvent(props) {
                     </InputGroup.Prepend>
                     <FormControl
                     type="date"
+                    value={enddate}
+                    onChange={(e) => setEnddate(e.target.value)}
                     // aria-label="Username"
                     // aria-describedby="basic-addon1"
                     />
@@ -162,11 +236,24 @@ function NewEvent(props) {
                     </InputGroup.Prepend>
                     <FormControl
                     type="time"
+                    value={endtime}
+                    onChange={(e) => setEndtime(e.target.value)}
                     // aria-label="Username"
                     // aria-describedby="basic-addon1"
                     />
                 </InputGroup>
             </Col>
+          </Row>
+          <Row>
+            <InputGroup className="mb-3">
+                    <InputGroup.Prepend >
+                    <InputGroup.Text id="basic-addon1" >Select a Category for the Event</InputGroup.Text>
+                    </InputGroup.Prepend>
+                    <select class="custom-select" id="inputGroupSelect01" onChange={(e) => setCategory(e.target.value)}>
+                        <option value="-1" selected="selected">-- Select a Category --</option>
+                        {CategorySample.map((category, index) => <option key={category.id} value={category.id}>{category.name}</option>)}
+                    </select>
+            </InputGroup>
           </Row>
           <Row>
             <Col >
@@ -181,7 +268,7 @@ function NewEvent(props) {
             {
                 newitems.map((item,index) => {
                     return(
-                        <Card style={{ width: '18rem' }} key={index}>
+                        <Card style={{ width: '18rem' }} key={index} className="m-2">
                             <Card.Img 
                             width={171}
                             height={180} 
@@ -220,6 +307,9 @@ function NewEvent(props) {
                     
                 })
             }
+          </Row>
+          <Row className="mt-5 mb-5">
+            <Button className="btn-success btn-lg" onClick={handleCreate}>Create the Event</Button>
           </Row>
         </Container>
         </div>
@@ -307,8 +397,8 @@ function NewEvent(props) {
                     
                 </Row>
                 <Row>
-                Tags:
-                <Tag onSelectedTag={setNewitemtags}/> 
+                <p className="mr-3">Tags:</p>
+                <Tag onSelectedTag={setNewitemtags} /> 
                 </Row>
                 
             </Container>

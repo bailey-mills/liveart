@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Sidebar/Sidebar";
 import "./PasswordReset.css";
@@ -7,7 +7,7 @@ import Form from "react-bootstrap/Form";
 import Col from 'react-bootstrap/Col';
 import Button from "react-bootstrap/Button";
 import '../../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
-
+import axios from "axios";
 
 
 function PasswordReset(props) {
@@ -16,9 +16,12 @@ function PasswordReset(props) {
     const [newpassword, setNewPassword] = useState("");
     const [confirmpassword, setConfirmPassword] = useState("");
 
+    const [error, setError] = useState("");
+
     let currentUsername = localStorage.getItem('user');;
 
   const handleSubmit = (event) => {
+    setError("");
     const form = event.currentTarget;
 
     event.preventDefault();
@@ -32,6 +35,34 @@ function PasswordReset(props) {
     console.log("current", currentpassword);
     console.log("new", newpassword);
     console.log("confirm", confirmpassword);
+    if(newpassword!==confirmpassword)
+    {
+        setError("Your confirming password does not match the new password!")
+    }
+    else
+    {
+        const reset = {"Username" : currentUsername, "CurrentPassword" : currentpassword, "NewPassword" : newpassword};
+        //send to backend
+        axios.patch('/user/updatePassword', reset)
+        .then(res=>{
+            
+            if(res.status===200)
+            {
+                alert("successed");
+            }
+        
+        })
+        .catch(function (error) {          
+            if(error.response.status===401)
+            {                
+                alert("You entered the wrong current password!");
+            }
+            else if(error.response.status===404)
+            {
+                alert("User not found");
+            }
+        })
+    }
 
     setValidated(true);
     }
@@ -103,9 +134,20 @@ function PasswordReset(props) {
                     </Form.Control.Feedback>
                 </Form.Group>
                 </Form.Row>
+                <Form.Row className="justify-content-md-center mt-5 text-danger">
 
+                    {error}
+
+
+
+
+                </Form.Row>
                 <Form.Row className="justify-content-md-center mt-5">
+
+
                     <Button type="submit" >Confirm</Button>
+
+
                 </Form.Row>
         </Form>
     

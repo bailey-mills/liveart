@@ -266,7 +266,7 @@ function Register() {
             <Form.Label>Province</Form.Label>
             {/* <Form.Control type="select" placeholder="Province" required /> */}
             
-            <select>
+            <select className="province-select">
                 <option value="-1" selected="selected">-- Select a Province --</option>
                 {allprovince.map((province, index) => <option key={province.ID} value={province.ID}>{province.Name}</option>)}
             </select>

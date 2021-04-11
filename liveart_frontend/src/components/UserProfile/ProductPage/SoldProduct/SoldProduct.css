@@ -5,3 +5,13 @@
 .content-body{
     margin-left: 300px;
 }
+
+.soldproducts-cards{
+    display: flex;
+
+}
+
+.soldproducts-title{
+    padding-left: 20px;
+    padding-top: 10px;
+}

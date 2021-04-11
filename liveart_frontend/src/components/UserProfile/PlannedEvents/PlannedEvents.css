@@ -5,3 +5,8 @@
 .content-body{
     margin-left: 300px;
 }
+
+.planned-events{
+    display: flex;
+    flex-wrap: wrap;
+}

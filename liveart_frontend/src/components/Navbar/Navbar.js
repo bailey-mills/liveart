@@ -10,6 +10,8 @@ import { useHistory } from "react-router-dom";
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import Image from 'react-bootstrap/Image';
+
 
 
 function MyNavbar(){
@@ -70,7 +72,10 @@ function MyNavbar(){
              {/* <Button>Log in</Button> */}
              {/* <Link className="nav-links" to={"/userprofile/bio"} > {user} </Link> */}
              <Nav>
-             <NavDropdown title={user} id="collasible-nav-dropdown" className="px-4">
+                 <Link to={"/userprofile/bio"}>
+             <Image src={"https://cdn.imgbin.com/3/16/6/imgbin-geometric-wolf-avatar-XKYvCD5J4tGSSn5pAtkWgmA9s.jpg"} roundedCircle alt="avatar" className="navbar-avatar mt-2"/>                
+             </Link>
+             <NavDropdown title={user} id="collasible-nav-dropdown" className="pr-4 pt-3 pb-3 text-light" >
                 <NavDropdown.Item href="/userprofile/bio">Bio</NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item href="/userprofile/subsevents">Subscribed Events</NavDropdown.Item>
@@ -81,57 +86,25 @@ function MyNavbar(){
                 <NavDropdown.Divider />
                 <NavDropdown.Item href="/userprofile/datavis">Data Visulization</NavDropdown.Item>
             </NavDropdown>
-             <Button onClick={logoutuser} variant="warning">Log out</Button>
-             </Nav>
+            <Button onClick={logoutuser} variant="warning" className="mt-3 mb-3">Log out</Button>
+
+            </Nav>
+            
+             
             </div>;
         }
         return(       
-            // <div>
-            //     <nav className="NavbarItems">
-            //         {/* logo */}
-            //         <Link className="navbar-links" to={"/"}><img src={logo} alt="logo" className="navbar-img"/> </Link>
-            //         {/* options */}
-            //         <ul className={clicked ? 'nav-menu active' : 'nav-menu'}>
-            //             <li>
-            //                 <Link className="nav-links" to={"/events"} > Events </Link>
-            //             </li>
-            //             <li>
-            //             <Link className="nav-links" to={"/contactus"} > Contact us </Link>
-            //             </li>
-
-            //         </ul>
-
-            //         <div className="menu-icon" onClick={handleClick}>
-            //             <i className={clicked ? 'fas fa-times' : 'fas fa-bars'}></i>
-            //         </div>
-                    
-                    
-
-            //         {/* sign up
-            //         <div className="sign-btn">
-            //             <Button>Log in</Button>
-            //             <Link  to={"/login"} > <Button>Log in</Button> </Link>
-            //             <Link  to={"/register"}><Button>Sign Up</Button></Link>
-            //         </div> */}
-            //         {profile}
-
-            //     </nav>
-            //     <br/>
-            //     <br/>
-            // </div>
             <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" sticky="top" className="p-0">
                 <Navbar.Brand href="/" className="p-0"><img src={logo} alt="logo" className="navbar-img"/></Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="mr-auto">
                         <Nav.Link href="/events">Events</Nav.Link>
-                        <Nav.Link href="/contactus">Contact us</Nav.Link>
+                        <Nav.Link href="/usersearch" className="ml-2">Search User</Nav.Link>
+                        <Nav.Link href="/contactus" className="ml-2">Contact us</Nav.Link>
+                        
                     </Nav>
                     
-                    {/* <Nav.Link href="#deets">More deets</Nav.Link>
-                    <Nav.Link eventKey={2} href="#memes">
-                        Dank memes
-                    </Nav.Link> */}
                     {profile}
                     
                 </Navbar.Collapse>
