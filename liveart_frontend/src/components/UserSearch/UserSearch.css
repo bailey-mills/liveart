@@ -1,0 +1,11 @@
+.usersearch-input{
+    justify-content: center;
+}
+
+.usersearch-result{
+    display:flex;
+}
+
+.usersearch-result > .card{
+    margin: 10px;
+}

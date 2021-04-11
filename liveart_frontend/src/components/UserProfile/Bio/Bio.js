@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Sidebar/Sidebar";
 import "./Bio.css";
@@ -10,18 +10,35 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import '../../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import axios from "axios";
 import Tag from "../../Profile/Tag/Tag";
+import Image from 'react-bootstrap/Image';
+import Modal from 'react-bootstrap/Modal';
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+
 
 
 
 function Bio(props){
+    const [bio, setBio] = useState([]);
+
+    const [show, setShow] = useState(false);
+    const handleClose = () => {setChangeAvatar(""); setShow(false)};
+    const handleShow = () => setShow(true);
+    const [changeavatar, setChangeAvatar] = useState("");
+
+    const [allprovince, setAllprovince] = useState([]);
+    const [error, setError] = useState("");
+    const [feedback, setFeedback] = useState("");
     const [validated, setValidated] = useState(false);
-    const [birthday, setBirthday] = useState(sampleuser[0].Birthday);
-    const [street, setStreet] = useState(sampleuser[0].Street);
-    const [city, setCity] = useState(sampleuser[0].City);
-    const [province, setProvince] = useState(sampleuser[0].Province);
-    const [postalcode, setPostalCode] = useState(sampleuser[0].PostalCode);
+    const [avatar, setAvatar] = useState("");
+    const [birthday, setBirthday] = useState("");
+    const [street, setStreet] = useState("");
+    const [city, setCity] = useState("");
+    const [provinceid, setProvinceID] = useState();
+    
+    const [postalcode, setPostalCode] = useState("");
     const [selectedtags, setSelectedtags] = useState([]);
-    const [currenttags, setCurrenetTags] = useState([{"ID":1,"Name":"Realism","Summary":null},{"ID":2,"Name":"Photorealism","Summary":null}]);
+    const [currenttags, setCurrenetTags] = useState([]);
 
     // console.log(props.match.params.username);
     let currentUsername = localStorage.getItem('user');;
@@ -30,13 +47,47 @@ function Bio(props){
         //jump to login page
     }
 
+    useEffect(()=>{
+        axios.get('http://localhost:5000/user/bio/'+currentUsername).then(res=>{
+            console.log("return code: " +res.status);
+            if(res.status!==200)
+            {
+                alert("Can't connect to the backend");
+                return;
+            }
+            
+            setBio(res.data);
+            setAvatar(res.data.AvatarURL);
+            setBirthday(res.data.Birthday);
+            setStreet(res.data.Address);
+            setCity(res.data.City);
+            setPostalCode(res.data.PostalCode);
+            setCurrenetTags(res.data.Tags);
+            setProvinceID(res.data.ProvinceID);
+            // console.log("res.data",res.data);
+        })
 
-    console.log(sampleuser);
+        axios.get('http://localhost:5000/provinces').then(res=>{
+            console.log("return code: " +res.status);
+            if(res.status!==200)
+            {
+                alert("Can't connect to the backend");
+                return;
+            }
+            
+            setAllprovince(res.data);
+            // console.log("res.data",res.data);
+        })
+
+    },[]);
+
+    
 
 
     const handleSubmit = (event) => {
 
-      if (false) {
+        console.log("event", event.target[4].value);
+      if (birthday) {
         event.preventDefault();
         event.stopPropagation();
       }
@@ -45,6 +96,7 @@ function Bio(props){
         event.preventDefault();
         event.stopPropagation();
 
+        //const postbio = []
 
         //post
         // axios.post('http://localhost:5000/user/register', newUser)
@@ -62,7 +114,10 @@ function Bio(props){
       
     };
 
-
+    function handleChangeAvatar(){
+        setAvatar(changeavatar);
+        setShow(false);
+    }
 
     return(
         <div>
@@ -76,13 +131,21 @@ function Bio(props){
                 </div>
                 <Form className="mt-3" noValidate validated={validated} onSubmit={handleSubmit} >
                     {/* username and email --- can not be modified */}
+                    
+                    <Form.Row className="register-row">        
+                        <Image src={avatar} roundedCircle alt="avatar" className="bio-avatar"/>                
+                    </Form.Row>
+                    <Form.Row className="register-row">
+                        <Button onClick={handleShow}>Change Avatar</Button>                 
+                    </Form.Row>
+
                     <Form.Row className="register-row">
                         <Form.Group as={Col} md="3" controlId="validationCustom00">
                         <Form.Label>Username</Form.Label>
                         <Form.Control
                             required
                             type="email"
-                            value={sampleuser[0].Username}
+                            value={bio.Username}
                             disabled
                         />
                         </Form.Group>                   
@@ -95,7 +158,7 @@ function Bio(props){
                         <Form.Control
                             required
                             type="email"
-                            value={sampleuser[0].Email}
+                            value={bio.Email}
                             disabled
                         />
                         </Form.Group>                       
@@ -168,14 +231,35 @@ function Bio(props){
                     <Form.Row className="register-row">
                     <Form.Group as={Col} md="3" controlId="validationCustom08">
                         <Form.Label>Province</Form.Label>
-                        <Form.Control
-                        type="text"
-                        value={province} 
-                        onChange={e => setProvince(e.target.value)}  
-                        required />
-                        <Form.Control.Feedback type="invalid">
-                            Please provide a valid province.
-                        </Form.Control.Feedback>
+                        {/* <Form.Control type="select" placeholder="Province" required /> */}
+                        
+                        <select className="province-select">
+                            <option value="-1" >-- Select a Province --</option>
+                            {
+                                allprovince.map((province, index) => 
+                                {
+                                    if(province.ID === provinceid)
+                                    {
+                                        return(
+                                        <option key={province.ID} selected="selected" value={province.ID}>
+                                                {province.Name}
+                                        </option>
+                                        );
+                                    }
+                                    else
+                                    {
+                                        return(
+                                        <option key={province.ID} value={province.ID}>
+                                                {province.Name}
+                                        </option>
+                                        );
+                                    }
+                            
+                                
+                                })
+                            }
+                        </select>
+                        <text   class="password-notmatch">{error}</text>
                     </Form.Group>
                     </Form.Row>
 
@@ -197,6 +281,42 @@ function Bio(props){
                 
 
             </div>
+
+        <Modal
+            show={show}
+            onHide={handleClose}
+            backdrop="static"
+            keyboard={false}
+            size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+            >
+                <Modal.Header closeButton>
+                <Modal.Title>Add an Item</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                <Container>
+                    <Row>
+                    <h4>Enter the URL of your new Avatar</h4>
+                    </Row>
+                    <Row>                       
+                        <input value={changeavatar} onChange={(e) => setChangeAvatar(e.target.value)} className="form-control input-lg"></input>
+                    </Row>                   
+                    <Row>
+                        <Image src={changeavatar} roundedCircle alt="avatar" className="bio-avatar"/>                
+
+                    </Row>
+                </Container>
+                </Modal.Body>
+                <Modal.Footer>             
+                <Button variant="secondary" onClick={handleClose}>
+                    Close
+                </Button>
+                <Button variant="success" onClick={handleChangeAvatar}>Add</Button>
+                
+                </Modal.Footer>
+        </Modal>
+
         </div>
     );
 
