@@ -14,36 +14,23 @@ import UserCard from"./UserCard";
 
 function UserSearch(){
 
-    const [searchinput, setSearchInput] = useState("");
-    const [searchresult, setSearchResult] = useState("Enter user name to search");
+    const [searchInput, setSearchInput] = useState("");
+    const [userList, setUserList] = useState();
 
-    let userA = 
-        {
-            "Username": "EricLin11",
-            "Email": "lin@test.com",
-            "Password": "12345678",
-            "Birthday": "1999-04-14",
-            "Street": "123 Street",
-            "City": "Waterloo",
-            "Province": "ON",
-            "PostalCode": "N2LXXX",
-            "Tags":[1,3,5],
-            "AvatarURL": "https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg"
-        };
-    
+    function handleSearch(e){
+        setSearchInput(e.target.value);
 
-    function handleSearch(){
-        console.log("cliked");
-
-
-        // if return status is ....
-        setSearchResult(
-        <div>
-
-
-        </div>);
-
-        //else
+        // Get default subscription state
+        axios.post(process.env.REACT_APP_SERVER + '/user/search', { Input: e.target.value, Count: 10}).then(res=>{
+            if(res.status === 200)
+            {
+                // Organize results into user objects
+                const items = res.data.map((user) =>
+                    <UserCard User={user} />
+                );
+                setUserList(items);
+            }
+        });
     }
 
     return(
@@ -52,19 +39,15 @@ function UserSearch(){
             <div className="shadow p-2 mb-3 mt-2 bg-body rounded ">
                 <div className=" vertical-center h3 mb-0 ">
                     Search a User
-                    <input type="text" className="ml-3" value={searchinput} onChange={(e) => setSearchInput(e.target.value)}></input>
+                    <input type="text" className="ml-3" value={searchInput} onChange={(e) => 
+                        handleSearch(e)
+                    }></input>
                     <Button className="ml-3 vertical-center" onClick={handleSearch}>Search</Button>
-
                 </div>
-
             </div>
+
             <div className="usersearch-result">
-                {searchresult}
-                <UserCard User={userA} />
-                <UserCard User={userA} />
-
-                
-
+                {userList}
             </div>
         </div>
     );

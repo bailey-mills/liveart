@@ -175,7 +175,6 @@ module.exports = class UserController {
     }
     
     toggleSubscription = async (req, res)=> {
-        console.log(req.body);
         let user = req.body.User;
         let target = req.body.Target;
 
@@ -250,8 +249,10 @@ module.exports = class UserController {
         let input = req.body.Input;
         let count = req.body.Count;
 
+        console.log(req.body);
+
         let result = await dbDrive.executeQuery(
-            `SELECT TOP ${count} U.ID, U.Username, U.Birthday, P.ID AS 'ProvinceID', P.Name AS 'ProvinceName'
+            `SELECT TOP ${count} U.ID, U.Username, U.Birthday, P.ID AS 'ProvinceID', P.Name AS 'ProvinceName', U.ProfileImage
             FROM [User] U
             JOIN [Address] A ON A.ID = U.AddressID
             JOIN [Province] P ON P.ID = A.ProvinceID
@@ -286,6 +287,11 @@ module.exports = class UserController {
                 user.Tags = tagList[0];
             }
         }
+
+        // Sort by follower count
+        result[0].sort(function(a, b) {
+            return b.SubscribedByCount - a.SubscribedByCount;
+        });
 
         return res.json(result[0]);
     }

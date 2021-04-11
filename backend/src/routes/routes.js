@@ -50,7 +50,7 @@ routes.get('/user/getSubscribers/:username', userProfileController.getSubscriber
 routes.get('/user/getSubscribedTo/:username', userProfileController.getSubscribedTo);
 routes.post('/user/toggleSubscription', userProfileController.toggleSubscription);
 routes.post('/user/checkSubscription', userProfileController.checkSubscription);
-routes.get('/user/search', userProfileController.search);
+routes.post('/user/search', userProfileController.search);
 
 // --------
 //  EVENTS
