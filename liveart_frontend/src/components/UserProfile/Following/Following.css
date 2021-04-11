@@ -5,3 +5,13 @@
 .content-body{
     margin-left: 300px;
 }
+
+.following-grid{
+    display: grid;
+}
+
+.following-list > li{
+    height: 50px;
+    /* background-color: lightgrey; */
+    /* border: 1px solid; */
+}

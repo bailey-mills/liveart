@@ -29,6 +29,8 @@ function EventsPage(){
     },[]);
 
 
+
+
     // function getData(){
     //     console.log("getdata");
     //     axios.get('http://localhost:5000/event/getRecommended').then(res=>{

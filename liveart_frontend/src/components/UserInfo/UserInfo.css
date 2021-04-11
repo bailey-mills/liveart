@@ -1,0 +1,51 @@
+.userinfo-events{
+    display: flex;
+    margin: 5px;
+    flex-wrap: wrap;
+}
+
+.userinfo-tags-ul{
+    float: left;
+    
+}
+
+.userinfo-tags-ul > li{
+    margin: 3px;
+    padding: 1px;
+    border: 1px solid;
+    float: left;
+}
+
+.userinfo-body{
+    display: flex;
+}
+
+.userinfo-avatar{
+    width: 20vw;
+    /* display: grid; */
+}
+
+.userinfo-avatar-img{
+    width: 256px;
+    height: 256px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto
+}
+
+.userinfo-avatar-subscribebtn{
+    display: block;
+    margin-top: 15px;
+    margin-left: auto;
+    margin-right: auto
+}
+
+.userinfo-info{
+    width: 80vw;
+    display: grid;
+}
+
+.userinfo-info > hr{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}

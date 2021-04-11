@@ -4,7 +4,7 @@
   text-align: center;
   border: 1px solid green;
   margin: auto;
-  width: 35%;
+  width: 100%;
 }
 
 @media all and (min-width: 480px) {

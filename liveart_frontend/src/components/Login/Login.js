@@ -54,17 +54,6 @@ export default function Login(props) {
       })
 
 
-
-    // if(formData.email==="lin@test.com" && formData.password==="123")
-    // {
-    //     console.log("correct");
-    //     localStorage.setItem('user', formData.email);
-    //     history.push('/')
-    // }
-
-    // console.log(formData);
-
-
   }
 
   if(props.location.state.registered === true)

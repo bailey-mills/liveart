@@ -9,12 +9,13 @@ const EventSection = ({ events }) => {
 
         <CardDeck style={{display: 'flex', flexDirection: 'row'}} className="zone event-section">
           {
-            events.map((user, i) => {
+            events.map((event, index) => {
               return (
                 <Event
-                  id={events[i].ID}
-                  name={events[i].Title}
-                  url={events[i].ThumbNailURL}
+                  event={event}
+                  // id={events[i].ID}
+                  // name={events[i].Title}
+                  // url={events[i].ThumbNailURL}
                   />
               );
             })

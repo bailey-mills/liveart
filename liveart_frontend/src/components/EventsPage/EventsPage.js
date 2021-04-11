@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import Events from "../../Assets/sampleEvents.json";
-import Tags from "../../Assets/TagSample.json";
+//import Tags from "../../Assets/TagSample.json";
 import EventSection from "../EventSection/EventSection";
 import Select from "react-select";
 import Navbar from "../Navbar/Navbar";
@@ -8,11 +8,25 @@ import axios from "axios";
 
 function EventsPage(){
 
-    let TagsDuplicate = Tags;
+    const [tags, setTags] = useState([]);
     let typee="";
     let filteredEvents = [];
     const [displayevents, setDisplayevents] = useState([]);
     const [selectedtagname, setSelectedtagname] = useState("");
+
+    useEffect(()=>{
+        
+        axios.get('http://localhost:5000/all-tags').then(res=>{
+            if(res.status!==200){
+                alert("Can't connect to the backend server");
+                return;
+            }
+    
+            setTags(res.data);
+            //console.log("from backend", userinfo);
+        })
+        
+    },[]);
 
     // const [tags, setEvents] = useState([]);
 
@@ -29,9 +43,7 @@ function EventsPage(){
     //     })
     // },[]);
     
-    TagsDuplicate.map((tag, index) => {
-        tag["label"] = tag["tag"];
-    });
+    
 
 
     function selectHandler(e){
@@ -64,7 +76,7 @@ function EventsPage(){
         <div>
             <Navbar/>
 
-            <Select options={TagsDuplicate}  value={selectedtagname} filterOption={false} isSearchable={true} placeholder="--- Select a tag ---" onChange={selectHandler}/>
+            <Select options={tags}  value={selectedtagname} filterOption={false} isSearchable={true} placeholder="--- Select a tag ---" onChange={selectHandler} getOptionLabel ={(option)=>option.Name}/>
             <h2>Current Selected Tag: {selectedtagname}</h2>
             <EventSection events={displayevents}/>   
         </div>
