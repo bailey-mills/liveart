@@ -314,6 +314,15 @@ module.exports = class EventController {
 
             // SELLER TO EVENT
             await dbDrive.executeQuery(`INSERT INTO [SellerToEvent] (UserID, EventID) VALUES (${userID}, ${eventID})`);
+
+
+            //Set the first Product to be the current bidding product
+
+            await dbDrive.executeQuery(`
+            Update Event SET CurrentBiddingProductID = (
+                select Top 1 ProductID from ProductToEvent where eventID = ${eventID}
+            ) WHERE ID = ${eventID}
+            `)
         }
         else {
             return res.status(400).send({message: 'Missing userID session variable'});

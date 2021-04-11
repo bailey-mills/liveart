@@ -25,6 +25,7 @@ CREATE TABLE dbo.[Event](
 	StartTime DATETIME, 
 	EndTime DATETIME,
 	ThumbNailURL NVARCHAR(400),
+	CurrentBiddingProductID INT,
 	CategoryID INT
 )
 
@@ -168,6 +169,12 @@ ALTER TABLE dbo.[Event] WITH CHECK ADD CONSTRAINT [FK_CategoryOfEvent_Key] FOREI
 REFERENCES dbo.[Category] (ID)
 go
 ALTER TABLE dbo.[Event] CHECK CONSTRAINT [FK_CategoryOfEvent_Key]
+go
+
+ALTER TABLE dbo.[Event] WITH CHECK ADD CONSTRAINT [FK_CurrentBiddingProductOfEvent_Key] FOREIGN KEY(CurrentBiddingProductID)
+REFERENCES dbo.[Product] (ID)
+go
+ALTER TABLE dbo.[Event] CHECK CONSTRAINT [FK_CurrentBiddingProductOfEvent_Key]
 go
 
 ALTER TABLE dbo.[SocialMediaLinks] WITH CHECK ADD CONSTRAINT [FK_SocialMediaLinks_UserID] FOREIGN KEY(UserID)
