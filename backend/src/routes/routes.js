@@ -6,6 +6,7 @@ const RegistrationPageController = require('../controllers/RegistrationControlle
 const UserProfileController = require('../controllers/UserProfileController');
 const EventController = require('../controllers/EventController');
 const ProductController = require('../controllers/ProductController');
+const Auctioncontroller = require('../controllers/AuctionController');
 
 let homePageController = new HomePageController();
 let registrationController = new RegistrationPageController();
@@ -13,6 +14,7 @@ let userProfileController = new UserProfileController();
 let eventController = new EventController();
 let productController = new ProductController();
 let analyticsPageController = new AnalyticsPageController();
+let auctionController = new Auctioncontroller();
 
 routes.use((req, res, next) => {
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
@@ -58,6 +60,16 @@ routes.post('/event/createEvent/:userID', eventController.createEvent);
 // ----------
 routes.get('/product/getSold/:username', productController.getSoldProducts);
 routes.get('/product/getPurchased/:username', productController.getPurchasedProducts);
+
+// ----------
+// AUCTIONS
+// ----------
+routes.get('/auction/getProducts/:eventID',auctionController.getEventProducts);
+routes.get('/auction/getHighestBid/:productID', auctionController.getHighestBid);
+routes.get('/auction/getCurrentBiddingProduct/:eventID', auctionController.getCurrentProductID);
+routes.patch('/auction/skipProduct/:eventID', auctionController.skipProduct);
+routes.post('/auction/createBid/:productID', auctionController.createBid);
+routes.post('/auction/createTransaction/:bidID', auctionController.createTransaction);
 
 
 // Analytics
