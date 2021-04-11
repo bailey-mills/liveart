@@ -14,7 +14,8 @@ import '../../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import Modal from 'react-bootstrap/Modal';
 import Tag from "../../Profile/Tag/Tag";
 import ImageUploader from 'react-images-upload';
-
+import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 
 
@@ -42,7 +43,7 @@ function NewEvent(props) {
     const [newitemimages, setNewitemimages] = useState("");
 
     const [newitems,setNewitems] = useState([]);
-
+    let history = useHistory();
 
     let currentUsername = localStorage.getItem('user');
     if(currentUsername===null)
@@ -118,6 +119,25 @@ function NewEvent(props) {
         //set to backend
 
         //redirect to event page
+        axios.post('http://localhost:5000/event/createEvent', event)
+        .then(res=>{
+            
+            if(res.status===200)
+            {
+                console.log("return message", res.data.message);
+
+                history.push({
+                pathname: '/userprofile/plannedevents',
+                });
+            }
+        
+        })
+        .catch(function (error) {          
+            if(error.response.status===400)
+            {                
+                alert("Can't connect to the backend");
+            }
+        })
 
 
     }

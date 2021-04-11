@@ -8,4 +8,5 @@
 
 .planned-events{
     display: flex;
+    flex-wrap: wrap;
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Sidebar/Sidebar";
 import "./PasswordReset.css";
@@ -7,7 +7,7 @@ import Form from "react-bootstrap/Form";
 import Col from 'react-bootstrap/Col';
 import Button from "react-bootstrap/Button";
 import '../../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
-
+import axios from "axios";
 
 
 function PasswordReset(props) {
@@ -41,8 +41,27 @@ function PasswordReset(props) {
     }
     else
     {
-        const reset = {"CurrentPassword" : currentpassword, "NewPassword" : newpassword};
+        const reset = {"Username" : currentUsername, "CurrentPassword" : currentpassword, "NewPassword" : newpassword};
         //send to backend
+        axios.patch('/user/updatePassword', reset)
+        .then(res=>{
+            
+            if(res.status===200)
+            {
+                alert("successed");
+            }
+        
+        })
+        .catch(function (error) {          
+            if(error.response.status===401)
+            {                
+                alert("You entered the wrong current password!");
+            }
+            else if(error.response.status===404)
+            {
+                alert("User not found");
+            }
+        })
     }
 
     setValidated(true);

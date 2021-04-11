@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Sidebar/Sidebar";
 import "./PlannedEvents.css";
@@ -7,92 +7,9 @@ import Col from 'react-bootstrap/Col';
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Event from "../../EventSection/Event"
+import axios from "axios";
 
 function PlannedEvents(props){
-
-    const sample = {
-        "PastEvents": [{
-            "EventID": 551,
-            "EventName": "Sculptures for auction",
-            "StartTime": "2021-04-22T18:00:00.000Z",
-            "EndTime": "2021-04-22T19:22:00.000Z",
-            "CategoryID": 2,
-            "CategoryName": "Sculpture",
-            "EventHostUsername": "Trista_Kastor_252",
-            "EventTags": [
-                {
-                    "ID": 3,
-                    "Name": "Abstraction"
-                },
-                {
-                    "ID": 4,
-                    "Name": "Impressionism"
-                }
-            ]
-        }],
-        "ActiveEvents": [{
-            "EventID": 551,
-            "EventName": "Sculptures for auction",
-            "StartTime": "2021-04-22T18:00:00.000Z",
-            "EndTime": "2021-04-22T19:22:00.000Z",
-            "CategoryID": 2,
-            "CategoryName": "Sculpture",
-            "EventHostUsername": "Trista_Kastor_252",
-            "EventTags": [
-                {
-                    "ID": 3,
-                    "Name": "Abstraction"
-                },
-                {
-                    "ID": 4,
-                    "Name": "Impressionism"
-                }
-            ]
-        }],
-        "UpcomingEvents": [
-            {
-                "EventID": 551,
-                "EventName": "Sculptures for auction",
-                "StartTime": "2021-04-22T18:00:00.000Z",
-                "EndTime": "2021-04-22T19:22:00.000Z",
-                "CategoryID": 2,
-                "CategoryName": "Sculpture",
-                "EventHostUsername": "Trista_Kastor_252",
-                "EventTags": [
-                    {
-                        "ID": 3,
-                        "Name": "Abstraction"
-                    },
-                    {
-                        "ID": 4,
-                        "Name": "Impressionism"
-                    }
-                ]
-            },
-            {
-                "EventID": 551,
-                "EventName": "Sculptures for auction",
-                "StartTime": "2021-04-22T18:00:00.000Z",
-                "EndTime": "2021-04-22T19:22:00.000Z",
-                "CategoryID": 2,
-                "CategoryName": "Sculpture",
-                "EventHostUsername": "Trista_Kastor_252",
-                "EventTags": [
-                    {
-                        "ID": 3,
-                        "Name": "Abstraction"
-                    },
-                    {
-                        "ID": 4,
-                        "Name": "Impressionism"
-                    }
-                ]
-            }
-        ]
-    };
-
-    const events = sample.UpcomingEvents;
-
 
     // console.log(props.match.params.username);
     let currentUsername = localStorage.getItem('user');
@@ -100,6 +17,21 @@ function PlannedEvents(props){
     {
         //jump to login page
     }
+
+    const [events, setEvents] = useState([]);
+    useEffect(()=>{
+        
+        axios.get('http://localhost:5000/event/getPlanned/'+currentUsername).then(res=>{
+            if(res.status!==200){
+                alert("Can't connect to the backend server");
+                return;
+            }
+    
+            setEvents(res.data);
+            //console.log("from backend", userinfo);
+        })
+        
+    },[]);
 
 
     return(
@@ -113,7 +45,7 @@ function PlannedEvents(props){
                         <h2>Ongoging Events</h2>
                         <div className="planned-events">
                         {
-                            sample.ActiveEvents.map((event, index) => {
+                            events.ActiveEvents && events.ActiveEvents.map((event, index) => {
 
                                 return(
                                     
@@ -128,7 +60,7 @@ function PlannedEvents(props){
                         <h2>Upcoming Events</h2>
                         <div className="planned-events">
                         {
-                            sample.UpcomingEvents.map((event, index) => {
+                            events.UpcomingEvents && events.UpcomingEvents.map((event, index) => {
 
                                 return(
                                     
@@ -143,7 +75,7 @@ function PlannedEvents(props){
                         <h2>Past Events</h2>
                         <div className="planned-events">
                         {
-                            sample.PastEvents.map((event, index) => {
+                            events.PastEvents && events.PastEvents.map((event, index) => {
                                 return(
                                     <Event event={event} />
                                 );
@@ -151,14 +83,8 @@ function PlannedEvents(props){
                         }
                         </div>
                     </div>
-                
-                    
-                    
-                    
-
+                                                          
                 </div>
-                {/* This is UserProfile page for {props.match.params.username} */}
-                {/* This is UserProfile page for {currentUsername} */}
                 
 
             </div>

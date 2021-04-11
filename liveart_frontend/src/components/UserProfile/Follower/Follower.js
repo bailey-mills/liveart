@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Sidebar/Sidebar";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-
+import axios from "axios";
 import "./Follower.css";
 
 
@@ -34,6 +34,20 @@ function Follower(props){
         //jump to login page
     }
 
+    const [users, setUsers] = useState([]);
+    useEffect(()=>{
+        
+        axios.get('http://localhost:5000/user/getSubscribers/'+currentUsername).then(res=>{
+            if(res.status!==200){
+                alert("Can't connect to the backend server");
+                return;
+            }
+    
+            setUsers(res.data);
+            //console.log("from backend", userinfo);
+        })
+        
+    },[]);
 
     return(
         <div>
@@ -47,7 +61,7 @@ function Follower(props){
                     <ul className="follower-list">
                     {
 
-                        sample.map((user,index) =>{
+                            users && users.map((user,index) =>{
                             return(
                                 <li className="shadow p-3 mb-3  bg-body rounded"><Link to={"/user/"+user.Username} target="_blank" rel="noopener noreferrer">{user.Username}</Link></li>
                             );

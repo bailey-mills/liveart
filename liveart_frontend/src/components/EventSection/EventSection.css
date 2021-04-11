@@ -45,7 +45,7 @@
 
 .box{
     background-color: #444;
-    width: 420px;
+    width: 400px;
     height: 460px;
     margin: 20px;
     /* padding: 130px;
@@ -64,20 +64,20 @@
     height: 100px;
 }
 
-.title{
+.eventtitle{
     color: white;
     font-size: 20px;
     padding: 0px;
     
 }
 
-.description{
+.eventdescription{
     color: white;
     font-size: 15px;
     padding: 0px;
 }
 
-.tags{
+.eventtags{
     color: white;
     font-size: 15px;
     padding: 0px;

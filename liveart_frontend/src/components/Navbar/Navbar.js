@@ -94,39 +94,6 @@ function MyNavbar(){
             </div>;
         }
         return(       
-            // <div>
-            //     <nav className="NavbarItems">
-            //         {/* logo */}
-            //         <Link className="navbar-links" to={"/"}><img src={logo} alt="logo" className="navbar-img"/> </Link>
-            //         {/* options */}
-            //         <ul className={clicked ? 'nav-menu active' : 'nav-menu'}>
-            //             <li>
-            //                 <Link className="nav-links" to={"/events"} > Events </Link>
-            //             </li>
-            //             <li>
-            //             <Link className="nav-links" to={"/contactus"} > Contact us </Link>
-            //             </li>
-
-            //         </ul>
-
-            //         <div className="menu-icon" onClick={handleClick}>
-            //             <i className={clicked ? 'fas fa-times' : 'fas fa-bars'}></i>
-            //         </div>
-                    
-                    
-
-            //         {/* sign up
-            //         <div className="sign-btn">
-            //             <Button>Log in</Button>
-            //             <Link  to={"/login"} > <Button>Log in</Button> </Link>
-            //             <Link  to={"/register"}><Button>Sign Up</Button></Link>
-            //         </div> */}
-            //         {profile}
-
-            //     </nav>
-            //     <br/>
-            //     <br/>
-            // </div>
             <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" sticky="top" className="p-0">
                 <Navbar.Brand href="/" className="p-0"><img src={logo} alt="logo" className="navbar-img"/></Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
@@ -138,10 +105,6 @@ function MyNavbar(){
                         
                     </Nav>
                     
-                    {/* <Nav.Link href="#deets">More deets</Nav.Link>
-                    <Nav.Link eventKey={2} href="#memes">
-                        Dank memes
-                    </Nav.Link> */}
                     {profile}
                     
                 </Navbar.Collapse>

@@ -56,7 +56,7 @@ const ItemCard = ({ item, itemType }) => {
             <div className="itemtags">
               <ul className="item-tags">
               {
-                item.Tags.map((tag, index)=>{
+                item.Tags && item.Tags.map((tag, index)=>{
                   return(
                     <li>{tag.Name}</li>
                   );

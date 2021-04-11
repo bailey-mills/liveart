@@ -24,8 +24,8 @@ function Event(props){
     <Card className="box shadow p-2 mb-3 bg-body rounded" >
       <Card.Img className="event-img" variant="top" src={props.event.URL} />
       <div className="card-body2">
-        <Card.Title className="title">Title: {props.event.EventName}</Card.Title>
-        <Card.Text className="description">
+        <Card.Title className="eventtitle">Title: {props.event.EventName}</Card.Title>
+        <Card.Text className="eventdescription">
           <ul>
           <li>Host name: {props.event.EventHostUsername} </li>
           <li>Start Time: {props.event.StartTime} </li>
@@ -34,7 +34,7 @@ function Event(props){
           </ul>
           {/* {id} */}
         </Card.Text>
-        <div className="tags">
+        <div className="eventtags">
           
           <ul className="event-tags-ul">
           {tags.map((tag, index) => {
