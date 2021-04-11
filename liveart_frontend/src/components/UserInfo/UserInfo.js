@@ -7,6 +7,7 @@ import Button from "react-bootstrap/Button";
 import Image from 'react-bootstrap/Image';
 import Event from "../EventSection/Event";
 import ItemCard from "../ItemCard/ItemCard";
+import SubscribeButton from "../SubscribeButton/SubscribeButton";
 import "./UserInfo.css";
 import axios from "axios";
 
@@ -18,6 +19,8 @@ function UserInfo(props){
     const [subsribecondition, setSubsribecondition] = useState(false);
     //get user information from the backend
     console.log(props.match.params.username);
+
+    const loggedInUser = localStorage.getItem('user');
 
     useEffect(()=>{
         
@@ -33,31 +36,6 @@ function UserInfo(props){
         
     },[]);
 
-
-    let subscribebtn;
-    if(subsribecondition===false)
-    {
-        subscribebtn = <Button className="btn-success userinfo-avatar-subscribebtn" onClick={handleSubscribe}>Subscribe</Button>
-        console.log("from backend", userinfo);
-    }
-    else
-    {
-        subscribebtn = <Button className="btn-danger userinfo-avatar-subscribebtn" onClick={handleSubscribe}>Unsubscribe</Button>
-    }
-
-    function handleSubscribe(){
-        if(subsribecondition===false)
-        {
-            //send backend a subscribe statement
-            setSubsribecondition(true);
-        }
-        else
-        {
-            //send backend a unsubscribe statement
-            setSubsribecondition(false);
-        }
-    }
-
     return(
         <div>
         <Navbar />
@@ -68,8 +46,8 @@ function UserInfo(props){
             <div>
                 <Image src={userinfo.AvatarURL} roundedCircle alt="avatar" className="userinfo-avatar-img"/>
             </div>
-            <div className="userinfo-avatar-subscribebtn">          
-                {subscribebtn}
+            <div className="userinfo-avatar-subscribebtn">
+                <SubscribeButton user={loggedInUser} target={userinfo.Username} />
             </div>
         </div>
         <div className="userinfo-info">

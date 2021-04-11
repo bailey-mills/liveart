@@ -175,6 +175,7 @@ module.exports = class UserController {
     }
     
     toggleSubscription = async (req, res)=> {
+        console.log(req.body);
         let user = req.body.User;
         let target = req.body.Target;
 
@@ -223,6 +224,8 @@ module.exports = class UserController {
 
         let subbed = await this.methodCheckSubscription(user, target);
 
+        console.log(subbed);
+        console.log(req.body);
         return res.json({
             Subscribed: subbed
         });

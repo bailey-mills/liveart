@@ -49,7 +49,7 @@ routes.get('/user/getUser/:username', userProfileController.getUser);
 routes.get('/user/getSubscribers/:username', userProfileController.getSubscribers);
 routes.get('/user/getSubscribedTo/:username', userProfileController.getSubscribedTo);
 routes.post('/user/toggleSubscription', userProfileController.toggleSubscription);
-routes.get('/user/checkSubscription', userProfileController.checkSubscription);
+routes.post('/user/checkSubscription', userProfileController.checkSubscription);
 routes.get('/user/search', userProfileController.search);
 
 // --------
