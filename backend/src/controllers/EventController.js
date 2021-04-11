@@ -11,24 +11,23 @@ module.exports = class EventController {
     getRecommendEvents = async (req, res) => {
 
         let randomRecommendQuery = 'SELECT TOP 6 * FROM [dbo].[Event] order by NEWID()';
-        // not logged in, give random recommendations
-        if(!req.session.loggedIn){
-            let result = await dbDrive.executeQuery(randomRecommendQuery);
 
+        let username = req.params.username;
+
+        // not logged in, give random recommendations
+        if(!username){
+            let result = await dbDrive.executeQuery(randomRecommendQuery);
             return res.json(result[0]);
         } else {
             // get user tags to calcuate weights
-            // let username = 'shawn';
-            let username = req.session.username;
-
             let weightedCategoriesQuery = 
             queryBuilder.getFromjoin(['[dbo].[UserToTag]'],['Tag.CategoryID',"Count(UserToTag.TagID) as 'Count'"],
             [
-            {joinTable:'[dbo].[User]',referenceKeys:'[dbo].[UserToTag].Username=[dbo].[User].Username'},
+            {joinTable:'[dbo].[User]',referenceKeys:'[dbo].[UserToTag].UserID=[dbo].[User].ID'},
             {joinTable:'[dbo].[Tag]',referenceKeys:'[dbo].[UserToTag].TagID=[dbo].[Tag].ID'},
             {joinTable:'[dbo].[Category]',referenceKeys:'[dbo].[Category].ID=[dbo].[Tag].CategoryID'}
             ],
-            `UserToTag.Username='${username}' Group By Tag.CategoryID`,
+            `[User].Username='${username}' Group By Tag.CategoryID`,
             "'Count' DESC"
             );
 
@@ -130,7 +129,7 @@ module.exports = class EventController {
     async methodPlannedEvents(username) {
         // GET PLANNED EVENTS
         let plannedEvents = await dbDrive.executeQuery(
-            "SELECT E.ID AS 'EventID', E.Title AS 'EventName', E.StartTime, E.EndTime, E.CategoryID, C.Name AS 'CategoryName', U.Username AS 'EventHostUsername' " + 
+            "SELECT E.ID AS 'EventID', E.Title AS 'EventName', E.StartTime, E.EndTime, E.CategoryID, C.Name AS 'CategoryName', U.Username AS 'EventHostUsername', E.ThumbnailURL AS 'EventURL' " + 
             "FROM [Event] E " +
             "JOIN [SellerToEvent] SE ON SE.EventID = E.ID " + 
             "JOIN [Category] C ON C.ID = E.CategoryID " + 
@@ -288,7 +287,7 @@ module.exports = class EventController {
         }
         
         // Input looks valid, insert the event
-        let userID = req.session.userID;
+        let userID = req.params.userID;
 
         if (userID && userID > 0) {
             // EVENT

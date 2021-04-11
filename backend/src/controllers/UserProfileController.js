@@ -1,19 +1,21 @@
 const DbDrive = require('../dal/dbDrive');
 const QueryBuilder = require('../dal/queryBuilder');
 const EventController = require('./EventController');
+const ProductController = require('./ProductController');
 
 const { sha256 } = require('js-sha256');
 
 let dbDrive = new DbDrive();
 let queryBuilder = new QueryBuilder();
 let eventController = new EventController();
+let productController = new ProductController();
 
 module.exports = class UserProfileController {
     getBio = async (req, res)=> {
         let username = req.params.username;
 
         let userInfo = await dbDrive.executeQuery(
-            "SELECT TOP 1 U.Username, U.ProfileImage AS 'AvatarURL', U.Email, U.Birthday, A.Street AS 'Address', A.City, A.ProvinceID, P.Name AS 'Province' " +
+            "SELECT TOP 1 U.Username, U.ProfileImage AS 'AvatarURL', U.Email, U.Birthday, A.Street AS 'Address', A.City, A.ProvinceID, P.Name AS 'Province', A.PostalCode " +
             "FROM [User] U " +
             "JOIN [Address] A ON A.ID = U.AddressID " +
             "JOIN [Province] P ON P.ID = A.ProvinceID " +
@@ -41,6 +43,8 @@ module.exports = class UserProfileController {
     
     getUser = async (req, res)=> {
         let username = req.params.username;
+        let subscribedByCount = await this.methodSubscriberCount(username);
+        let subscribedToCount = await this.methodSubscribedCount(username);
 
         // GET USER INFO
         let userInfo = await dbDrive.executeQuery(
@@ -62,21 +66,13 @@ module.exports = class UserProfileController {
         let plannedEvents = await eventController.methodPlannedEvents(username);
 
         // GET SOLD PRODUCTS
-        let soldProducts = await dbDrive.executeQuery(
-            "SELECT P.Name, P.Summary AS 'ProductDescription', P.PreviewURL AS 'ProductURL', B.Amount, SE.EventID, E.Title AS 'EventName' " + 
-            "FROM [Product] P " +
-            "JOIN [ProductToEvent] PE ON PE.ProductID = P.ID " + 
-            "JOIN [Bid] B ON B.ProductID = P.ID " + 
-            "JOIN [Transaction] T ON T.BidID = B.ID " + 
-            "JOIN [SellerToEvent] SE ON SE.EventID = B.EventID " + 
-            "JOIN [User] U ON U.ID = SE.UserID " + 
-            "JOIN [Event] E ON E.ID = SE.EventID " + 
-            "WHERE P.IsSold = 1 AND U.Username = '" + username + "'"
-        );
+        let soldProducts = await productController.methodSoldProducts(username);
 
         let ret = {};
         if (userInfo[0].length > 0) {
             ret = userInfo[0][0];
+            ret.SubscribedToCount = subscribedToCount;
+            ret.SubscribedByCount = subscribedByCount;
             ret.Tags = tagList[0];
             ret.PlannedEvents = plannedEvents;
             ret.SoldProducts = soldProducts[0];
@@ -95,7 +91,7 @@ module.exports = class UserProfileController {
         let newPass = req.body.NewPassword;
         let newPassHash = sha256.hmac(process.env.SECRET, newPass);
 
-        let username = 'Lenora_Trafford_523';
+        let username = req.body.Username;
         
         // Try to find the user
         let dbUserResult = await dbDrive.executeQuery(`SELECT TOP 1 Password FROM [dbo].[User] WHERE username='${username}'`);
@@ -129,5 +125,37 @@ module.exports = class UserProfileController {
             "WHERE UArtist.Username = '" + username + "'"
         );
         return res.json(subscribers[0]);
+    }
+
+    // Get number of profiles subscribed to this user
+    async methodSubscriberCount(username) {
+        let subscribers = await dbDrive.executeQuery(
+            "SELECT COUNT(U.ID) AS 'Count' " + 
+            "FROM [Subscription] S " +
+            "JOIN [User] U ON U.ID = S.TargetUserID " + 
+            "WHERE U.Username = '" + username + "'"
+        );
+
+        if (!subscribers[0] || subscribers[0].length <= 0) {
+            return 0;
+        }
+
+        return parseInt(subscribers[0][0].Count);
+    }
+
+    // Get number of profiles this user is subscribed to
+    async methodSubscribedCount(username) {
+        let subscribers = await dbDrive.executeQuery(
+            "SELECT COUNT(U.ID) AS 'Count' " + 
+            "FROM [Subscription] S " +
+            "JOIN [User] U ON U.ID = S.UserID " + 
+            "WHERE U.Username = '" + username + "'"
+        );
+
+        if (!subscribers[0] || subscribers[0].length <= 0) {
+            return 0;
+        }
+
+        return parseInt(subscribers[0][0].Count);
     }
 }
