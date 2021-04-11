@@ -1,0 +1,18 @@
+.searchBar {
+    position: absolute;
+    padding-top: 5px;
+    margin-left: calc(50% - 330px);
+    width: 400px;
+    top: 15px;
+}
+
+.searchInput {
+    padding: 5px 10px 5px 10px;
+    width: 100%;
+}
+
+.searchResults {
+    position: relative;
+    left: 0px;
+    right: 0px;
+}

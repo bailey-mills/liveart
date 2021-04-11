@@ -20,7 +20,7 @@ function UserSearch(){
     function handleSearch(e){
         setSearchInput(e.target.value);
 
-        // Get default subscription state
+        // Update search results
         axios.post(process.env.REACT_APP_SERVER + '/user/search', { Input: e.target.value, Count: 10}).then(res=>{
             if(res.status === 200)
             {

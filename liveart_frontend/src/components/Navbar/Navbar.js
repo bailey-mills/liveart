@@ -11,8 +11,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Image from 'react-bootstrap/Image';
-
-
+import SearchBar from "../UserSearch/SearchBar";
 
 function MyNavbar(){
          
@@ -100,11 +99,11 @@ function MyNavbar(){
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="mr-auto">
                         <Nav.Link href="/events">Events</Nav.Link>
-                        <Nav.Link href="/usersearch" className="ml-2">Search User</Nav.Link>
                         <Nav.Link href="/contactus" className="ml-2">Contact us</Nav.Link>
-                        
                     </Nav>
                     
+                    <SearchBar />
+
                     {profile}
                     
                 </Navbar.Collapse>
