@@ -116,7 +116,7 @@ module.exports = class UserController {
         let username = req.params.username;
 
         let subscribers = await dbDrive.executeQuery(
-            "SELECT UBuyer.Username, P.ID AS 'ProvinceID', P.Name AS 'Province' " + 
+            "SELECT UBuyer.Username, P.ID AS 'ProvinceID', P.Name AS 'Province', UBuyer.ProfileImage " + 
             "FROM [Subscription] S " +
             "JOIN [User] UBuyer ON UBuyer.ID = S.UserID " + 
             "JOIN [Address] A ON A.ID = UBuyer.AddressID " + 
@@ -131,7 +131,7 @@ module.exports = class UserController {
         let username = req.params.username;
 
         let subscribers = await dbDrive.executeQuery(
-            "SELECT UArtist.Username, P.ID AS 'ProvinceID', P.Name AS 'Province' " + 
+            "SELECT UArtist.Username, P.ID AS 'ProvinceID', P.Name AS 'Province', UArtist.ProfileImage " + 
             "FROM [Subscription] S " +
             "JOIN [User] UArtist ON UArtist.ID = S.TargetUserID " + 
             "JOIN [Address] A ON A.ID = UArtist.AddressID " + 
@@ -140,6 +140,36 @@ module.exports = class UserController {
             "WHERE UBuyer.Username = '" + username + "'"
         );
         return res.json(subscribers[0]);
+    }
+    
+    getSubscribersCount = async (req, res)=> {
+        let username = req.params.username;
+
+        let subscribers = await dbDrive.executeQuery(
+            "SELECT COUNT(UArtist.Username) AS 'Count' " + 
+            "FROM [Subscription] S " +
+            "JOIN [User] UBuyer ON UBuyer.ID = S.UserID " + 
+            "JOIN [Address] A ON A.ID = UBuyer.AddressID " + 
+            "JOIN [Province] P ON P.ID = A.ProvinceID " + 
+            "JOIN [User] UArtist ON UArtist.ID = S.TargetUserID " + 
+            "WHERE UArtist.Username = '" + username + "'"
+        );
+        return res.json(subscribers[0][0].Count);
+    }
+    
+    getSubscribedToCount = async (req, res)=> {
+        let username = req.params.username;
+
+        let subscribers = await dbDrive.executeQuery(
+            "SELECT COUNT(UBuyer.Username) AS 'Count' " + 
+            "FROM [Subscription] S " +
+            "JOIN [User] UArtist ON UArtist.ID = S.TargetUserID " + 
+            "JOIN [Address] A ON A.ID = UArtist.AddressID " + 
+            "JOIN [Province] P ON P.ID = A.ProvinceID " + 
+            "JOIN [User] UBuyer ON UBuyer.ID = S.UserID " + 
+            "WHERE UBuyer.Username = '" + username + "'"
+        );
+        return res.json(subscribers[0][0].Count);
     }
 
     // Get number of profiles subscribed to this user
@@ -248,8 +278,6 @@ module.exports = class UserController {
     search = async (req, res)=> {
         let input = req.body.Input;
         let count = req.body.Count;
-
-        console.log(req.body);
 
         let result = await dbDrive.executeQuery(
             `SELECT TOP ${count} U.ID, U.Username, U.Birthday, P.ID AS 'ProvinceID', P.Name AS 'ProvinceName', U.ProfileImage

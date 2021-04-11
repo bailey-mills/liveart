@@ -48,6 +48,8 @@ routes.get('/user/bio/:username', userProfileController.getBio);
 routes.get('/user/getUser/:username', userProfileController.getUser);
 routes.get('/user/getSubscribers/:username', userProfileController.getSubscribers);
 routes.get('/user/getSubscribedTo/:username', userProfileController.getSubscribedTo);
+routes.get('/user/getSubscribersCount/:username', userProfileController.getSubscribersCount);
+routes.get('/user/getSubscribedToCount/:username', userProfileController.getSubscribedToCount);
 routes.post('/user/toggleSubscription', userProfileController.toggleSubscription);
 routes.post('/user/checkSubscription', userProfileController.checkSubscription);
 routes.post('/user/search', userProfileController.search);

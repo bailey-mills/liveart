@@ -42,7 +42,6 @@ function UserSearch(){
                     <input type="text" className="ml-3" value={searchInput} onChange={(e) => 
                         handleSearch(e)
                     }></input>
-                    <Button className="ml-3 vertical-center" onClick={handleSearch}>Search</Button>
                 </div>
             </div>
 

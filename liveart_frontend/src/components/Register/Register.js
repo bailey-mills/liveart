@@ -171,8 +171,8 @@ function Register() {
             value={pwd}
             onChange={(e) => setPwd(e.target.value)}
             required 
-            maxlength="20"
-            minlength="8"      
+            maxLength="20"
+            minLength="8"      
             />
             
             <Form.Control.Feedback type="invalid">
@@ -195,8 +195,8 @@ function Register() {
             placeholder="Password" 
             value={cfmpwd}
             onChange={(e) => setCfmpwd(e.target.value) }
-            maxlength="20"
-            minlength="6"      
+            maxLength="20"
+            minLength="6"      
             class="confirm-password"
             
             />

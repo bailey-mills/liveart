@@ -86,8 +86,8 @@ function PasswordReset(props) {
                     value={currentpassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
                     required 
-                    maxlength="20"
-                    minlength="8"      
+                    maxLength="20"
+                    minLength="8"      
                     />                          
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid password.
@@ -104,8 +104,8 @@ function PasswordReset(props) {
                     value={newpassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     required 
-                    maxlength="20"
-                    minlength="8"      
+                    maxLength="20"
+                    minLength="8"      
                     />                          
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid password.
@@ -126,8 +126,8 @@ function PasswordReset(props) {
                     value={confirmpassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required 
-                    maxlength="20"
-                    minlength="8"      
+                    maxLength="20"
+                    minLength="8"      
                     />                          
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid password.
