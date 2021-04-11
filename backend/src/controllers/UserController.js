@@ -224,8 +224,6 @@ module.exports = class UserController {
 
         let subbed = await this.methodCheckSubscription(user, target);
 
-        console.log(subbed);
-        console.log(req.body);
         return res.json({
             Subscribed: subbed
         });
