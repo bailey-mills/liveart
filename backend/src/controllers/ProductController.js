@@ -4,11 +4,8 @@ const QueryBuilder = require('../dal/queryBuilder');
 let dbDrive = new DbDrive();
 let queryBuilder = new QueryBuilder();
 
-module.exports = class ProductController {
-
-    getSoldProducts = async (req, res) => {
-        let username = req.params.username;
-
+module.exports = class ProductController {    
+    async methodSoldProducts(username) {
         // GET SOLD PRODUCTS
         let soldProducts = await dbDrive.executeQuery(
             "SELECT P.ID, P.Name, P.Summary AS 'ProductDescription', P.PreviewURL AS 'ProductURL', P.BasePrice, B.Amount AS 'FinalPrice', SE.EventID, E.Title AS 'EventName', E.StartTime, E.EndTime, U.Username AS 'EventHostUsername' " + 
@@ -40,6 +37,15 @@ module.exports = class ProductController {
                 }
             }
         }
+
+        return soldProducts;
+    }
+
+    getSoldProducts = async (req, res) => {
+        let username = req.params.username;
+
+        // GET SOLD PRODUCTS
+        let soldProducts = await this.methodSoldProducts(username);
 
         return res.json(soldProducts[0]);
     }

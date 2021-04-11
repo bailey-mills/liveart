@@ -48,10 +48,10 @@ routes.get('/user/getSubscribers/:username', userProfileController.getSubscriber
 // --------
 //  EVENTS
 // --------
-routes.get('/event/getRecommended', eventController.getRecommendEvents);
+routes.get('/event/getRecommended/:username?', eventController.getRecommendEvents);
 routes.get('/event/getSubscribed/:username', eventController.getSubscribedEvents);
 routes.get('/event/getPlanned/:username', eventController.getPlannedEvents);
-routes.post('/event/createEvent', eventController.createEvent);
+routes.post('/event/createEvent/:userID', eventController.createEvent);
 
 // ----------
 //  PRODUCTS
