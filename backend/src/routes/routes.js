@@ -64,6 +64,7 @@ routes.get('/product/getPurchased/:username', productController.getPurchasedProd
 // ----------
 // AUCTIONS
 // ----------
+routes.get('/auction/getHost/:eventID', auctionController.getHost);
 routes.get('/auction/getProducts/:eventID',auctionController.getEventProducts);
 routes.get('/auction/getHighestBid/:productID', auctionController.getHighestBid);
 routes.get('/auction/getCurrentBiddingProduct/:eventID', auctionController.getCurrentProductID);
