@@ -263,7 +263,8 @@ export default function Auction(props){
                     </div>
                     <div className="title-area ahost rounded">
                         Host: <b>{eventInfo!==null ? eventInfo.Username : "host name"}</b>
-                        {subsribecondition===false ?  <Button className="btn-success btn-sm mt-2" onClick={handleSubscribe}>Subscribe</Button> : <Button className="btn-danger btn-sm mt-2" onClick={handleSubscribe}>Unsubscribe</Button>}
+
+                        {role==="audience" ? subsribecondition===false ?  <Button className="btn-success btn-sm mt-2" onClick={handleSubscribe}>Subscribe</Button> : <Button className="btn-danger btn-sm mt-2" onClick={handleSubscribe}>Unsubscribe</Button> : ""}
                     </div>
                     {/* <div className="title-area aaudience rounded">
                         audience number: 100
