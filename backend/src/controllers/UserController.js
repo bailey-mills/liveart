@@ -84,8 +84,57 @@ module.exports = class UserController {
         return res.json(ret);
     }
     
+    updateUser = async (req, res)=> {
+        let username = req.params.username;
+        console.log(req.body);
+        
+        // Try to find the user
+        let dbUserResult = await dbDrive.executeQuery(`SELECT TOP 1 ID FROM [dbo].[User] WHERE username='${username}'`);
+        let dbUser = dbUserResult[0];
+
+        // Cancel if the user is not found
+        if(dbUser.length == 0) {
+            return res.status(404).send({ message: 'User not found!' });
+        }
+        
+        // Update the user
+        let userID = dbUserResult[0][0].ID;
+        let user = req.body;
+        await dbDrive.executeQuery(
+            `UPDATE [User] SET
+            ProfileImage = '${user.Avatar}',
+            Birthday = '${user.Birthday}'
+            WHERE ID = ${userID}`
+        );
+
+        // Update Address
+        await dbDrive.executeQuery(
+            `UPDATE [Address] SET
+            Street = '${user.Street}',
+            City = '${user.City}',
+            ProvinceID = ${user.ProvinceID},
+            PostalCode = '${user.PostalCode}'
+            WHERE ID = ${userID}`
+        );
+
+        // Delete old tags
+        await dbDrive.executeQuery(
+            `DELETE FROM [UserToTag] WHERE UserID = ${userID}`
+        );
+
+        // Insert new tags
+        let i = 0;
+        if (user.Tags && user.Tags.length > 0) {
+            for (i = 0; i < user.Tags.length; i++) {
+                await dbDrive.executeQuery(`INSERT INTO [UserToTag] (TagID, UserID) VALUES (${user.Tags[i].ID}, ${userID})`);
+            }
+        }
+        
+        return res.json({ message: 'User updated successfully'});
+    }
+
     updatePassword = async (req, res)=> {
-        let oldPass = req.body.OldPassword;
+        let oldPass = req.body.CurrentPassword;
         let oldPassHash = sha256.hmac(process.env.SECRET, oldPass);
 
         let newPass = req.body.NewPassword;
@@ -99,11 +148,11 @@ module.exports = class UserController {
 
         // Cancel if the user is not found
         if(dbUser.length == 0) {
-            return res.status(404).send({ message: 'User not found!' });
+            return res.status(404).send({ message: 'User not found.' });
         }
         // Cancel if their old password wasn't correctly provided
         if (oldPassHash != dbUser[0].Password) {
-            return res.status(401).send({ message: 'Password does not match' });
+            return res.status(401).send({ message: 'Current password is not correct.' });
         }
 
         // Update database password to new password hash

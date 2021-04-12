@@ -250,7 +250,7 @@ function NewEvent(props) {
                     <InputGroup.Prepend >
                     <InputGroup.Text id="basic-addon1" >Select a Category for the Event</InputGroup.Text>
                     </InputGroup.Prepend>
-                    <select class="custom-select" id="inputGroupSelect01" onChange={(e) => setCategory(e.target.value)}>
+                    <select className="custom-select" id="inputGroupSelect01" onChange={(e) => setCategory(e.target.value)}>
                         <option value="-1" selected="selected">-- Select a Category --</option>
                         {CategorySample.map((category, index) => <option key={category.id} value={category.id}>{category.name}</option>)}
                     </select>

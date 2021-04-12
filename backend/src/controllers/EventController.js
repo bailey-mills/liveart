@@ -10,7 +10,8 @@ module.exports = class EventController {
     
     getRecommendEvents = async (req, res) => {
 
-        let randomRecommendQuery = 'SELECT TOP 6 * FROM [dbo].[Event] order by NEWID()';
+        //  E.ID AS 'EventID', E.Title AS 'EventName', E.StartTime, E.EndTime, E.CategoryID, C.Name AS 'CategoryName', USeller.Username AS 'EventHostUsername' 
+        let randomRecommendQuery = `SELECT TOP 6 * FROM [dbo].[Event] order by NEWID()`;
 
         let username = req.params.username;
 
@@ -40,21 +41,26 @@ module.exports = class EventController {
                 let result = await dbDrive.executeQuery(randomRecommendQuery);
 
                 return res.json(result[0]);
-            } else {
+            }
+            else {
                 let results = [];
 
                 let resultPromise = weightedCategoriesResult.map(async weightedPair => {
-                    let eventsResult = await dbDrive.executeQuery(`SELECT TOP ${weightedPair.Count} * FROM [dbo].[Event] 
-                                        WHERE CategoryID=${weightedPair.CategoryID} AND EndTime > CURRENT_TIMESTAMP
-                                        ORDER BY NEWID()`);
+                    let eventsResult = await dbDrive.executeQuery(
+                        `SELECT TOP ${weightedPair.Count} * 
+                        FROM [dbo].[Event] E
+                        WHERE CategoryID=${weightedPair.CategoryID}
+                        AND EndTime > CURRENT_TIMESTAMP
+                        ORDER BY NEWID()`
+                    );
 
-                        if(eventsResult[0].length > 0){
-                            eventsResult[0].map( event => {
+                    if(eventsResult[0].length > 0){
+                        eventsResult[0].map( event => {
 
-                                results.push(event);
+                            results.push(event);
 
-                            });
-                        }
+                        });
+                    }
                 });
                     
                 await Promise.all(resultPromise);
@@ -74,7 +80,7 @@ module.exports = class EventController {
 
         // GET SUBSCRIBED EVENTS
         let subscribedEvents = await dbDrive.executeQuery(
-            "SELECT E.ID AS 'EventID', E.Title AS 'EventName', E.StartTime, E.EndTime, E.CategoryID, C.Name AS 'CategoryName', USeller.Username AS 'EventHostUsername' " + 
+            "SELECT E.ID AS 'EventID', E.Title AS 'EventName', E.StartTime, E.EndTime, E.CategoryID, C.Name AS 'CategoryName', USeller.Username AS 'EventHostUsername', E.ThumbnailURL AS 'EventURL'  " + 
             "FROM [Event] E " +
             "JOIN [SellerToEvent] SE ON SE.EventID = E.ID " + 
             "JOIN [Category] C ON C.ID = E.CategoryID " + 
@@ -118,7 +124,16 @@ module.exports = class EventController {
                     "WHERE PE.EventID = " + eventID
                 );
                 if (eventProductTags[0].length > 0) {
-                    eventList[0][i].EventTags = eventProductTags[0];
+                    let j = 0;
+                    let tempIDs = [];
+                    eventList[0][i].EventTags = [];
+                    // Ensure no dupilcate tagIDs are inserted into the list
+                    for (j = 0; j < eventProductTags[0].length; j++) {
+                        if (!tempIDs.includes(eventProductTags[0][j].ID)) {
+                            eventList[0][i].EventTags.push(eventProductTags[0][j]);
+                            tempIDs.push(eventProductTags[0][j].ID);
+                        }
+                    }
                 }
             }
         }

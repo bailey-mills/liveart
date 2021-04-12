@@ -9,11 +9,7 @@ import "./Follower.css";
 
 
 function Follower(props){
-    let currentUsername = localStorage.getItem('user');;
-    if(currentUsername === null)
-    {
-        //jump to login page
-    }
+    let currentUsername = localStorage.getItem('user');
 
     const [users, setUsers] = useState([]);
     useEffect(()=>{

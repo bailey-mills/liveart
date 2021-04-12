@@ -11,10 +11,6 @@ import "./Following.css";
 function Following(props){
     // console.log(props.match.params.username);
     let currentUsername = localStorage.getItem('user');;
-    if(currentUsername===null)
-    {
-        //jump to login page
-    }
 
     const [users, setUsers] = useState([]);
     useEffect(()=>{

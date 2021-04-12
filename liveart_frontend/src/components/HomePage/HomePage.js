@@ -12,20 +12,27 @@ import Footer from "../Footer/Footer";
 
 function EventsPage(){
 
-    const [events, setEvents] = useState([]);
-    // let events = [];
+    const [subscribedEvents, setSubscribedEvents] = useState([]);
+    const [recommendedEvents, setRecommendedEvents] = useState([]);
+    
+    let username = localStorage.getItem('user') || "";
 
     useEffect(()=>{
-        axios.get('http://localhost:5000/event/getRecommended').then(res=>{
-            console.log("return code: " +res.status);
-            if(res.status!==200)
+        // Subscribed Events
+        axios.get(process.env.REACT_APP_SERVER + '/event/getSubscribed/' + username).then(res=>{
+            if(res.status === 200)
             {
-                alert("Can't connect to the backend");
-                return;
+                setSubscribedEvents(res.data.UpcomingEvents);
             }
-            // events = res.data[0];
-            setEvents(res.data);
-        })
+        });
+
+        // Recommended Events
+        axios.get(process.env.REACT_APP_SERVER + '/event/getRecommended/' + username).then(res=>{
+            if(res.status === 200)
+            {
+                setRecommendedEvents(res.data);
+            }
+        });
     },[]);
 
 
@@ -59,11 +66,11 @@ function EventsPage(){
                 <h1> Events You Subscribed</h1>
                 <div className="eventBody">
                     {/* {getData()} */}
-                    <EventSection events={events}/>
+                    <EventSection events={subscribedEvents}/>
                 </div>
                 <hr/>
                 <h1> Events You Might be interested in</h1>
-                <EventSection events={events}/>  
+                <EventSection events={subscribedEvents}/>  
                 <Footer/>     
             </React.StrictMode>
         );

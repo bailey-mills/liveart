@@ -14,14 +14,14 @@ function Footer(){
         return(       
             
 
-            <footer class="bg-dark text-center text-sm-start text-light">
+            <footer className="bg-dark text-center text-sm-start text-light">
 
-              <div class="container p-4">
+              <div className="container p-4">
 
-                <div class="row">
+                <div className="row">
 
-                  <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
-                    <h5 class="text-uppercase text-light">LIVE.ART</h5>
+                  <div className="col-lg-6 col-md-12 mb-4 mb-md-0">
+                    <h5 className="text-uppercase text-light">LIVE.ART</h5>
             
                     <p>
                       Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iste atque ea quis
@@ -30,28 +30,28 @@ function Footer(){
                     </p>
                   </div>
 
-                  <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-                    <h5 class="text-uppercase">Programmers - Team Sherba</h5>
+                  <div className="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 className="text-uppercase">Programmers - Team Sherba</h5>
             
-                    <ul class="list-unstyled mb-0">
+                    <ul className="list-unstyled mb-0">
                       <li>
-                        <a href="#!" class="text-light">Eric Lin</a>
+                        <a href="#!" className="text-light">Eric Lin</a>
                       </li>
                       <li>
-                        <a href="#!" class="text-light">Shuang Liang</a>
+                        <a href="#!" className="text-light">Shuang Liang</a>
                       </li>
                       <li>
-                        <a href="#!" class="text-light">Bailey Mills</a>
+                        <a href="#!" className="text-light">Bailey Mills</a>
                       </li>
                     </ul>
                   </div>
 
-                  <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-                    <h5 class="text-uppercase mb-0">Source Code</h5>
+                  <div className="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 className="text-uppercase mb-0">Source Code</h5>
             
-                    <ul class="list-unstyled">
+                    <ul className="list-unstyled">
                       <li>
-                        <a href="#!" class="text-dark">Github Link</a>
+                        <a href="#!" className="text-dark">Github Link</a>
                       </li>
                     </ul>
                   </div>
@@ -60,9 +60,9 @@ function Footer(){
 
               </div>
 
-              <div class="text-center text-light p-3" >
+              <div className="text-center text-light p-3" >
                 © 2020 Copyright:
-                <a class="text-light" href="https://mdbootstrap.com/">Team Sherba</a>
+                <a className="text-light" href="https://mdbootstrap.com/">Team Sherba</a>
               </div>
 
             </footer>

@@ -15,7 +15,7 @@ import axios from "axios";
 
 function UserInfo(props){
     
-    const [userinfo, setUserInfo] = useState([]);
+    const [userinfo, setUserInfo] = useState({AvatarURL: "https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg"});
     const [subsribecondition, setSubsribecondition] = useState(false);
     //get user information from the backend
     console.log(props.match.params.username);

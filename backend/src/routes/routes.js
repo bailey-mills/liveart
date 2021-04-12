@@ -17,7 +17,7 @@ let analyticsPageController = new AnalyticsPageController();
 let generalController = new GeneralController();
 
 routes.use((req, res, next) => {
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     next();
 });
@@ -46,6 +46,7 @@ routes.get('/categories', generalController.getCategories);
 // -------
 routes.get('/user/bio/:username', userProfileController.getBio);
 routes.get('/user/getUser/:username', userProfileController.getUser);
+routes.patch('/user/updateUser/:username', userProfileController.updateUser);
 routes.get('/user/getSubscribers/:username', userProfileController.getSubscribers);
 routes.get('/user/getSubscribedTo/:username', userProfileController.getSubscribedTo);
 routes.get('/user/getSubscribersCount/:username', userProfileController.getSubscribersCount);

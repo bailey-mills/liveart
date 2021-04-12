@@ -197,10 +197,10 @@ function Register() {
             onChange={(e) => setCfmpwd(e.target.value) }
             maxLength="20"
             minLength="6"      
-            class="confirm-password"
+            className="confirm-password"
             
             />
-            <text   class="password-notmatch">{pwdnotmatch}</text>
+            <text className="password-notmatch">{pwdnotmatch}</text>
 
             {/* <Form.Control.Feedback type="invalid">
                 Please provide a valid city.
@@ -270,14 +270,14 @@ function Register() {
                 <option value="-1" selected="selected">-- Select a Province --</option>
                 {allprovince.map((province, index) => <option key={province.ID} value={province.ID}>{province.Name}</option>)}
             </select>
-            <text   class="password-notmatch">{noprovinceselected}</text>
+            <text className="password-notmatch">{noprovinceselected}</text>
         </Form.Group>
         </Form.Row>
 
       {/* ---------------------------------------------------------------- */}
         <hr className="divide-line"/>
 
-        <div class="register-tagbox register-row">
+        <div className="register-tagbox register-row">
             <Form.Label>Add some tags for yourself!</Form.Label>
             <Tag onSelectedTag={setSelectedtags}/> 
         </div>
