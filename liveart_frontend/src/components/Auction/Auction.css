@@ -10,7 +10,7 @@
 }
 
 .title-area{
-    border: 1px solid;
+    border: 1px solid white;
     height: 10vh;
 }
 
@@ -20,7 +20,9 @@
 }
 
 .ahost{
-    width:10vw;
+    width:12vw;
+    padding-top: 5px;
+    text-align: center;
 }
 
 .aaudience{
@@ -35,8 +37,8 @@
 }
 
 .auction-area{
-    border: 1px solid;
-    height: 92vh;
+    border: 1px solid white;
+    height: 90vh;
 }
 
 .preview-area{
@@ -58,7 +60,7 @@
 }
 
 .livestream-area > div{
-    border: 1px solid;
+    border: 1px solid white;
 }
 
 .chat-area{
@@ -74,6 +76,10 @@
 .preview-img > li{
     text-align: center;
     
+}
+
+.preview-img{
+    border: 2px solid white;
 }
 
 .preview-img-unsold{
@@ -93,5 +99,49 @@
 }
 
 .preview-img{
+    margin: 5px;
+}
+
+.auction-currentitem{
+    display: grid;
+    margin-top: 20px;
+    
+}
+
+.auction-currentitem-description{
+    /* width: 300px; */
+    text-align: center;
+}
+
+.auction-currentitem-description > ul > li{
+    /* width: 300px; */
+    font-size: 20px;
+}
+
+.auction-currentitem-img{
+    text-align: center;
+}
+
+.auction-controller-host{
+    margin-top: 15px;
+    display: grid;
+    text-align: center;
+}
+
+.auction-controller-audience{
+    margin-top: 15px;
+    display: grid;
+    text-align: center;
+}
+
+.auction-bid-btn{
+    background-color: lightgreen;
+}
+
+.auction-bid-btn:hover{
+    background-color: green;
+}
+
+.auction-btn{
     margin: 5px;
 }

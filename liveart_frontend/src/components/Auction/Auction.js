@@ -4,106 +4,286 @@ import Navbar from "../Navbar/Navbar";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import "./Auction.css";
 import workimg from "../../Assets/workimgSample.json";
+import Button from "react-bootstrap/Button";
 
 export default function Auction(props){
-    let ItemStatusIndicator_buffer= [];
-    let ItemStatusText_buffer= [];
-    // let CurrentItemIndex = 0;
 
-    for(var i=0;i<Object.keys(workimg).length;i++)
+    let currentUsername = localStorage.getItem('user');
+    let currentUserID = localStorage.getItem('userID');
+    if(currentUsername===null || currentUserID ===null )
     {
-        ItemStatusIndicator_buffer[i] = "preview-img-unsold";
-        ItemStatusText_buffer[i] = "";
+        //jump to login page
     }
 
-    const [ItemStatusIndicator, SetItemStatusIndicator] = useState(ItemStatusIndicator_buffer);
-    const [ItemStatusText, SetItemStatusText] = useState(ItemStatusIndicator_buffer);
+    const currentEventID = props.match.params.eventid;
+    const [allItems, setAllItems] = useState([]);
+    const [eventInfo, setEventInfo] = useState([]);
+    const [currentOnBiddingItem, setCurrentOnBiddingItem] = useState(-1);
+    const [currentItemCode, setCurrentItemCode] = useState(<div>Nothing</div>);
+    const [currentHighestBidding, setCurrentHighestBidding] = useState(0);
+    const [currentItemBasePrice, setCurrentItemBasePrice] = useState(0);
+    const [role, setRole] = useState("");
+    const [bidinput, setBidinput] = useState();
+    const [error, setError] = useState("");
+    const [feedback, setFeedback] = useState("");
+    const [mylastbid, setMylastbid] = useState("");
+    const [subsribecondition, setSubsribecondition] = useState(false);
 
-    const [CurrentItemIndex, SetCurrentItemIndex] = useState(-1);
+        useEffect(() => {
+            console.log("getProducts");
+            axios.get('http://localhost:5000/auction/getProducts/'+currentEventID)
+            .then(res=>{
+              if(res.status === 200)
+              {
+                console.log(res.data);
+                setAllItems(res.data);
+              }
+                
+            });
 
-    // // console.log(props);
-    // // console.log(workimg);
+            axios.get('http://localhost:5000/auction/getCurrentBiddingProduct/'+currentEventID)
+            .then(res=>{
+              if(res.status === 200)
+              {
+                console.log(res.data);
+                setCurrentOnBiddingItem(res.data[0].CurrentBiddingProductID)
+                //setAllItems(res.data);
+              }
+                
+            });
 
-    
-    // for(var i=0;i<Object.keys(workimg).length;i++)
-    // {
-    //     ItemStatusIndicator_buffer[i] = "preview-img-unsold";
-    // }
+            axios.get('http://localhost:5000/auction/getHost/'+currentEventID)
+            .then(res=>{
+              if(res.status === 200)
+              {
+                setEventInfo(res.data[0]);
+                console.log("eventinfo",eventInfo);
+                if(res.data[0].Username === currentUsername)
+                {
+                    setRole("host");
+                }
+                else{
+                    setRole("audience");
+                }
+              }
+                
+            });
 
 
-    // function sold(event){
-    //     // console.log("sold", event);
+
+        }, [] );
+
+
+        useEffect(() => {
+
+            for(let i=0;i<allItems.length;i++){
+                if(allItems[i].ID == currentOnBiddingItem)
+                {
+                    console.log("here",allItems[i].ID);
+                    setCurrentItemBasePrice(allItems[i].BasePrice);
+                    setCurrentItemCode(
+                        <div className="auction-currentitem">
+                            <div className="auction-currentitem-description">
+                            <ul>
+                                <li>Item Name: <b>{allItems[i].Name}</b></li>
+                                <li>Description: <b>{allItems[i].Summary}</b></li>
+                                <li>Base Price: <b>${allItems[i].BasePrice}</b></li>
+                            </ul>
+
+                            </div>
+                            <div className="auction-currentitem-img">
+                            <img src={allItems[i].PreviewURL} alt={allItems[i].ID} />
+                            </div>
+                        </div>
+                    );
+                }
+            }
+                       
+            
+        }, [currentOnBiddingItem]);
+
+        useEffect(() => {
+            console.log("current on bidding item", currentOnBiddingItem);
+            if(currentOnBiddingItem!==-1 && currentOnBiddingItem!==null)
+            {
+                const interval = setInterval(() => {
+
+                    axios.get('http://localhost:5000/auction/getCurrentBiddingProduct/'+currentEventID)
+                    .then(res=>{
+                    if(res.status === 200)
+                    {
+                        console.log(res.data);
+                        setCurrentOnBiddingItem(res.data[0].CurrentBiddingProductID)
+                        //setAllItems(res.data);
+                    }
+                        
+                    });
+
+
+
+                    axios.get('http://localhost:5000/auction/getHighestBid/'+currentOnBiddingItem)
+                      .then(res=>{
+                      if(res.status === 200)
+                      {
+                          if(res.data.length > 0)
+                          {
+                            console.log("current highest bid",res.data);
+                            setCurrentHighestBidding(res.data[0]);
+                            console.log(res.data[0].Amount);
+                          }
+                          
+                          
+                          //setAllItems(res.data);
+                      }
+                          
+                      })
+      
+                  }, 1000);
+                  return () => clearInterval(interval);
+                
+            }
+        }, [currentOnBiddingItem]);
+            
+
+    function handleSold(event){
+        axios.post('http://localhost:5000/auction/createTransaction/'+currentHighestBidding.ID)
+        .then(res=>{
+          if(res.status !== 201)
+          {
+            alert("Auction Wrong");
+          }
+            
+        });
+
+        //setCurrentOnBiddingItem(currentOnBiddingItem+1);
+    }
+
+    function handleSkip(){
+        // console.log("skipped");
+        axios.patch('http://localhost:5000/auction/skipProduct/'+currentEventID)
+        .then(res=>{
+          if(res.status !== 204)
+          {
+            alert("Auction Wrong");
+          }
+            
+        });
+    }
+
+    function handleBidding(){
+        if(bidinput!== null && bidinput > currentItemBasePrice)
+        {
+            const bidinfo = {"EventID": currentEventID, "UserID":currentUserID, "Amount" : bidinput};
+            console.log("new bid:",bidinfo);
+            axios.post('http://localhost:5000/auction/createBid/'+currentOnBiddingItem, bidinfo)
+            .then(res=>{
+              if(res.status === 201)
+              {
+                setMylastbid(bidinput);
+                setFeedback("You successfully bidded."+bidinput);
+                setBidinput("");
+              }
+                
+            });
+        }
+        else
+        {
+            setError("The bid price can not be smaller than the base price!")
+        }
+
+    }
+
+    function clearNotice(){
+        setError("");
+        setFeedback("");
+    }
+
+    let controllbox;
+    if(role==="host")    //current user is the host
+    {
+        controllbox = <div className="auction-controller-host">
+            <div>
+            <button className="btn btn-outline-warning btn-sm auction-btn" onClick={handleSold}>Finish Bidding for this item</button>
+            <button className="btn btn-outline-danger btn-sm auction-btn" onClick={handleSkip}>Skip this item</button>
+            </div>
+            <div>
+                <p>Current Highest Bidding: </p>
+                <input value={currentHighestBidding.Amount} disabled />
+            </div>
         
-    //     ItemStatusIndicator_buffer[CurrentItemIndex] = "preview-img-sold";
-    //     console.log(CurrentItemIndex,ItemStatusIndicator_buffer[CurrentItemIndex]);
-    //     // SetCurrentItemIndex(CurrentItemIndex+1);
-    //     CurrentItemIndex++;
-    //     ItemStatusIndicator_buffer[CurrentItemIndex] = "preview-img-onselling";
-    //     console.log(CurrentItemIndex,ItemStatusIndicator_buffer[CurrentItemIndex]);
+        </div>
 
-    //     let ItemStatusIndicator_buffer_buffer = ItemStatusIndicator_buffer;
-    //     SetItemStatusIndicator(ItemStatusIndicator_buffer_buffer);
-    //     console.log("use state->",ItemStatusIndicator);
-    // }
+    }
+    else
+    {
+        controllbox = <div className="auction-controller-audience">
+            <div>
+                Current Highest Bidding: 
+                <input value={currentHighestBidding.Amount} disabled />
+            </div>
+            <br />
+            <div>
+            Enter your bidding: 
+            <input value={bidinput} onChange={(e) => setBidinput(e.target.value)} onClick={clearNotice} ></input>
+            <button className="ml-3 btn btn-outline-success btn-sm " onClick={handleBidding}>submit</button>
+            </div>
+            <div>
+                <p>Your Last Bid: {mylastbid}</p>
+                <div className="text-danger">{error}</div>
+                <div className="text-success">{feedback}</div>
+            </div>
+        </div>
+        
 
-    // const [onsell,setOnsell] = useState(false);
 
-    // function onSellonClick(event) {
-    //     setOnsell(!onsell);
-    // }
-
-    function sold(event){
-        let buffer = CurrentItemIndex +1;
-        SetCurrentItemIndex(buffer);
     }
 
-    useEffect(() => {
-        // SetCurrentItemIndex(CurrentItemIndex+1);
-        ItemStatusIndicator_buffer[CurrentItemIndex] = "preview-img-onselling";
-        ItemStatusText_buffer[CurrentItemIndex] = "  On Bidding...";
-        console.log(CurrentItemIndex,ItemStatusIndicator_buffer[CurrentItemIndex]);
-        SetItemStatusIndicator(ItemStatusIndicator_buffer);
-        SetItemStatusText(ItemStatusText_buffer);
-        console.log("use state->",ItemStatusIndicator);
-      }, [CurrentItemIndex]);
+    function handleSubscribe(){
+        if(subsribecondition===false)
+        {
+            //send backend a subscribe statement
+            setSubsribecondition(true);
+        }
+        else
+        {
+            //send backend a unsubscribe statement
+            setSubsribecondition(false);
+        }
+    }
 
     return(
         
         <div>
             <Navbar />
             <div className="auction-body">
-                <div className="auction-title">
-                    <div className="title-area atitle">
-                        auction page {props.match.params.username}
+                <div className="auction-title shadow p-2 mb-3 bg-body rounded">
+                    <div className="title-area atitle rounded">
+                        <h2>{eventInfo!==null ? eventInfo.EventTitle : "event title"}</h2>
+                        {eventInfo!==null ? eventInfo.EventSummary : "event description"}
                     </div>
-                    <div className="title-area ahost">
-                        Host: ericlin
-                        <button >subscribe</button>
+                    <div className="title-area ahost rounded">
+                        Host: <b>{eventInfo!==null ? eventInfo.Username : "host name"}</b>
+                        {subsribecondition===false ?  <Button className="btn-success btn-sm mt-2" onClick={handleSubscribe}>Subscribe</Button> : <Button className="btn-danger btn-sm mt-2" onClick={handleSubscribe}>Unsubscribe</Button>}
                     </div>
-                    <div className="title-area aaudience">
+                    {/* <div className="title-area aaudience rounded">
                         audience number: 100
-                    </div>
+                    </div> */}
                     
                 </div>
-                <div className="auction-main">
-                    <div className="auction-area preview-area">
+                <div className="auction-main shadow p-2 mb-3 bg-body rounded">
+                    <div className="auction-area preview-area rounded">
                         <div className="preview-title">
                             <h3>Preview</h3>
                             <hr/>
                         </div>
-                        <div className="preview-img-set">
+                        <div className="preview-img-set rounded">
                             <ul>
-                                {
-                                    
-                                    workimg.map((img,index) =>{
+                                {                                   
+                                    allItems && allItems.map((item,index) =>{
                                         console.log();
                                         return(
-                                            //<div className={"preview-img "+ItemStatusIndicator[index]}>
-                                            /* <div className={"preview-img preview-img-unsold"}>
-                                            <div className={onsell ? 'preview-img preview-img-onselling': "preview-img preview-img-unsold"} > */
-                                            //<div className={"preview-img preview-img-unsold"}>
-                                            <div className={"preview-img "+ItemStatusIndicator[index]}>
-                                            <li><p>{img.id}{ItemStatusText[index]}</p><img id={img.id} src={img.url} alt={img.id} /> </li>
+                                            <div className={"preview-img "}>
+                                            <li><p>{item.Name}</p><img id={item.ID} src={item.PreviewURL} alt={item.ID} /> </li>
                                             </div> 
                                         );
                                     })
@@ -113,19 +293,21 @@ export default function Auction(props){
                         </div>
                     </div>
 
-
-                    <div className="auction-area livestream-area">
+                    
+                    <div className="auction-area livestream-area rounded">
                         <div className="livestream-videobox">
-                        live stream
+                        {currentItemCode}
+                        {/* {currentOnBiddingItem} */}
                         </div>
                         <div className="livestream-controlltable">
-                        <button onClick={sold}>Finish Bidding for this item</button>
+                        
+                        {controllbox}
                         </div>
                     </div>
 
 
-                    <div className="auction-area chat-area">
-                        chat
+                    <div className="auction-area chat-area rounded">
+                        
                     </div>
                 </div>
                 
