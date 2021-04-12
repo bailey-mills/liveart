@@ -1,6 +1,8 @@
 const express = require('express');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
+
 
 const app = express();
 require('dotenv').config();
@@ -8,6 +10,7 @@ require('dotenv').config();
 // json data and urls
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 // session
 app.use(session({
