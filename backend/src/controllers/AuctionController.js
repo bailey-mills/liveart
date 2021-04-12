@@ -34,6 +34,10 @@ class AuctionController {
     getHighestBid = async (req, res) => {
         let productID = req.params.productID;
 
+        if(!productID){
+            return res.send([]);
+        }
+
         let highestBidQuery = queryBuilder.getFromjoin(['Bid'], 
         ['TOP 1 Bid.ID','[dbo].[User].Username', '[dbo].[Bid].Amount', '[dbo].[Bid].Timestamp'],
         [{joinTable: '[dbo].[User]', referenceKeys: '[dbo].[User].ID = Bid.userID'}], 
