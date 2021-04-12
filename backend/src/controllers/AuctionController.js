@@ -17,7 +17,7 @@ class AuctionController {
        WHERE SellerToEvent.EventID=${eventID}`);
 
 
-       res.send(hostResult[0]);
+       return res.send(hostResult[0]);
                 
     }
 
@@ -76,7 +76,7 @@ class AuctionController {
             await dbDrive.executeQuery(`UPDATE Event SET CurrentBiddingProductID=NULL WHERE ID=${eventID}`);
         }
 
-        res.status(204).send({});
+       return res.status(204).send({});
      
         
     }
@@ -96,7 +96,7 @@ class AuctionController {
         await dbDrive.executeQuery(query);
 
 
-        res.status(201).send({message:`Bid created!`});
+        return res.status(201).send({message:`Bid created!`});
 
 
     }
@@ -105,10 +105,27 @@ class AuctionController {
         let bidID = req.params.bidID;
 
         //update product table IsSold
+        await dbDrive.executeQuery(`UPDATE Product SET IsSold=1 WHERE ID=(SELECT ProductID FROM Bid WHERE ID = ${bidID})`);
 
-        //update event table currentBiddingProductID
+        //update event table currentBiddingProductID if nextproductID is not null
+        let nextProductIDResult = await dbDrive.executeQuery(`SELECT TOP 1 ProductToEvent.ProductID from ProductToEvent 
+        Join Bid on ProductToEvent.EventID = Bid.EventID AND
+        ProductToEvent.ProductID > (SELECT CurrentBiddingProductID FROM Event JOIN Bid on Event.ID = Bid.EventID WHERE Bid.ID=${bidID})`);
 
+
+        //update event table currentBiddingProductID to the nextProductID
+        if(nextProductIDResult[0].length > 0){
+            await dbDrive.executeQuery(`UPDATE Event 
+            SET CurrentBiddingProductID=${nextProductIDResult[0][0].ProductID} WHERE ID=(SELECT EventID FROM Bid WHERE ID=${bidID})`);
+        } else {
+            await dbDrive.executeQuery(`UPDATE Event SET CurrentBiddingProductID=NULL WHERE ID=(SELECT EventID FROM Bid WHERE ID=${bidID})`);
+        }
         //insert the bidID into transaction table
+        await dbDrive.executeQuery(`INSERT INTO [dbo].[Transaction] (BidID) VALUES (${bidID})`);
+
+
+        return res.status(201).send({message: 'transaction created!'});
+
     }
 
 }
