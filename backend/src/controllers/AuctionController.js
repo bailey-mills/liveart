@@ -10,7 +10,10 @@ class AuctionController {
     getHost = async (req, res) => {
         let eventID = req.params.eventID;
 
-       let hostResult = await dbDrive.executeQuery(`SELECT ID, Username from [dbo].[User] JOIN SellerToEvent on [dbo].[User].ID=SellerToEvent.UserID 
+       let hostResult = await dbDrive.executeQuery(`SELECT [dbo].[User].ID as EventID, [dbo].[User].Username, [dbo].[Event].Title as 'EventTitle', [dbo].[Event].Summary as 'EventSummary'
+       from [dbo].[User] 
+       JOIN SellerToEvent on [dbo].[User].ID=SellerToEvent.UserID 
+       JOIN [dbo].[Event] on SellerToEvent.EventID = [dbo].[Event].ID
        WHERE SellerToEvent.EventID=${eventID}`);
 
 
@@ -81,15 +84,25 @@ class AuctionController {
 
     createBid = async (req,res) => {
         let productID = req.params.productID;
+        let eventID = parseInt(req.body.EventID);
+        let userID = parseInt(req.body.UserID);
+        let amount = parseInt(req.body.Amount);
+        let date = moment.utc(moment()).format("YYYY-MM-DD HH:MM:ss");
+        
+
+        let query = `INSERT INTO Bid (ProductID, EventID, UserID, Amount, Timestamp) 
+        VALUES (${productID}, ${eventID}, ${userID}, ${amount}, '${date}')`;
+
+        await dbDrive.executeQuery(query);
 
 
-        console.log(moment.utc().toDate());
+        res.status(201).send({message:`Bid created!`});
+
 
     }
 
     createTransaction = async (req, res) => {
         let bidID = req.params.bidID;
-        let isSold = req.query.IsSold;
 
         //update product table IsSold
 
