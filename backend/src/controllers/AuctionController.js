@@ -1,5 +1,6 @@
 const DbDrive = require('../dal/dbDrive');
 const QueryBuilder = require('../dal/queryBuilder');
+const moment = require('moment');
 
 let dbDrive = new DbDrive();
 let queryBuilder = new QueryBuilder();
@@ -76,6 +77,9 @@ class AuctionController {
 
     createBid = async (req,res) => {
         let productID = req.params.productID;
+
+
+        console.log(moment.utc().toDate());
 
     }
 
