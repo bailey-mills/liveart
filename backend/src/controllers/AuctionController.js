@@ -5,6 +5,18 @@ let dbDrive = new DbDrive();
 let queryBuilder = new QueryBuilder();
 
 class AuctionController {
+
+    getHost = async (req, res) => {
+        let eventID = req.params.eventID;
+
+       let hostResult = await dbDrive.executeQuery(`SELECT ID, Username from [dbo].[User] JOIN SellerToEvent on [dbo].[User].ID=SellerToEvent.UserID 
+       WHERE SellerToEvent.EventID=${eventID}`);
+
+
+       res.send(hostResult[0]);
+                
+    }
+
     getEventProducts = async (req, res) => {
         let eventID = req.params.eventID;
 
@@ -21,7 +33,8 @@ class AuctionController {
     getHighestBid = async (req, res) => {
         let productID = req.params.productID;
 
-        let highestBidQuery = queryBuilder.getFromjoin(['Bid'], ['TOP 1 Bid.ID','[dbo].[User].Username', '[dbo].[Bid].Amount', '[dbo].[Bid].Timestamp'],
+        let highestBidQuery = queryBuilder.getFromjoin(['Bid'], 
+        ['TOP 1 Bid.ID','[dbo].[User].Username', '[dbo].[Bid].Amount', '[dbo].[Bid].Timestamp'],
         [{joinTable: '[dbo].[User]', referenceKeys: '[dbo].[User].ID = Bid.userID'}], 
         `Bid.ProductID = ${productID}`, '[dbo].[Bid].Amount DESC');
 
