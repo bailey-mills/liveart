@@ -35,3 +35,10 @@
   height: 420;
 }
 
+.slideshow-title {
+  text-shadow: 2px 2px 3px black, 0 0 2em black, 0 0 0.4em black, 15px 15px 0.4em black;
+}
+
+.slideshow-host {
+  text-shadow: 2px 2px 3px black, 0 0 2em black, 0 0 0.4em black, 15px 15px 0.4em black;
+}

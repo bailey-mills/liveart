@@ -14,6 +14,7 @@ function EventsPage(){
 
     const [subscribedEvents, setSubscribedEvents] = useState([]);
     const [recommendedEvents, setRecommendedEvents] = useState([]);
+    const [slideshowEvents, setSlideshowEvents] = useState([]);
     
     let username = localStorage.getItem('user') || "";
 
@@ -33,13 +34,21 @@ function EventsPage(){
                 setRecommendedEvents(res.data);
             }
         });
+
+        // Slideshow Events
+        axios.get(process.env.REACT_APP_SERVER + '/event/getSlideshow/').then(res=>{
+            if(res.status === 200)
+            {
+                setSlideshowEvents(res.data);
+            }
+        });
     },[]);
 
     return(
         <React.StrictMode>
 
             <Navbar />
-            <Slideshow />
+            <Slideshow events={slideshowEvents} />
             <hr/>
             <h1> Events You Subscribed</h1>
             <div className="eventBody">

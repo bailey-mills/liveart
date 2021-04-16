@@ -158,6 +158,21 @@ module.exports = class EventController {
         return res.json(events[0]);
     }
     
+    getSlideshow = async (req, res) => {
+        // GET 6 UPCOMING / ACTIVE EVENTS
+        let now = moment().utc().toISOString();
+        let events = await dbDrive.executeQuery(
+            "SELECT TOP 5 E.ID AS 'EventID', E.Title AS 'EventName', USeller.Username AS 'EventHostUsername', E.ThumbnailURL AS 'EventURL' " + 
+            "FROM [Event] E " +
+            "JOIN [SellerToEvent] SE ON SE.EventID = E.ID " + 
+            "JOIN [Category] C ON C.ID = E.CategoryID " + 
+            "JOIN [User] USeller ON USeller.ID = SE.UserID " + 
+            `WHERE E.EndTime >= '${now}' `
+        );
+
+        return res.json(events[0]);
+    }
+    
     getPlannedEvents = async (req, res) => {
         let username = req.params.username;
             

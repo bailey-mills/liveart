@@ -64,6 +64,7 @@ routes.get('/event/getSubscribed/:username', eventController.getSubscribedEvents
 routes.get('/event/getPlanned/:username', eventController.getPlannedEvents);
 routes.post('/event/createEvent/:userID', eventController.createEvent);
 routes.get('/event/getByTag/:tagName', eventController.getTagEvents);
+routes.get('/event/getSlideshow', eventController.getSlideshow);
 
 // ----------
 //  PRODUCTS

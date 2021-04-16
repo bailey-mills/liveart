@@ -139,15 +139,6 @@ function MyNavbar(){
                 }
 
                 setCategories(menus);
-
-                /*                    
-                    <NavDropdown title="Filter" id="collasible-nav-dropdown" className="pr-4 pt-3 pb-3 text-light" >
-                        <NavDropdown.Item href="/userprofile/bio">Bio</NavDropdown.Item>
-                        <NavDropdown.Divider />
-                        <NavDropdown.Item href="/userprofile/subsevents">Subscribed Events</NavDropdown.Item>
-                        <NavDropdown.Item href="/userprofile/plannedevents">Planned Events</NavDropdown.Item>
-                    </NavDropdown>
-                */
             }
         });
     },[]);
