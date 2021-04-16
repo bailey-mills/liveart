@@ -39,6 +39,7 @@ routes.patch('/user/updatePassword', userProfileController.updatePassword);
 // ---------
 routes.get('/provinces',generalController.getProvinces);
 routes.get('/all-tags', generalController.getTags);
+routes.get('/all-tags-sorted', generalController.getTagsSorted);
 routes.get('/categories', generalController.getCategories);
 
 // -------
@@ -62,6 +63,7 @@ routes.get('/event/getRecommended/:username?', eventController.getRecommendEvent
 routes.get('/event/getSubscribed/:username', eventController.getSubscribedEvents);
 routes.get('/event/getPlanned/:username', eventController.getPlannedEvents);
 routes.post('/event/createEvent/:userID', eventController.createEvent);
+routes.get('/event/getByTag/:tagName', eventController.getTagEvents);
 
 // ----------
 //  PRODUCTS

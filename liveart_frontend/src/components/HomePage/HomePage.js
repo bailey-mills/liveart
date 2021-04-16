@@ -35,47 +35,24 @@ function EventsPage(){
         });
     },[]);
 
+    return(
+        <React.StrictMode>
 
-
-
-    // function getData(){
-    //     console.log("getdata");
-    //     axios.get('http://localhost:5000/event/getRecommended').then(res=>{
-    //         console.log("return code: " +res.status);
-    //         if(res.status!==200)
-    //         {
-    //             alert("Can't connect to the backend");
-    //             return;
-    //         }
-
-    //         useEffect(() => setA(2), [])
-    //         // events = res.data[0];
-    //         setEvents(res.data[0]);
-    //         console.log("json: "+events);
-    //     });
-    // }
-
-
-
-        return(
-            <React.StrictMode>
-
-                <Navbar />
-                <Slideshow />
-                <hr/>
-                <h1> Events You Subscribed</h1>
-                <div className="eventBody">
-                    {/* {getData()} */}
-                    <EventSection events={subscribedEvents}/>
-                </div>
-                <hr/>
-                <h1> Events You Might be interested in</h1>
-                <EventSection events={subscribedEvents}/>  
-                <Footer/>     
-            </React.StrictMode>
-        );
+            <Navbar />
+            <Slideshow />
+            <hr/>
+            <h1> Events You Subscribed</h1>
+            <div className="eventBody">
+                {/* {getData()} */}
+                <EventSection events={subscribedEvents}/>
+            </div>
+            <hr/>
+            <h1> Events You Might be interested in</h1>
+            <EventSection events={recommendedEvents}/>  
+            <Footer/>     
+        </React.StrictMode>
+    );
 
 }
-
 
 export default EventsPage;

@@ -34,7 +34,7 @@ class App extends React.Component {
                 <Router>
                     <Switch>
                         <Route path="/" exact component={HomePage} />    
-                        <Route path="/events" exact component={EventsPage} />
+                        <Route path="/events/:tagName" exact component={EventsPage} />
                         <Route path="/register" exact component={Register} />
                         <Route path="/contactus" exact component={Contactus} />
                         <Route path="/usersearch" exact component={UserSearch} />

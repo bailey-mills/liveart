@@ -9,17 +9,31 @@ let queryBuilder = new QueryBuilder();
 module.exports = class EventController {
     
     getRecommendEvents = async (req, res) => {
-
-        //  E.ID AS 'EventID', E.Title AS 'EventName', E.StartTime, E.EndTime, E.CategoryID, C.Name AS 'CategoryName', USeller.Username AS 'EventHostUsername' 
-        let randomRecommendQuery = `SELECT TOP 6 * FROM [dbo].[Event] order by NEWID()`;
+        /*
+            // GET SUBSCRIBED EVENTS
+            let subscribedEvents = await dbDrive.executeQuery(
+                "SELECT E.ID AS 'EventID', E.Title AS 'EventName', E.StartTime, E.EndTime, E.CategoryID, C.Name AS 'CategoryName', USeller.Username AS 'EventHostUsername', E.ThumbnailURL AS 'EventURL'  " + 
+                "FROM [Event] E " +
+                "JOIN [SellerToEvent] SE ON SE.EventID = E.ID " + 
+                "JOIN [Category] C ON C.ID = E.CategoryID " + 
+                "JOIN [Subscription] S ON S.TargetUserID = SE.UserID " + 
+                "JOIN [User] UBuyer ON UBuyer.ID = S.UserID " + 
+                "JOIN [User] USeller ON USeller.ID = SE.UserID " + 
+                "WHERE UBuyer.Username = '" + username + "' " +
+                `AND E.StartTime > '${dateRange.daysBack}' ` +
+                `AND E.StartTime < '${dateRange.daysForward}'`
+            );
+            
+            // GET EVENT TAGS (from each product in the event(s))
+            subscribedEvents = await this.methodEventTags(subscribedEvents);
+        */
+        
 
         let username = req.params.username;
+        let now = moment().utc().toISOString();
 
         // not logged in, give random recommendations
-        if(!username){
-            let result = await dbDrive.executeQuery(randomRecommendQuery);
-            return res.json(result[0]);
-        } else {
+        if(username) {
             // get user tags to calcuate weights
             let weightedCategoriesQuery = 
             queryBuilder.getFromjoin(['[dbo].[UserToTag]'],['Tag.CategoryID',"Count(UserToTag.TagID) as 'Count'"],
@@ -35,30 +49,28 @@ module.exports = class EventController {
             let result = await dbDrive.executeQuery(weightedCategoriesQuery);
 
             let weightedCategoriesResult = result[0];
-
             
-            if(weightedCategoriesResult.length == 0){
-                let result = await dbDrive.executeQuery(randomRecommendQuery);
-
-                return res.json(result[0]);
-            }
-            else {
+            if(weightedCategoriesResult.length != 0) {
                 let results = [];
 
                 let resultPromise = weightedCategoriesResult.map(async weightedPair => {
+                    let where = `WHERE E.CategoryID=${weightedPair.CategoryID} AND E.EndTime >= '${now}'`;
+                    let count = Math.floor(30 / weightedCategoriesResult.length);
+                    console.log("COunt: " + count);
                     let eventsResult = await dbDrive.executeQuery(
-                        `SELECT TOP ${weightedPair.Count} * 
+                        `SELECT TOP ${count} E.ID AS 'EventID', E.Title AS 'EventName', E.StartTime, E.EndTime, E.CategoryID, C.Name AS 'CategoryName', USeller.Username AS 'EventHostUsername', E.ThumbnailURL AS 'EventURL'
                         FROM [dbo].[Event] E
-                        WHERE CategoryID=${weightedPair.CategoryID}
-                        AND EndTime > CURRENT_TIMESTAMP
-                        ORDER BY NEWID()`
+                        JOIN [SellerToEvent] SE ON SE.EventID = E.ID
+                        JOIN [Category] C ON C.ID = E.CategoryID
+                        JOIN [User] USeller ON USeller.ID = SE.UserID
+                        ${where}
+                        ORDER BY E.StartTime`
                     );
+                    eventsResult = await this.methodEventTags(eventsResult);
 
                     if(eventsResult[0].length > 0){
                         eventsResult[0].map( event => {
-
                             results.push(event);
-
                         });
                     }
                 });
@@ -68,14 +80,31 @@ module.exports = class EventController {
                 return res.json(results);
 
             }
-            
         }
+        
+        let where = `WHERE E.EndTime >= '${now}' `;
+
+        //  "WHERE UBuyer.Username = '" + username + "' " +
+
+        // Return a random list of events instead
+        let randomEvents = await dbDrive.executeQuery(
+            "SELECT TOP 30 E.ID AS 'EventID', E.Title AS 'EventName', E.StartTime, E.EndTime, E.CategoryID, C.Name AS 'CategoryName', USeller.Username AS 'EventHostUsername', E.ThumbnailURL AS 'EventURL'  " + 
+            "FROM [Event] E " +
+            "JOIN [SellerToEvent] SE ON SE.EventID = E.ID " + 
+            "JOIN [Category] C ON C.ID = E.CategoryID " + 
+            "JOIN [User] USeller ON USeller.ID = SE.UserID " + 
+            where +
+            "ORDER BY E.StartTime"
+        );
+        randomEvents = await this.methodEventTags(randomEvents);
+
+        return res.json(randomEvents[0]);
     }
 
     getSubscribedEvents = async (req, res) => {
         let username = req.params.username;
 
-        // Limit data to between 7 days ago, and 14 days ahead
+        // Limit data to date range
         let dateRange = this.getDateRange(3, 7);
 
         // GET SUBSCRIBED EVENTS
@@ -99,6 +128,34 @@ module.exports = class EventController {
         subscribedEvents = await this.methodOrganizeEvents(subscribedEvents);
 
         return res.json(subscribedEvents);
+    }
+    
+    getTagEvents = async (req, res) => {
+        let tagName = req.params.tagName;
+
+        // GET EVENTS BY TAG
+        let now = moment().utc().toISOString();
+        let events = await dbDrive.executeQuery(
+            "SELECT TOP 30 E.ID AS 'EventID', E.Title AS 'EventName', E.StartTime, E.EndTime, E.CategoryID, C.Name AS 'CategoryName', USeller.Username AS 'EventHostUsername', E.ThumbnailURL AS 'EventURL'  " + 
+            "FROM [Event] E " +
+            "JOIN [SellerToEvent] SE ON SE.EventID = E.ID " + 
+            "JOIN [Category] C ON C.ID = E.CategoryID " + 
+            "JOIN [User] USeller ON USeller.ID = SE.UserID " + 
+            "RIGHT JOIN [ProductToEvent] PE ON PE.EventID = SE.EventID " + 
+            "RIGHT JOIN [Product] P ON P.ID = PE.ProductID " + 
+            "RIGHT JOIN [ProductToTag] PT ON PT.ProductID = P.ID " + 
+            "RIGHT JOIN [Tag] T ON T.ID = PT.TagID " + 
+            "WHERE T.Name = '" + tagName + "' " +
+            `AND E.EndTime >= '${now}' ` + 
+            `GROUP BY E.ID, E.Title, E.StartTime, E.EndTime, E.CategoryID, C.Name, USeller.Username, E.ThumbnailURL ORDER BY E.StartTime`
+            //`AND E.StartTime > '${dateRange.daysBack}' ` +
+            //`AND E.StartTime < '${dateRange.daysForward}'`
+        );
+        
+        // GET EVENT TAGS (from each product in the event(s))
+        events = await this.methodEventTags(events);
+
+        return res.json(events[0]);
     }
     
     getPlannedEvents = async (req, res) => {

@@ -186,3 +186,8 @@
     }
 }
 
+.tag-dropdown {
+    position: absolute;
+    margin-left: calc(50% - 400px);
+    width: 50px;
+}

@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { useState, useEffect} from "react";
 import './Navbar.css'
 import logo from '../../Assets/logo/logo2.png';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
@@ -15,7 +15,8 @@ import SearchBar from "../UserSearch/SearchBar";
 
 function MyNavbar(){
     const [profileImage, setProfileImage] = useState("https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg");
-         
+    const [categories, setCategories] = useState();    
+
     let clicked =  false;
     let history = useHistory();
 
@@ -102,16 +103,64 @@ function MyNavbar(){
         </div>;
     }
 
+    // Setup Tag dropdown menu
+    useEffect(()=>{
+        // Get tags
+        axios.get(process.env.REACT_APP_SERVER + '/all-tags-sorted').then(res=>{
+            if(res.status === 200)
+            {
+                let menus = [];
+                // Loop through tags to organize
+                let i = 0;
+                for (i = 0; i < res.data.length; i++) {
+                    let set = res.data[i];
+                    
+                    let j = 0;
+                    let tags = [];
+                    for (j = 0; j < set.Tags.length; j++) {
+                        let divider = <NavDropdown.Divider />;
+                        if (j + 1 >= set.Tags.length) {
+                            divider = null;
+                        }
+                        let name = set.Tags[j].Name;
+                        tags.push(
+                            <div>
+                                <NavDropdown.Item href={"/events/" + name}>{name}</NavDropdown.Item>
+                                { divider }
+                            </div>
+                        );
+                    }
+
+                    let dropdown = 
+                        <NavDropdown title={set.Name}>
+                            {tags}
+                        </NavDropdown>;
+                    menus.push(dropdown);
+                }
+
+                setCategories(menus);
+
+                /*                    
+                    <NavDropdown title="Filter" id="collasible-nav-dropdown" className="pr-4 pt-3 pb-3 text-light" >
+                        <NavDropdown.Item href="/userprofile/bio">Bio</NavDropdown.Item>
+                        <NavDropdown.Divider />
+                        <NavDropdown.Item href="/userprofile/subsevents">Subscribed Events</NavDropdown.Item>
+                        <NavDropdown.Item href="/userprofile/plannedevents">Planned Events</NavDropdown.Item>
+                    </NavDropdown>
+                */
+            }
+        });
+    },[]);
+
     return(       
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" sticky="top" className="p-0">
             <Navbar.Brand href="/" className="p-0"><img src={logo} alt="logo" className="navbar-img"/></Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="mr-auto">
-                    <Nav.Link href="/events">Events</Nav.Link>
-                    <Nav.Link href="/contactus" className="ml-2">Contact us</Nav.Link>
+                    {categories}
                 </Nav>
-                
+
                 <SearchBar />
 
                 {profile}
