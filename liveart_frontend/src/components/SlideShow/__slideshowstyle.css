@@ -36,9 +36,11 @@
 }
 
 .slideshow-title {
-  text-shadow: 2px 2px 3px black, 0 0 2em black, 0 0 0.4em black, 15px 15px 0.4em black;
+  text-shadow: 2px 2px 3px black, 0 0 2em black, 0 0 0.4em black, 5px 5px 0.4em black;
+  color: white !important;
 }
 
 .slideshow-host {
-  text-shadow: 2px 2px 3px black, 0 0 2em black, 0 0 0.4em black, 15px 15px 0.4em black;
+  text-shadow: 2px 2px 3px black, 0 0 2em black, 0 0 0.4em black, 5px 5px 0.4em black;
+  color: white !important;
 }

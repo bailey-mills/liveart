@@ -33,10 +33,8 @@ function SubscribeButton(props){
 
     let button = null;
     if (props.user !== props.target) {
-        if (!status) {
-            button = <Button className="btn-secondary userinfo-avatar-subscribebtn" onClick={handleSubscribe}>Unsubscribe</Button>;
-        }
-        else if(status === true)
+        button = <Button className="btn-secondary userinfo-avatar-subscribebtn" onClick={handleSubscribe}>Unsubscribe</Button>;
+        if(status === true)
         {
             button = <Button className="btn-danger userinfo-avatar-subscribebtn" onClick={handleSubscribe}>Unsubscribe</Button>;
         }

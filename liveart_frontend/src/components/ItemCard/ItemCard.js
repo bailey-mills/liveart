@@ -40,7 +40,9 @@ const ItemCard = ({ item, itemType }) => {
     {
       return (
         <Card className="itembox shadow p-2 mb-3 bg-body rounded" >
-          <Card.Img className="event-img" variant="top" src={item.ProductURL} />
+          <div class="event-img-container">
+            <Card.Img className="event-img" variant="top" src={item.ProductURL} />
+          </div>
           <div className="itemcard-body2">
             <Card.Title className="itemtitle">{item.Name}</Card.Title>
             <Card.Text className="itemdescription">

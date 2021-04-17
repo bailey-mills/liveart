@@ -56,9 +56,8 @@ module.exports = class EventController {
                 let resultPromise = weightedCategoriesResult.map(async weightedPair => {
                     let where = `WHERE E.CategoryID=${weightedPair.CategoryID} AND E.EndTime >= '${now}'`;
                     let count = Math.floor(30 / weightedCategoriesResult.length);
-                    console.log("COunt: " + count);
                     let eventsResult = await dbDrive.executeQuery(
-                        `SELECT TOP ${count} E.ID AS 'EventID', E.Title AS 'EventName', E.StartTime, E.EndTime, E.CategoryID, C.Name AS 'CategoryName', USeller.Username AS 'EventHostUsername', E.ThumbnailURL AS 'EventURL'
+                        `SELECT TOP ${count} E.ID AS 'EventID', E.Title AS 'EventName', E.StartTime, E.EndTime, E.CategoryID, C.Name AS 'CategoryName', USeller.Username AS 'EventHostUsername', E.ThumbnailURL AS 'EventURL', USeller.ProfileImage AS 'AvatarURL'
                         FROM [dbo].[Event] E
                         JOIN [SellerToEvent] SE ON SE.EventID = E.ID
                         JOIN [Category] C ON C.ID = E.CategoryID
@@ -88,7 +87,7 @@ module.exports = class EventController {
 
         // Return a random list of events instead
         let randomEvents = await dbDrive.executeQuery(
-            "SELECT TOP 30 E.ID AS 'EventID', E.Title AS 'EventName', E.StartTime, E.EndTime, E.CategoryID, C.Name AS 'CategoryName', USeller.Username AS 'EventHostUsername', E.ThumbnailURL AS 'EventURL'  " + 
+            "SELECT TOP 30 E.ID AS 'EventID', E.Title AS 'EventName', E.StartTime, E.EndTime, E.CategoryID, C.Name AS 'CategoryName', USeller.Username AS 'EventHostUsername', E.ThumbnailURL AS 'EventURL', USeller.ProfileImage AS 'AvatarURL' " + 
             "FROM [Event] E " +
             "JOIN [SellerToEvent] SE ON SE.EventID = E.ID " + 
             "JOIN [Category] C ON C.ID = E.CategoryID " + 
@@ -109,7 +108,7 @@ module.exports = class EventController {
 
         // GET SUBSCRIBED EVENTS
         let subscribedEvents = await dbDrive.executeQuery(
-            "SELECT E.ID AS 'EventID', E.Title AS 'EventName', E.StartTime, E.EndTime, E.CategoryID, C.Name AS 'CategoryName', USeller.Username AS 'EventHostUsername', E.ThumbnailURL AS 'EventURL'  " + 
+            "SELECT E.ID AS 'EventID', E.Title AS 'EventName', E.StartTime, E.EndTime, E.CategoryID, C.Name AS 'CategoryName', USeller.Username AS 'EventHostUsername', E.ThumbnailURL AS 'EventURL', USeller.ProfileImage AS 'AvatarURL'  " + 
             "FROM [Event] E " +
             "JOIN [SellerToEvent] SE ON SE.EventID = E.ID " + 
             "JOIN [Category] C ON C.ID = E.CategoryID " + 
@@ -136,7 +135,7 @@ module.exports = class EventController {
         // GET EVENTS BY TAG
         let now = moment().utc().toISOString();
         let events = await dbDrive.executeQuery(
-            "SELECT TOP 30 E.ID AS 'EventID', E.Title AS 'EventName', E.StartTime, E.EndTime, E.CategoryID, C.Name AS 'CategoryName', USeller.Username AS 'EventHostUsername', E.ThumbnailURL AS 'EventURL'  " + 
+            "SELECT TOP 30 E.ID AS 'EventID', E.Title AS 'EventName', E.StartTime, E.EndTime, E.CategoryID, C.Name AS 'CategoryName', USeller.Username AS 'EventHostUsername', E.ThumbnailURL AS 'EventURL', USeller.ProfileImage AS 'AvatarURL'  " + 
             "FROM [Event] E " +
             "JOIN [SellerToEvent] SE ON SE.EventID = E.ID " + 
             "JOIN [Category] C ON C.ID = E.CategoryID " + 
@@ -147,7 +146,7 @@ module.exports = class EventController {
             "RIGHT JOIN [Tag] T ON T.ID = PT.TagID " + 
             "WHERE T.Name = '" + tagName + "' " +
             `AND E.EndTime >= '${now}' ` + 
-            `GROUP BY E.ID, E.Title, E.StartTime, E.EndTime, E.CategoryID, C.Name, USeller.Username, E.ThumbnailURL ORDER BY E.StartTime`
+            `GROUP BY E.ID, E.Title, E.StartTime, E.EndTime, E.CategoryID, C.Name, USeller.Username, E.ThumbnailURL, USeller.ProfileImage ORDER BY E.StartTime`
             //`AND E.StartTime > '${dateRange.daysBack}' ` +
             //`AND E.StartTime < '${dateRange.daysForward}'`
         );
@@ -167,7 +166,8 @@ module.exports = class EventController {
             "JOIN [SellerToEvent] SE ON SE.EventID = E.ID " + 
             "JOIN [Category] C ON C.ID = E.CategoryID " + 
             "JOIN [User] USeller ON USeller.ID = SE.UserID " + 
-            `WHERE E.EndTime >= '${now}' `
+            `WHERE E.EndTime >= '${now}' 
+            ORDER BY E.StartTime`
         );
 
         return res.json(events[0]);
@@ -216,7 +216,7 @@ module.exports = class EventController {
     async methodPlannedEvents(username) {
         // GET PLANNED EVENTS
         let plannedEvents = await dbDrive.executeQuery(
-            "SELECT E.ID AS 'EventID', E.Title AS 'EventName', E.StartTime, E.EndTime, E.CategoryID, C.Name AS 'CategoryName', U.Username AS 'EventHostUsername', E.ThumbnailURL AS 'EventURL' " + 
+            "SELECT E.ID AS 'EventID', E.Title AS 'EventName', E.StartTime, E.EndTime, E.CategoryID, C.Name AS 'CategoryName', U.Username AS 'EventHostUsername', E.ThumbnailURL AS 'EventURL', U.ProfileImage AS 'AvatarURL' " + 
             "FROM [Event] E " +
             "JOIN [SellerToEvent] SE ON SE.EventID = E.ID " + 
             "JOIN [Category] C ON C.ID = E.CategoryID " + 
