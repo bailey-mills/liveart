@@ -24,15 +24,39 @@
     float: left;
 } */
 
+.event-card {
+    width: 382px;
+    overflow: hidden;
+}
+
+.event-img-blur{
+    object-fit:cover;
+    filter: blur(5px);
+        -webkit-filter: blur(5px);
+        -moz-filter: blur(5px);
+        -o-filter: blur(5px);
+        -ms-filter: blur(5px);
+        -webkit-backface-visibility:hidden;
+        -webkit-transform: scale(2);
+    width: 382px;
+    height: 220px;
+}
+
 .event-img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    width: 382px;
+    height: 220px;
+    object-fit: contain;
+    position: absolute;
+    left: 0px;
+    z-index: 10;
 }
 
 .event-img-container{
+    background-repeat: no-repeat;
+    background-size: 382px 220px;
     width: 382px;
     height: 220px;
+    overflow: hidden;
 }
 
 .zone {

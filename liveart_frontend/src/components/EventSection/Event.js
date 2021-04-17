@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./EventSection.css"
 import Card from "react-bootstrap/Card";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
@@ -11,9 +11,10 @@ function Event(props){
     return (
       //target="_blank" rel="noopener noreferrer" -- open in new tab
       <Link to={"/auction/"+props.event.EventID} style={{ textDecoration: 'none' }} rel="noopener noreferrer">
-        <Card className="box shadow p-2 mb-3 bg-body rounded" >
+        <Card className="box shadow p-2 mb-3 bg-body rounded event-card" >
             <div className="event-img-container">
                 <Card.Img className="event-img" variant="top" src={props.event.EventURL}/>
+                <Card.Img className="event-img-blur" variant="top" src={props.event.EventURL}/>
             </div>
             <div className="card-body2">
                 <div class="event-card-item">
