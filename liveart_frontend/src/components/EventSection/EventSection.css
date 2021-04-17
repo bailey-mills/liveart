@@ -32,10 +32,6 @@
 .event-img-blur{
     object-fit:cover;
     filter: blur(5px);
-        -webkit-filter: blur(5px);
-        -moz-filter: blur(5px);
-        -o-filter: blur(5px);
-        -ms-filter: blur(5px);
         -webkit-backface-visibility:hidden;
         -webkit-transform: scale(2);
     width: 382px;
@@ -43,11 +39,11 @@
 }
 
 .event-img{
-    width: 382px;
+    width: 96% !important;
     height: 220px;
     object-fit: contain;
     position: absolute;
-    left: 0px;
+    left: 8px !important;
     z-index: 10;
 }
 
