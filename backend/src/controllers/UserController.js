@@ -283,10 +283,12 @@ module.exports = class UserController {
                 `SELECT TOP 1 ID FROM [User] U WHERE U.Username = '${target}'`
             );
             
-            await dbDrive.executeQuery(
-                `INSERT INTO [Subscription] (UserID, TargetUserID)
-                VALUES (${userID[0][0].ID}, ${targetID[0][0].ID})`
-            );
+            if (userID[0].length > 0 && targetID[0].length > 0) {
+                await dbDrive.executeQuery(
+                    `INSERT INTO [Subscription] (UserID, TargetUserID)
+                    VALUES (${userID[0][0].ID}, ${targetID[0][0].ID})`
+                );
+            }
         }
 
         subbed = await this.methodCheckSubscription(user, target);
