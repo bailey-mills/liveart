@@ -49,7 +49,7 @@ class App extends React.Component {
                         <Route path="/userprofile/passwordreset" exact component ={PasswordReset} />
                         <Route path="/userprofile/newevent" exact component ={NewEvent} />
 
-                        <Route path="/auction/:username" exact component ={Auction} />
+                        <Route path="/auction/:eventid" exact component ={Auction} />
                     </Switch>  
 
                 </Router>  
