@@ -16,7 +16,7 @@ function UserCard(props){
     return(
         <Card>
             <Card.Body>
-                <Image style={{ width: '40px' }} src={props.User.ProfileImage} roundedCircle />
+                <Image style={{ width: '40px', height:'40px', objectFit:'cover' }} src={props.User.ProfileImage} roundedCircle />
                 <Card.Link style={{ margin: '20px' }} href={"/user/"+ props.User.Username}>{props.User.Username}</Card.Link>
             </Card.Body>
         </Card>

@@ -23,8 +23,10 @@ function EventsPage(props){
     return(
         <div>
             <Navbar/>
-            <h2>Filter: {tagName}</h2>
-            <EventSection events={events} eventClass="event-section-tall"/>   
+            <div className="home-page-content">
+                <h2 style={{textAlign:"center", marginTop:"20px", marginBottom:"10px"}}>{tagName}</h2>
+                <EventSection events={events} eventClass="event-section-tall"/>
+            </div>
         </div>
     );
     

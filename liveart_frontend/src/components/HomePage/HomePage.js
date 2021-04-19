@@ -46,18 +46,17 @@ function EventsPage(){
 
     return(
         <React.StrictMode>
-
             <Navbar />
-            <Slideshow events={slideshowEvents} />
-            <hr/>
-            <h1> Events You Subscribed</h1>
-            <div className="eventBody">
-                {/* {getData()} */}
-                <EventSection events={subscribedEvents} eventClass="event-section"/>
+            <div className="home-page-content">
+                <Slideshow events={slideshowEvents} />
+                <h2 style={{textAlign:"center", marginTop:"35px"}}>Subscriptions</h2>
+                <div className="eventBody">
+                    {/* {getData()} */}
+                    <EventSection events={subscribedEvents} eventClass="event-section"/>
+                </div>
+                <h2 style={{textAlign:"center", marginTop:"35px"}}>Events You Might be Interested In</h2>
+                <EventSection events={recommendedEvents} eventClass="event-section"/>
             </div>
-            <hr/>
-            <h1> Events You Might be interested in</h1>
-            <EventSection events={recommendedEvents} eventClass="event-section"/>  
             <Footer/>     
         </React.StrictMode>
     );

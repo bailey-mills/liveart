@@ -23,71 +23,75 @@ function SubsEvents(props){
     useEffect(()=>{
         
         axios.get(process.env.REACT_APP_SERVER + '/event/getSubscribed/'+currentUsername).then(res=>{
-            if(res.status!==200){
-                alert("Can't connect to the backend server");
-                return;
+            if(res.status == 200){
+                setEvents(res.data);
+                console.log(res.data);
             }
-    
-            setEvents(res.data);
-            //console.log("from backend", userinfo);
         })
         
     },[]);
+    
+    const activeEvents = events.ActiveEvents && events.ActiveEvents.length <= 0 ? "" :
+        <div>
+            <h4 style={{textAlign:"center", paddingTop:"15px"}}>Active Events</h4>
+            <div className="eventBody">
+                <div className="event-section">
+                {
+                    events.ActiveEvents && events.ActiveEvents.map((event, index) => {
+                        return(
+                            <Event event={event} />
+                        );
+                    })
+                }
+                </div>
+            </div>
+        </div>
 
+    const upcomingEvents = events.UpcomingEvents && events.UpcomingEvents.length <= 0 ? "" :
+        <div>
+            <h4 style={{textAlign:"center", paddingTop:"15px"}}>Upcoming Events</h4>
+            <div className="eventBody">
+                <div className="event-section">
+                {
+                    events.UpcomingEvents && events.UpcomingEvents.map((event, index) => {
+                        return(
+                            <Event event={event} />
+                        );
+                    })
+                }
+                </div>
+            </div>
+        </div>
+        
+    const pastEvents = events.PastEvents && events.PastEvents.length <= 0 ? "" :
+    <div>
+        <h4 style={{textAlign:"center", paddingTop:"15px"}}>Past Events</h4>
+        <div className="eventBody">
+            <div className="event-section">
+            {
+                events.PastEvents && events.PastEvents.map((event, index) => {
+                    return(
+                        <Event event={event} />
+                    );
+                })
+            }
+            </div>
+        </div>
+    </div>
 
     return(
         <div>
             <Navbar />
             
             <div className="main-body">
-            <Sidebar username={currentUsername}/>
-                <div className="content-body">
-                    <div>
-                        <h2>Ongoging Events</h2>
-                        <div className="planned-events">
-                        {
-                            events.ActiveEvents && events.ActiveEvents.map((event, index) => {
-
-                                return(
-                                    
-                                    <Event event={event} />
-                                );
-                            })
-                        }
-                        </div>
+                <Sidebar username={currentUsername}/>
+                <div className="content-body" style={{paddingBottom:"10px"}}>
+                    <div className="home-page-content">
+                        {activeEvents}
+                        {upcomingEvents}
+                        {pastEvents}
                     </div>
-                    <hr />
-                    <div>
-                        <h2>Upcoming Events</h2>
-                        <div className="planned-events">
-                        {
-                            events.UpcomingEvents && events.UpcomingEvents.map((event, index) => {
-
-                                return(
-                                    
-                                    <Event event={event} />
-                                );
-                            })
-                        }
-                        </div>
-                    </div>
-                    <hr />
-                    <div>
-                        <h2>Past Events</h2>
-                        <div className="planned-events">
-                        {
-                            events.PastEvents && events.PastEvents.map((event, index) => {
-                                return(
-                                    <Event event={event} />
-                                );
-                            })
-                        }
-                        </div>
-                    </div>
-                                                          
                 </div>
-                
-
             </div>
         </div>
     );

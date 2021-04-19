@@ -27,23 +27,20 @@ function Follower(props){
     return(
         <div>
             <Navbar />
-            
             <div className="main-body">
-            <Sidebar username={currentUsername}/>
+                <Sidebar username={currentUsername}/>
                 <div className="content-body">
-                    <h1>Users who are following you</h1>
-                    <div className="follower-grid">
-                    <ul className="follower-list">
-                    {
-                        users
-                    }
-                    </ul>
+                    <div className="home-page-content">
+                        <h3 style={{paddingTop:"15px", marginBottom:"15px", textAlign:"center"}}>Users who are following you</h3>
+                        <div className="following-grid">
+                            <ul className="following-list">
+                            {
+                                users
+                            }
+                            </ul>
+                        </div>
                     </div>
                 </div>
-                {/* This is UserProfile page for {props.match.params.username} */}
-                {/* This is UserProfile page for {currentUsername} */}
-                
-
             </div>
         </div>
     );

@@ -26,8 +26,9 @@
 ============================================== */
 
 .slideshow-img-size{
-  width: 800px;
   height: 400px;
+  width: 800px;
+  object-fit:contain;
 }
 
 .carousel-cus-size{

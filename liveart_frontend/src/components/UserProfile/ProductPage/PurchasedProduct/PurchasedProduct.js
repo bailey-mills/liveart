@@ -38,24 +38,22 @@ function PurchasedProduct(props){
             <div className="main-body">
             <Sidebar username={currentUsername}/>
                 <div className="content-body">
-                    <div className="purchasedproducts-title">
-                    <h1>Purchased Items</h1>
-                    </div>
-                   
-                    <div className="purchasedproducts-cards">
-                    {
-                        items && items.map((item, index) =>{
-                            return(
-                                <ItemCard item={item} itemType="sold" />
-                            );
-                        })
-                    }
+                    <div className="home-page-content">
+                        <div className="purchasedproducts-title">
+                            <h3 style={{textAlign:"center"}}>Purchased Items</h3>
+                        </div>
+                    
+                        <div className="purchasedproducts-cards-tall">
+                        {
+                            items && items.map((item, index) =>{
+                                return(
+                                    <ItemCard item={item} itemType="sold" />
+                                );
+                            })
+                        }
+                        </div>
                     </div>
                 </div>
-                {/* This is UserProfile page for {props.match.params.username} */}
-                {/* This is UserProfile page for {currentUsername} */}
-                
-
             </div>
         </div>
     );

@@ -72,7 +72,7 @@ function PasswordReset(props) {
         <Sidebar username={currentUsername}/>
         <div className="content-body">
             <div className="text-center pt-5">
-                <h1>Reset Your Password</h1>
+                <h2>Change Your Password</h2>
             </div>
         <Form className="mt-5" noValidate validated={validated} onSubmit={handleSubmit}>
             <Form.Row className="justify-content-md-center">

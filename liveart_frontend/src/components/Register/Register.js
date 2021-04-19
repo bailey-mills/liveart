@@ -124,6 +124,7 @@ function Register() {
   return (
     <div >
     <Navbar />
+    <div className="home-page-content">
     <div className="register-body">
     <h1 className="register-title">LIVE.ART Sign up</h1>
     <Form noValidate validated={validated} onSubmit={handleSubmit} >
@@ -302,6 +303,7 @@ function Register() {
     
         
         
+    </div>
     </div>
     </div>
     );

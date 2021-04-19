@@ -47,8 +47,8 @@ function UserInfo(props){
 
     const activeEvents = userinfo.PlannedEvents && userinfo.PlannedEvents.ActiveEvents.length <= 0 ? "" :
         <div>
-            Active Events: 
-            <div className="userinfo-events">
+            <h5 className="user-info-title-header">Active Events</h5>
+            <div className="soldproducts-cards">
             {userinfo.PlannedEvents && userinfo.PlannedEvents.ActiveEvents.map((event, index) => {
                     return(
                         <Event event={event} />
@@ -59,8 +59,8 @@ function UserInfo(props){
         
     const upcomingEvents = userinfo.PlannedEvents && userinfo.PlannedEvents.UpcomingEvents.length <= 0 ? "" :
         <div>
-            Upcoming Events: 
-            <div className="userinfo-events">
+            <h5 className="user-info-title-header">Upcoming Events</h5>
+            <div className="soldproducts-cards">
             {userinfo.PlannedEvents && userinfo.PlannedEvents.UpcomingEvents.map((event, index) => {
                     return(
                         <Event event={event} />
@@ -71,8 +71,8 @@ function UserInfo(props){
         
     const pastEvents = userinfo.PlannedEvents && userinfo.PlannedEvents.PastEvents.length <= 0 ? "" :
         <div>
-            Past Events: 
-            <div className="userinfo-events">
+            <h5 className="user-info-title-header">Past Events</h5>
+            <div className="soldproducts-cards">
             {userinfo.PlannedEvents && userinfo.PlannedEvents.PastEvents.map((event, index) => {
                     return(
                         <Event event={event} />
@@ -83,10 +83,9 @@ function UserInfo(props){
 
     const soldItems = userinfo.SoldProducts && userinfo.SoldProducts.length <= 0 ? "" :
         <div>
-            <div><hr/></div>
             <div>
-                Sold Items: 
-                <div className="userinfo-events">
+                <h5 className="user-info-title-header">Sold Items</h5>
+                <div className="soldproducts-cards">
                 {userinfo.SoldProducts && userinfo.SoldProducts.map((item, index) => {
                         return(
                             <ItemCard item={item} itemType="sold" />
@@ -99,23 +98,25 @@ function UserInfo(props){
     return(
         <div>
         <Navbar />
-
+        
+        <div className="home-page-content">
         <div className="mt-5" >
         <div className="userinfo-body">
         <div className="userinfo-avatar">
             <div>
                 <Image src={userinfo.AvatarURL} roundedCircle alt="avatar" className="userinfo-avatar-img"/>
             </div>
-            <div style={{textAlign:"center", marginTop:"10px"}}>{userinfo.Username} </div>
-            <div className="userinfo-avatar-subscribebtn">
+            <div className="sub-button-parent">
                 <SubscribeButton user={loggedInUser} target={userinfo.Username} />
             </div>
         </div>
         <div className="userinfo-info">
+            <div>
+                <h4>{userinfo.Username}</h4>
+            </div>
             <div>Followers: {subCount}</div>
             <div>Following: {subToCount}</div>
             <div>Birthday: {moment(userinfo.Birthday).format('YYYY-MM-DD')}</div>
-            <div><hr/></div>
             
             <div>
                 <div>Interests: </div>
@@ -129,19 +130,17 @@ function UserInfo(props){
                     }
                 </ul>
             </div>
-
-            <div><hr/></div>
+        </div>
+    </div>
+        <div style={{marginTop:"20px"}}/>
             
             {activeEvents}
             {upcomingEvents}
             {pastEvents}
             {soldItems}
         </div>
-
-    </div>
         </div>
         </div>
-        
     );
 
 }

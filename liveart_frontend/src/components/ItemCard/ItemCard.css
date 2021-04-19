@@ -26,13 +26,16 @@
     color: black;
     font-size: 20px;
     padding: 0px;
-    
+    margin-bottom: 6px !important;
+    margin-top: 4px;
+    width: 283px;
 }
 
 .itemdescription{
     color: black;
     font-size: 15px;
     padding: 0px;
+    width: 283px;
 }
 
 .itemtags{
@@ -40,12 +43,26 @@
     font-size: 15px;
     padding: 0px;
     margin: 0;
+    position: relative;
+    float: left;
+    width: 283px;
 }
 
 .itemcard-body2{
+    float: left;
+    flex: 1 1 auto;
+    min-height: 1px;
+    padding: 5px;
+}
+
+.item-parent{
     background-color: #eee;
     flex: 1 1 auto;
     min-height: 1px;
     padding: 5px;
 }
 
+.item-card-formatting {
+    width: 400px;
+    overflow: hidden;
+}

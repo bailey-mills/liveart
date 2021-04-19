@@ -31,7 +31,7 @@ function Sidebar(props) {
                 <li className="sidebar-empty"> </li>
                 <li className="sidebar-title"> User </li>
                 <Link className="sidebar-link" style={{ textDecoration: 'none' }} to={"/userprofile/bio"}><li className="sidebar-item">Bio</li></Link>
-                <Link className="sidebar-link" style={{ textDecoration: 'none' }} to={"/userprofile/passwordreset"}><li className="sidebar-item">Reset Your Password</li></Link>
+                <Link className="sidebar-link" style={{ textDecoration: 'none' }} to={"/userprofile/passwordreset"}><li className="sidebar-item">Change Your Password</li></Link>
                 <li className="sidebar-title"> Event </li>
                 <Link className="sidebar-link" style={{ textDecoration: 'none' }} to={"/userprofile/subsevents"}><li className="sidebar-item">Subscribed Events</li></Link>
                 <Link className="sidebar-link" style={{ textDecoration: 'none' }} to={"/userprofile/plannedevents"}><li className="sidebar-item">My Planned Events</li></Link>

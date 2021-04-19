@@ -16,7 +16,7 @@ const Slideshow = ({ events }) => {
                 <Carousel.Item>
                   <Link to={"/auction/"+event.EventID}>
                     <img
-                      className="d-block slideshow-img-size "
+                      className="d-block slideshow-img-size"
                       src={event.EventURL}
                       alt={event.EventName}
                     />

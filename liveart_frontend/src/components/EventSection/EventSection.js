@@ -5,7 +5,7 @@ import CardDeck from "react-bootstrap/Card";
 
 const EventSection = ({ events, eventClass }) => {
   return (
-    <CardDeck style={{display: 'flex', flexDirection: 'row'}} className={eventClass}>
+    <CardDeck style={{display: 'flex', flexDirection: 'row', borderWidth: '0px'}} className={eventClass}>
       {
         events.map((event, index) => {
           return (

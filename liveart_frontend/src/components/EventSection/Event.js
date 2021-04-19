@@ -10,7 +10,7 @@ import { mdiCalendar, mdiClockOutline } from '@mdi/js';
 function Event(props){
     return (
       //target="_blank" rel="noopener noreferrer" -- open in new tab
-      <Link to={"/auction/"+props.event.EventID} style={{ textDecoration: 'none' }} rel="noopener noreferrer">
+      <Link to={"/auction/"+props.event.EventID} style={{ textDecoration: 'none', width: '420px' }} rel="noopener noreferrer">
         <Card className="box shadow p-2 mb-3 bg-body rounded event-card" >
             <div className="event-img-container">
                 <Card.Img className="event-img" variant="top" src={props.event.EventURL}/>
@@ -24,7 +24,7 @@ function Event(props){
                     <Card.Title className="eventtitle">{props.event.EventName}</Card.Title>
                     <Card.Text className="eventdescription">
                         <ul className="event-description-ul">
-                            <li>{props.event.EventHostUsername} </li>
+                            <li>{props.event.EventHostUsername}</li>
                             <li>
                                 <Icon path={mdiCalendar}
                                     size={0.8}

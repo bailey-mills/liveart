@@ -83,7 +83,7 @@ function MyNavbar(){
 
             <Nav>
                 <Link to={"/userprofile/bio"}>
-                    <Image src={profileImage} roundedCircle alt="avatar" className="navbar-avatar mt-2"/>                
+                    <Image src={profileImage} roundedCircle alt="avatar" className="navbar-avatar mt-2"/>
                 </Link>
 
                 <NavDropdown title={user} id="collasible-nav-dropdown" className="pr-4 pt-3 pb-3 text-light" >

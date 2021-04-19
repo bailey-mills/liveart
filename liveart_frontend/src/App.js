@@ -36,8 +36,6 @@ class App extends React.Component {
                         <Route path="/" exact component={HomePage} />    
                         <Route path="/events/:tagName" exact component={EventsPage} />
                         <Route path="/register" exact component={Register} />
-                        <Route path="/contactus" exact component={Contactus} />
-                        <Route path="/usersearch" exact component={UserSearch} />
                         <Route path="/login" exact component={Login} />
                         <Route path="/user/:username" exact component ={UserInfo} />
                         <Route path="/userprofile/bio" exact component ={Bio} />

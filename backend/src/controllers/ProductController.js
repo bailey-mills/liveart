@@ -8,7 +8,7 @@ module.exports = class ProductController {
     async methodSoldProducts(username) {
         // GET SOLD PRODUCTS
         let soldProducts = await dbDrive.executeQuery(
-            "SELECT P.ID, P.Name, P.Summary AS 'ProductDescription', P.PreviewURL AS 'ProductURL', P.BasePrice, B.Amount AS 'FinalPrice', SE.EventID, E.Title AS 'EventName', E.StartTime, E.EndTime, U.Username AS 'EventHostUsername' " + 
+            "SELECT P.ID, P.Name, P.Summary AS 'ProductDescription', P.PreviewURL AS 'ProductURL', P.BasePrice, B.Amount AS 'FinalPrice', SE.EventID, E.Title AS 'EventName', E.StartTime, E.EndTime, U.Username AS 'EventHostUsername', U.ProfileImage AS 'AvatarURL' " + 
             "FROM [Product] P " +
             "JOIN [ProductToEvent] PE ON PE.ProductID = P.ID " + 
             "JOIN [Bid] B ON B.ProductID = P.ID " + 
@@ -89,7 +89,7 @@ module.exports = class ProductController {
         let purchasedProducts = await dbDrive.executeQuery(
             "SELECT P.ID, P.Name, P.Summary AS 'ProductDescription', P.PreviewURL AS 'ProductURL', P.BasePrice, " +
                 "B.Amount AS 'FinalPrice', USeller.Username AS 'EventHostUsername', E.ID AS 'EventID', E.Title AS 'EventName', " +
-                "E.StartTime, E.EndTime, C.ID AS 'CategoryID', C.Name AS 'CategoryName' " + 
+                "E.StartTime, E.EndTime, C.ID AS 'CategoryID', C.Name AS 'CategoryName', USeller.ProfileImage AS 'AvatarURL' " + 
             "FROM [Product] P " +
             "JOIN [Bid] B ON B.ProductID = P.ID " + 
             "JOIN [Transaction] T ON T.BidID = B.ID " + 
