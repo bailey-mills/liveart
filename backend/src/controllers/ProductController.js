@@ -88,7 +88,7 @@ module.exports = class ProductController {
         // GET PURCHASED PRODUCTS
         let purchasedProducts = await dbDrive.executeQuery(
             "SELECT P.ID, P.Name, P.Summary AS 'ProductDescription', P.PreviewURL AS 'ProductURL', P.BasePrice, " +
-                "B.Amount AS 'FinalPrice', USeller.Username AS 'ProductSellerUsername', E.ID AS 'EventID', E.Title AS 'EventName', " +
+                "B.Amount AS 'FinalPrice', USeller.Username AS 'EventHostUsername', E.ID AS 'EventID', E.Title AS 'EventName', " +
                 "E.StartTime, E.EndTime, C.ID AS 'CategoryID', C.Name AS 'CategoryName' " + 
             "FROM [Product] P " +
             "JOIN [Bid] B ON B.ProductID = P.ID " + 

@@ -14,7 +14,7 @@ function Following(props){
 
     const [users, setUsers] = useState([]);
     useEffect(()=>{
-        axios.get('http://localhost:5000/user/getSubscribedTo/' + currentUsername).then(res=>{
+        axios.get(process.env.REACT_APP_SERVER + '/user/getSubscribedTo/' + currentUsername).then(res=>{
             if(res.status === 200) {
                 // Organize results into user objects
                 const items = res.data.map((user) =>

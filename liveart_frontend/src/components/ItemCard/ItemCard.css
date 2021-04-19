@@ -1,8 +1,14 @@
 .item-tags > li{
     float: left;
-    border: 1px solid;
-    margin: 3px;
+    margin-left: 3px;
     padding: 1px;
+    border: 1px solid;
+    border-radius: 100px;
+    font-size: 14px;
+    padding: 4px 9px 4px 9px;
+    background-color: #dedede;
+    border-color: #bbb;
+    margin-bottom: 5px;
 }
 
 .itembox > img {
@@ -11,9 +17,7 @@
 
 .itembox{
     background-color: #FFF;
-    width: 400px;
-    height: 460px;
-    margin: 20px;
+    margin: 10px;
     /* padding: 130px;
     margin: 20px; */
 }
@@ -39,7 +43,7 @@
 }
 
 .itemcard-body2{
-    background-color: lightgrey;
+    background-color: #eee;
     flex: 1 1 auto;
     min-height: 1px;
     padding: 5px;

@@ -108,10 +108,6 @@ function PasswordReset(props) {
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid password.
                     </Form.Control.Feedback>
-                    <Form.Text id="passwordHelpBlock" muted>
-                        Your password must be 8-20 characters long, contain letters and numbers, and
-                        must not contain spaces, special characters, or emoji.
-                    </Form.Text>
                 </Form.Group>
                 </Form.Row>
 

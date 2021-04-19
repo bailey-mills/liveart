@@ -18,7 +18,7 @@ function SoldProduct(props){
     const [items, setItems] = useState([]);
     useEffect(()=>{
         
-        axios.get('http://localhost:5000/product/getPurchased/'+currentUsername).then(res=>{
+        axios.get(process.env.REACT_APP_SERVER + '/product/getSold/'+currentUsername).then(res=>{
             if(res.status!==200){
                 alert("Can't connect to the backend server");
                 return;

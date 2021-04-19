@@ -29,7 +29,7 @@ function MyNavbar(){
         
         let username = localStorage.getItem('user');
         
-        axios.get('http://localhost:5000/user/logout?Username='+username )
+        axios.get(process.env.REACT_APP_SERVER + '/user/logout?Username='+username )
         .then(res=>{ 
             if(res.status===205)
             {

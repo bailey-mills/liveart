@@ -25,7 +25,7 @@ function Register() {
     let history = useHistory();
 
     useEffect(()=>{
-        axios.get('http://localhost:5000/provinces').then(res=>{
+        axios.get(process.env.REACT_APP_SERVER + '/provinces').then(res=>{
             console.log("return code: " +res.status);
             if(res.status!==200)
             {
@@ -88,7 +88,7 @@ function Register() {
         console.log("birthday: ", event.target[4].value);
 
         //post
-        axios.post('http://localhost:5000/user/register', newUser)
+        axios.post(process.env.REACT_APP_SERVER + '/user/register', newUser)
         .then(res=>{
             console.log("post return code: " +res.status);
             
@@ -178,10 +178,6 @@ function Register() {
             <Form.Control.Feedback type="invalid">
                 Please provide a valid password.
             </Form.Control.Feedback>
-            <Form.Text id="passwordHelpBlock" muted>
-                Your password must be 8-20 characters long, contain letters and numbers, and
-                must not contain spaces, special characters, or emoji.
-            </Form.Text>
             </Form.Group>
             </Form.Row>
 

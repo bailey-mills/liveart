@@ -120,7 +120,7 @@ function NewEvent(props) {
 
         //redirect to event page
         let userID = localStorage.getItem('userID');
-        axios.post('http://localhost:5000/event/createEvent/' + userID, event)
+        axios.post(process.env.REACT_APP_SERVER + '/event/createEvent/' + userID, event)
         .then(res=>{
             
             if(res.status===200)

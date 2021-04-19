@@ -53,11 +53,11 @@ function EventsPage(){
             <h1> Events You Subscribed</h1>
             <div className="eventBody">
                 {/* {getData()} */}
-                <EventSection events={subscribedEvents}/>
+                <EventSection events={subscribedEvents} eventClass="event-section"/>
             </div>
             <hr/>
             <h1> Events You Might be interested in</h1>
-            <EventSection events={recommendedEvents}/>  
+            <EventSection events={recommendedEvents} eventClass="event-section"/>  
             <Footer/>     
         </React.StrictMode>
     );

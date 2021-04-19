@@ -22,7 +22,7 @@ function SubsEvents(props){
     const [events, setEvents] = useState([]);
     useEffect(()=>{
         
-        axios.get('http://localhost:5000/event/getSubscribed/'+currentUsername).then(res=>{
+        axios.get(process.env.REACT_APP_SERVER + '/event/getSubscribed/'+currentUsername).then(res=>{
             if(res.status!==200){
                 alert("Can't connect to the backend server");
                 return;

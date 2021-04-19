@@ -24,7 +24,7 @@ function EventsPage(props){
         <div>
             <Navbar/>
             <h2>Filter: {tagName}</h2>
-            <EventSection events={events}/>   
+            <EventSection events={events} eventClass="event-section-tall"/>   
         </div>
     );
     

@@ -1,6 +1,17 @@
 .event-section{
+    display: grid;
+    align-items: center;
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
+    grid-auto-flow: column;
+    overflow-x: auto;
+    font-size: 0;
+}
+
+.event-section-tall{
     display: flex;
     align-items: center;
+    justify-content: center;
     flex-wrap: wrap;
     grid-gap: 10px;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
@@ -14,7 +25,6 @@
     margin-left: 10px;
     font-size: 0;
     align-items: center;
-    
 }
 
 /* .event-frame > div{
@@ -31,7 +41,7 @@
 
 .event-img-blur{
     object-fit:cover;
-    filter: blur(5px);
+    filter: blur(15px);
         -webkit-backface-visibility:hidden;
         -webkit-transform: scale(2);
     width: 382px;
@@ -72,9 +82,7 @@
 .box{
     background-color: #444;
     width: 400px;
-    margin: 20px;
-    /* padding: 130px;
-    margin: 20px; */
+    margin: 10px;
 }
 
 .card-body2{
