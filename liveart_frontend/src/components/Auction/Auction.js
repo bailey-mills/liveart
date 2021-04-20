@@ -5,14 +5,18 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import "./Auction.css";
 import workimg from "../../Assets/workimgSample.json";
 import Button from "react-bootstrap/Button";
+import Chat from "./Chat/Chat/Chat"
 
 export default function Auction(props){
+    let signedin = true;
+    let chatroom;
+    let controllbox;
 
     let currentUsername = localStorage.getItem('user');
     let currentUserID = localStorage.getItem('userID');
     if(currentUsername===null || currentUserID ===null )
     {
-        //jump to login page
+        signedin = false;
     }
 
     const currentEventID = props.match.params.eventid;
@@ -119,8 +123,6 @@ export default function Auction(props){
                         
                     });
 
-
-
                     axios.get('http://localhost:5000/auction/getHighestBid/'+currentOnBiddingItem)
                       .then(res=>{
                       if(res.status === 200)
@@ -130,6 +132,7 @@ export default function Auction(props){
                             console.log("current highest bid",res.data);
                             setCurrentHighestBidding(res.data[0]);
                             console.log(res.data[0].Amount);
+                            console.log("event info",eventInfo);
                           }
                           
                           
@@ -198,7 +201,7 @@ export default function Auction(props){
         setFeedback("");
     }
 
-    let controllbox;
+    
     if(role==="host")    //current user is the host
     {
         controllbox = <div className="auction-controller-host">
@@ -250,6 +253,32 @@ export default function Auction(props){
             setSubsribecondition(false);
         }
     }
+    
+    if(signedin === true)
+    {
+        chatroom = <div>
+            <Chat roomid={currentEventID} />
+        </div>
+    }
+    else
+    {
+        chatroom=<div className="auction-chat-unsignedin">
+        <h5>You haven't logged in yet!</h5>
+        <Link to={{
+             pathname: '/login',
+             state: { registered: false }
+             }}><Button className="btn btn-success btn-sm">Login</Button></Link> now to get into the chat room!
+        </div>
+
+        controllbox = <div className="auction-controlbox-unsignedin">
+            <h5>You haven't logged in yet!</h5>
+            <Link to={{
+             pathname: '/login',
+             state: { registered: false }
+             }}><Button className="btn btn-success btn-sm">Login</Button></Link> now to participate the auction!
+
+        </div>
+    }
 
     return(
         
@@ -264,7 +293,7 @@ export default function Auction(props){
                     <div className="title-area ahost rounded">
                         Host: <b>{eventInfo!==null ? eventInfo.Username : "host name"}</b>
 
-                        {role==="audience" ? subsribecondition===false ?  <Button className="btn-success btn-sm mt-2" onClick={handleSubscribe}>Subscribe</Button> : <Button className="btn-danger btn-sm mt-2" onClick={handleSubscribe}>Unsubscribe</Button> : ""}
+                        {role==="audience"&&signedin===true ? subsribecondition===false ?  <Button className="btn-success btn-sm mt-2" onClick={handleSubscribe}>Subscribe</Button> : <Button className="btn-danger btn-sm mt-2" onClick={handleSubscribe}>Unsubscribe</Button> : ""}
                     </div>
                     {/* <div className="title-area aaudience rounded">
                         audience number: 100
@@ -308,7 +337,7 @@ export default function Auction(props){
 
 
                     <div className="auction-area chat-area rounded">
-                        
+                            {chatroom}
                     </div>
                 </div>
                 
