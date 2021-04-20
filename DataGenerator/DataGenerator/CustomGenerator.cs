@@ -110,7 +110,7 @@ namespace DataGenerator
 			return items;
 		}
 
-		public static List<List<string>> GetEvents(int count, List<string> categoryIDs)
+		public static List<List<string>> GetEvents(int count, List<string> currentBiddingIDs, List<string> categoryIDs)
 		{
 			List<List<string>> items = new List<List<string>>();
 
@@ -123,14 +123,15 @@ namespace DataGenerator
 			}
 			List<string> startTimes = GetDates(count, DateTime.Today.AddDays(-30), 50, 9, 20);
 			List<string> endTimes = GetDatesFromReference(count, startTimes, 10, 120);
-			List<string> thumbnails = GetRowsByCategoryID(count, categoryIDs, Database.DB_SAMPLES, "ProductImages", "Value");
+			//List<string> thumbnails = GetRowsByCategoryID(count, categoryIDs, Database.DB_SAMPLES, "ProductImages", "Value");
 
 			// Add items to the list of data
 			items.Add(titles);
 			items.Add(summaries);
 			items.Add(startTimes);
 			items.Add(endTimes);
-			items.Add(thumbnails);
+			//items.Add(thumbnails);
+			items.Add(currentBiddingIDs);
 			items.Add(categoryIDs);
 
 			return items;
@@ -269,7 +270,7 @@ namespace DataGenerator
 			Random r = new Random();
 			for (int i = 0; i < count; i++)
 			{
-				string date = start.AddDays(r.Next(range)).ToShortDateString();
+				string date = start.AddDays(r.Next(range)).ToUniversalTime().ToShortDateString();
 				items.Add(date);
 			}
 
@@ -285,7 +286,7 @@ namespace DataGenerator
 			{
 				DateTime date = startDate.AddDays(r.Next(rangeInDays));
 				date = date.AddHours(r.Next(minStartHour, maxStartHour));
-				string strDate = date.ToString();
+				string strDate = date.ToUniversalTime().ToString();
 				items.Add(strDate);
 			}
 
@@ -301,7 +302,7 @@ namespace DataGenerator
 			{
 				DateTime date = DateTime.Parse(rawDate);
 				date = date.AddMinutes(r.Next(minMinutes, maxMinutes));
-				items.Add(date.ToString());
+				items.Add(date.ToUniversalTime().ToString());
 			}
 
 			return items;

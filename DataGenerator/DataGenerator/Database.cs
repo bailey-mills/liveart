@@ -519,6 +519,7 @@ namespace DataGenerator
 			// Loop through and create a categoryID for each product set
 			// (one item for each product, needed so that events have the same product types, ex. (1, 1, 5, 3, 3, 3, 2, 2))
 			List<string> categoryIDsProduct = new List<string>();
+			List<string> currentBiddingIDs = new List<string>();
 			int j = 0;
 			string prevEventID = "";
 			for (int i = 0; i < products[0].Count(); i++)
@@ -529,6 +530,12 @@ namespace DataGenerator
 				{
 					j++;
 				}
+				
+				// Track first product in each event
+				if (prevEventID != currEventID)
+				{
+					currentBiddingIDs.Add((i + startProductID).ToString());
+				}
 
 				categoryIDsProduct.Add(categoryIDsEvent[j]);
 				prevEventID = currEventID;
@@ -536,11 +543,28 @@ namespace DataGenerator
 			List<List<string>> productTags = CustomGenerator.GetTags(products[0].Count(), 1, categoryIDsProduct);
 
 			// Event
-			List<List<string>> events = CustomGenerator.GetEvents(count, categoryIDsEvent);
+			List<List<string>> events = CustomGenerator.GetEvents(count, currentBiddingIDs, categoryIDsEvent);
 
 			// Update products to have the correct images
 			List<string> productImages = CustomGenerator.GetRowsByCategoryID(products[0].Count(), categoryIDsProduct, DB_SAMPLES, "ProductImages", "Value");
 			products.Insert(3, productImages);
+
+			// Set the event image to the first product image
+			List<string> eventImages = new List<string>();
+			prevEventID = "";
+			for (int i = 0; i < products[0].Count(); i++)
+			{
+				string currEventID = products[6][i];
+
+				// Track first product in each event
+				if (prevEventID != currEventID)
+				{
+					eventImages.Add(products[3][i]);
+				}
+
+				prevEventID = currEventID;
+			}
+			events.Insert(4, eventImages);
 
 			// Product to Events
 			List<List<string>> productsToEvents = new List<List<string>>();
@@ -568,7 +592,7 @@ namespace DataGenerator
 			// Format lists into query statements
 			int fullCount = products[0].Count();
 			result += PrepareOutput(fullCount, "Product", products, new bool[] { true, false, true, true, false, false });
-			result += PrepareOutput(count, "Event", events, new bool[] { true, true, true, true, true, false });
+			result += PrepareOutput(count, "Event", events, new bool[] { true, true, true, true, true, false, false });
 			//result += PrepareOutputTags("ProductToTag", productTags, startProductID);
 			//result += PrepareOutput(fullCount, "ProductToEvent", productsToEvents, new bool[] { false, false });
 			//result += PrepareOutput(count, "SellerToEvent", sellerToEvents, new bool[] { false, false });
@@ -628,6 +652,11 @@ namespace DataGenerator
 					{
 						conn.Open();
 						id = int.Parse(command.ExecuteScalar().ToString());
+
+						if (id > 1)
+						{
+							id++;
+						}
 					}
 				}
 				catch (Exception ex)
