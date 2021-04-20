@@ -8,9 +8,10 @@ import Col from 'react-bootstrap/Col';
 import Button from "react-bootstrap/Button";
 import '../../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import axios from "axios";
-
+import { useHistory } from "react-router-dom";
 
 function PasswordReset(props) {
+    let history = useHistory();
     const [validated, setValidated] = useState(false);
     const [currentpassword, setCurrentPassword] = useState("");
     const [newpassword, setNewPassword] = useState("");
@@ -32,39 +33,36 @@ function PasswordReset(props) {
       event.stopPropagation();
     }
 
-    console.log("current", currentpassword);
-    console.log("new", newpassword);
-    console.log("confirm", confirmpassword);
     if(newpassword!==confirmpassword)
     {
-        setError("Your confirming password does not match the new password!")
+        setError("New passwords do not match.");
     }
     else
     {
-        const reset = {"Username" : currentUsername, "CurrentPassword" : currentpassword, "NewPassword" : newpassword};
-        //send to backend
-        axios.patch('/user/updatePassword', reset)
-        .then(res=>{
-            
-            if(res.status===200)
-            {
-                alert("successed");
-            }
-        
-        })
-        .catch(function (error) {          
-            if(error.response.status===401)
-            {                
-                alert("You entered the wrong current password!");
-            }
-            else if(error.response.status===404)
-            {
-                alert("User not found");
-            }
-        })
-    }
+        const reset = {
+            Username : currentUsername,
+            CurrentPassword : currentpassword,
+            NewPassword : newpassword
+        };
 
-    setValidated(true);
+        //send to backend
+        axios.patch(process.env.REACT_APP_SERVER + '/user/updatePassword', reset)
+            .then(res=>{            
+                console.log(res);
+                if(res.status===200)
+                {
+                    setValidated(true);
+                }        
+            })
+            .catch(function (error) {
+                let message = "";
+                if (error && error.response && error.response.data && error.response.data.message) {
+                    message = error.response.data.message;
+                }
+                setError(message);
+                setValidated(false);
+            })
+        }
     }
 
   return (
@@ -74,7 +72,7 @@ function PasswordReset(props) {
         <Sidebar username={currentUsername}/>
         <div className="content-body">
             <div className="text-center pt-5">
-                <h1>Reset Your Password</h1>
+                <h2>Change Your Password</h2>
             </div>
         <Form className="mt-5" noValidate validated={validated} onSubmit={handleSubmit}>
             <Form.Row className="justify-content-md-center">
@@ -86,8 +84,8 @@ function PasswordReset(props) {
                     value={currentpassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
                     required 
-                    maxlength="20"
-                    minlength="8"      
+                    maxLength="20"
+                    minLength="8"      
                     />                          
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid password.
@@ -104,16 +102,12 @@ function PasswordReset(props) {
                     value={newpassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     required 
-                    maxlength="20"
-                    minlength="8"      
+                    maxLength="20"
+                    minLength="8"      
                     />                          
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid password.
                     </Form.Control.Feedback>
-                    <Form.Text id="passwordHelpBlock" muted>
-                        Your password must be 8-20 characters long, contain letters and numbers, and
-                        must not contain spaces, special characters, or emoji.
-                    </Form.Text>
                 </Form.Group>
                 </Form.Row>
 
@@ -126,8 +120,8 @@ function PasswordReset(props) {
                     value={confirmpassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required 
-                    maxlength="20"
-                    minlength="8"      
+                    maxLength="20"
+                    minLength="8"      
                     />                          
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid password.

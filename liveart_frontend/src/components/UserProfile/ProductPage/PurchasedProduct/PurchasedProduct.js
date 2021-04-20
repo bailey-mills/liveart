@@ -18,7 +18,7 @@ function PurchasedProduct(props){
     const [items, setItems] = useState([]);
     useEffect(()=>{
         
-        axios.get('http://localhost:5000/product/getSold/'+currentUsername).then(res=>{
+        axios.get(process.env.REACT_APP_SERVER + '/product/getPurchased/'+currentUsername).then(res=>{
             if(res.status!==200){
                 alert("Can't connect to the backend server");
                 return;
@@ -38,24 +38,22 @@ function PurchasedProduct(props){
             <div className="main-body">
             <Sidebar username={currentUsername}/>
                 <div className="content-body">
-                    <div className="purchasedproducts-title">
-                    <h1>Purchased Items</h1>
-                    </div>
-                   
-                    <div className="purchasedproducts-cards">
-                    {
-                        items && items.map((item, index) =>{
-                            return(
-                                <ItemCard item={item} itemType="purchased" />
-                            );
-                        })
-                    }
+                    <div className="home-page-content">
+                        <div className="purchasedproducts-title">
+                            <h3 style={{textAlign:"center"}}>Purchased Items</h3>
+                        </div>
+                    
+                        <div className="purchasedproducts-cards-tall">
+                        {
+                            items && items.map((item, index) =>{
+                                return(
+                                    <ItemCard item={item} itemType="sold" />
+                                );
+                            })
+                        }
+                        </div>
                     </div>
                 </div>
-                {/* This is UserProfile page for {props.match.params.username} */}
-                {/* This is UserProfile page for {currentUsername} */}
-                
-
             </div>
         </div>
     );

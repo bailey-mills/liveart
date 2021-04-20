@@ -14,6 +14,7 @@
 .navbar-avatar{
     width: 56px;
     height: 56px;
+    object-fit:cover;
 }
 
 .logout-btn{
@@ -186,3 +187,8 @@
     }
 }
 
+.tag-dropdown {
+    position: absolute;
+    margin-left: calc(50% - 400px);
+    width: 50px;
+}

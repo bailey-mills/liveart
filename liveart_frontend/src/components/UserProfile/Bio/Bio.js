@@ -14,23 +14,28 @@ import Image from 'react-bootstrap/Image';
 import Modal from 'react-bootstrap/Modal';
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
-
-
-
+import { useHistory } from "react-router-dom";
+const moment =  require('moment');
 
 function Bio(props){
+    let history = useHistory();
+
     const [bio, setBio] = useState([]);
 
     const [show, setShow] = useState(false);
     const handleClose = () => {setChangeAvatar(""); setShow(false)};
-    const handleShow = () => setShow(true);
+    const handleShow = () => {
+        setChangeAvatar(avatar);
+        setShow(true);
+    }
     const [changeavatar, setChangeAvatar] = useState("");
 
     const [allprovince, setAllprovince] = useState([]);
     const [error, setError] = useState("");
     const [feedback, setFeedback] = useState("");
     const [validated, setValidated] = useState(false);
-    const [avatar, setAvatar] = useState("");
+    const [avatar, setAvatar] = useState("https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg");
+    const [validAvatar, setValidAvatar] = useState(false);
     const [birthday, setBirthday] = useState("");
     const [street, setStreet] = useState("");
     const [city, setCity] = useState("");
@@ -40,7 +45,6 @@ function Bio(props){
     const [selectedtags, setSelectedtags] = useState([]);
     const [currenttags, setCurrenetTags] = useState([]);
 
-    // console.log(props.match.params.username);
     let currentUsername = localStorage.getItem('user');;
     if(currentUsername===null)
     {
@@ -48,8 +52,7 @@ function Bio(props){
     }
 
     useEffect(()=>{
-        axios.get('http://localhost:5000/user/bio/'+currentUsername).then(res=>{
-            console.log("return code: " +res.status);
+        axios.get(process.env.REACT_APP_SERVER + '/user/bio/' + currentUsername).then(res=>{
             if(res.status!==200)
             {
                 alert("Can't connect to the backend");
@@ -58,17 +61,16 @@ function Bio(props){
             
             setBio(res.data);
             setAvatar(res.data.AvatarURL);
-            setBirthday(res.data.Birthday);
+            setBirthday(moment(res.data.Birthday).format("YYYY-MM-DD"));
             setStreet(res.data.Address);
             setCity(res.data.City);
             setPostalCode(res.data.PostalCode);
             setCurrenetTags(res.data.Tags);
+            setSelectedtags(res.data.Tags);
             setProvinceID(res.data.ProvinceID);
-            // console.log("res.data",res.data);
         })
 
-        axios.get('http://localhost:5000/provinces').then(res=>{
-            console.log("return code: " +res.status);
+        axios.get(process.env.REACT_APP_SERVER + '/provinces').then(res=>{
             if(res.status!==200)
             {
                 alert("Can't connect to the backend");
@@ -76,45 +78,46 @@ function Bio(props){
             }
             
             setAllprovince(res.data);
-            // console.log("res.data",res.data);
         })
-
     },[]);
 
-    
-
-
     const handleSubmit = (event) => {
+        const form = event.currentTarget;
 
-        console.log("event", event.target[4].value);
-      if (birthday) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-      else
-      {    
         event.preventDefault();
         event.stopPropagation();
 
-        //const postbio = []
+        if (form.checkValidity() === true && birthday) {
+            console.log(event.target[0]);
+            console.log(event.target[1].value);
+            console.log(event.target[2].value);
 
-        //post
-        // axios.post('http://localhost:5000/user/register', newUser)
-        // .then(res=>{
-        //     console.log("post return code: " +res.status);
-        //     if(res.status===500)
-        //     {                
+            let updatedUser = {
+                Avatar: avatar,
+                Birthday: moment(event.target[3].value).toISOString(),
+                Street:event.target[4].value,
+                City:event.target[5].value,
+                PostalCode: event.target[6].value,
+                ProvinceID: Number(event.target[7].value),
+                Tags: selectedtags
+            };
 
-        //     }           
-        // })
+            console.log(updatedUser);
 
+            axios.patch(process.env.REACT_APP_SERVER + '/user/updateUser/' + currentUsername, updatedUser).then(res=>{
+                if(res.status === 200)
+                {
+                    history.push({
+                        pathname: '/userprofile/bio'
+                    });
+                }
+            });
+        }
 
-      }
-      setValidated(true);
-      
+        setValidated(true);
     };
 
-    function handleChangeAvatar(){
+    function handleChangeAvatar() {
         setAvatar(changeavatar);
         setShow(false);
     }
@@ -259,7 +262,7 @@ function Bio(props){
                                 })
                             }
                         </select>
-                        <text   class="password-notmatch">{error}</text>
+                        <text className="password-notmatch">{error}</text>
                     </Form.Group>
                     </Form.Row>
 
@@ -299,8 +302,14 @@ function Bio(props){
                     <Row>
                     <h4>Enter the URL of your new Avatar</h4>
                     </Row>
-                    <Row>                       
-                        <input value={changeavatar} onChange={(e) => setChangeAvatar(e.target.value)} className="form-control input-lg"></input>
+                    <Row>                        
+                        <Form.Control 
+                            type="text" 
+                            value={changeavatar} 
+                            onChange={e => setChangeAvatar(e.target.value)} 
+                            required
+                            className="avatarImage"
+                        />
                     </Row>                   
                     <Row>
                         <Image src={changeavatar} roundedCircle alt="avatar" className="bio-avatar"/>                
@@ -308,12 +317,9 @@ function Bio(props){
                     </Row>
                 </Container>
                 </Modal.Body>
-                <Modal.Footer>             
-                <Button variant="secondary" onClick={handleClose}>
-                    Close
-                </Button>
-                <Button variant="success" onClick={handleChangeAvatar}>Add</Button>
-                
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>Close</Button>
+                    <Button variant="success" onClick={handleChangeAvatar}>Add</Button>
                 </Modal.Footer>
         </Modal>
 

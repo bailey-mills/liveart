@@ -6,79 +6,27 @@ import Select from "react-select";
 import Navbar from "../Navbar/Navbar";
 import axios from "axios";
 
-function EventsPage(){
-
-    const [tags, setTags] = useState([]);
-    let typee="";
-    let filteredEvents = [];
-    const [displayevents, setDisplayevents] = useState([]);
-    const [selectedtagname, setSelectedtagname] = useState("");
+function EventsPage(props){
+    let tagName = props.match.params.tagName;
+    const [events, setEvents] = useState([]);
 
     useEffect(()=>{
-        
-        axios.get('http://localhost:5000/all-tags').then(res=>{
-            if(res.status!==200){
-                alert("Can't connect to the backend server");
-                return;
-            }
-    
-            setTags(res.data);
-            //console.log("from backend", userinfo);
-        })
-        
-    },[]);
-
-    // const [tags, setEvents] = useState([]);
-
-    // useEffect(()=>{
-    //     axios.get('http://localhost:5000/all-tags').then(res=>{
-    //         console.log("return code: " +res.status);
-    //         if(res.status!==200)
-    //         {
-    //             alert("Can't connect to the backend");
-    //             return;
-    //         }
-    //         // events = res.data[0];
-    //         setEvents(res.data);
-    //     })
-    // },[]);
-    
-    
-
-
-    function selectHandler(e){
-
-        // setType(e.id);
-        typee = e.id;
-        setSelectedtagname(e.tag);
-
-        filter();
-        console.log("filtered",filteredEvents);
-
-    }
-
-    function filter(){
-        filteredEvents = [];
-        
-        Events.map((event, index) => {
-            //console.log(event.type,type);
-            if(event.type === typee)
+        axios.get(process.env.REACT_APP_SERVER + '/event/getByTag/' + tagName).then(res=>{
+            console.log(res.data);
+            if(res.status === 200)
             {
-                console.log("match");
-                filteredEvents.push(event);
+                setEvents(res.data);
             }
         });
-        setDisplayevents(filteredEvents);
-    }
-    
+    },[]);
     
     return(
         <div>
             <Navbar/>
-
-            <Select options={tags}  value={selectedtagname} filterOption={false} isSearchable={true} placeholder="--- Select a tag ---" onChange={selectHandler} getOptionLabel ={(option)=>option.Name}/>
-            <h2>Current Selected Tag: {selectedtagname}</h2>
-            <EventSection events={displayevents}/>   
+            <div className="home-page-content">
+                <h2 style={{textAlign:"center", marginTop:"20px", marginBottom:"10px"}}>{tagName}</h2>
+                <EventSection events={events} eventClass="event-section-tall"/>
+            </div>
         </div>
     );
     

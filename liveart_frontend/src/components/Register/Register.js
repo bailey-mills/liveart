@@ -25,7 +25,7 @@ function Register() {
     let history = useHistory();
 
     useEffect(()=>{
-        axios.get('http://localhost:5000/provinces').then(res=>{
+        axios.get(process.env.REACT_APP_SERVER + '/provinces').then(res=>{
             console.log("return code: " +res.status);
             if(res.status!==200)
             {
@@ -88,7 +88,7 @@ function Register() {
         console.log("birthday: ", event.target[4].value);
 
         //post
-        axios.post('http://localhost:5000/user/register', newUser)
+        axios.post(process.env.REACT_APP_SERVER + '/user/register', newUser)
         .then(res=>{
             console.log("post return code: " +res.status);
             
@@ -124,6 +124,7 @@ function Register() {
   return (
     <div >
     <Navbar />
+    <div className="home-page-content">
     <div className="register-body">
     <h1 className="register-title">LIVE.ART Sign up</h1>
     <Form noValidate validated={validated} onSubmit={handleSubmit} >
@@ -171,17 +172,13 @@ function Register() {
             value={pwd}
             onChange={(e) => setPwd(e.target.value)}
             required 
-            maxlength="20"
-            minlength="8"      
+            maxLength="20"
+            minLength="8"      
             />
             
             <Form.Control.Feedback type="invalid">
                 Please provide a valid password.
             </Form.Control.Feedback>
-            <Form.Text id="passwordHelpBlock" muted>
-                Your password must be 8-20 characters long, contain letters and numbers, and
-                must not contain spaces, special characters, or emoji.
-            </Form.Text>
             </Form.Group>
             </Form.Row>
 
@@ -195,12 +192,12 @@ function Register() {
             placeholder="Password" 
             value={cfmpwd}
             onChange={(e) => setCfmpwd(e.target.value) }
-            maxlength="20"
-            minlength="6"      
-            class="confirm-password"
+            maxLength="20"
+            minLength="6"      
+            className="confirm-password"
             
             />
-            <text   class="password-notmatch">{pwdnotmatch}</text>
+            <text className="password-notmatch">{pwdnotmatch}</text>
 
             {/* <Form.Control.Feedback type="invalid">
                 Please provide a valid city.
@@ -270,14 +267,14 @@ function Register() {
                 <option value="-1" selected="selected">-- Select a Province --</option>
                 {allprovince.map((province, index) => <option key={province.ID} value={province.ID}>{province.Name}</option>)}
             </select>
-            <text   class="password-notmatch">{noprovinceselected}</text>
+            <text className="password-notmatch">{noprovinceselected}</text>
         </Form.Group>
         </Form.Row>
 
       {/* ---------------------------------------------------------------- */}
         <hr className="divide-line"/>
 
-        <div class="register-tagbox register-row">
+        <div className="register-tagbox register-row">
             <Form.Label>Add some tags for yourself!</Form.Label>
             <Tag onSelectedTag={setSelectedtags}/> 
         </div>
@@ -306,6 +303,7 @@ function Register() {
     
         
         
+    </div>
     </div>
     </div>
     );

@@ -92,7 +92,7 @@ function AnalyticsPage(){
             <TabPanel>
                 <div>
                     <div>
-                        <h4 class="sectionTitle">Auction Listing Details</h4>
+                        <h4 className="sectionTitle">Auction Listing Details</h4>
                         <div className="horizontalContainer">
                             <Tile title="Gross Revenue" value={artistSingles.GrossRevenue} prefix="$" accent="accent green" />
                             <Tile title="Average Product Value" value={artistSingles.AverageProductValue} prefix="$" accent="accent green" />
@@ -100,7 +100,7 @@ function AnalyticsPage(){
 
                         <hr />
 
-                        <h4 class="sectionTitle">Age Demographics</h4>
+                        <h4 className="sectionTitle">Age Demographics</h4>
                         <div className="horizontalContainer">
                             <BarChart className="chartContainer" data={age} label="Age" class="chart bar" title="Audience Age" />
                             <DoubleBarChart className="chartContainer" data={ageBoth} label1="You (left)" label2="Global (right)" class="chart bar right" colours1="#3280e6" colours2="#9ec8ff" title="Audience Age Comparison (%)" />
@@ -108,7 +108,7 @@ function AnalyticsPage(){
 
                         <hr />
 
-                        <h4 class="sectionTitle">Tag Distribution</h4>
+                        <h4 className="sectionTitle">Tag Distribution</h4>
                         <div className="horizontalContainer">
                             <DoubleBarChart className="chartContainer" data={artistTagsBoth} label1="You (left)" label2="Global (right)" class="chart bar wide" tilt="true"
                                 colours1={getColours(getIDsFromNames(tagList, artistTagsBoth.labels), true)}
@@ -127,7 +127,7 @@ function AnalyticsPage(){
             <TabPanel>
                 <div>
                     <div>
-                        <h4 class="sectionTitle">Auction Purchase Details</h4>
+                        <h4 className="sectionTitle">Auction Purchase Details</h4>
                         <div className="horizontalContainer">
                             <Tile title="Sum of Transactions" value={buyerSingles.TotalSpent} prefix="$" accent="accent blue" />
                             <Tile title="Average Product Price" value={buyerSingles.AverageProductPrice} prefix="$" accent="accent blue" />
@@ -135,7 +135,7 @@ function AnalyticsPage(){
 
                         <hr />
 
-                        <h4 class="sectionTitle">Tag Distribution</h4>
+                        <h4 className="sectionTitle">Tag Distribution</h4>
                         <div className="horizontalContainer">
                             <DoughnutChart className="chartContainer" data={buyerTags} class="chart doughnut" colours={getColours(getIDsFromNames(tagList, buyerTags.labels), true)} title="Your Tag Interest" />
                             <DoughnutChart className="chartContainer" data={tagsGlobal} class="chart doughnut right" colours={getColours(getIDsFromNames(tagList, tagsGlobal.labels), true)} title="Global Tag Interest" />
@@ -149,8 +149,8 @@ function AnalyticsPage(){
 
 function emptyDisplayOverlay() {
     return(
-        <div class="overlay">
-            <h4 class="overlayText">
+        <div className="overlay">
+            <h4 className="overlayText">
                 No data to display
             </h4>
         </div>

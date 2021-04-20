@@ -7,8 +7,22 @@
 }
 
 .soldproducts-cards{
-    display: flex;
+    display: grid;
+    align-items: center;
+    justify-content: left;
+    grid-gap: 10px;
+    grid-auto-flow: column;
+    overflow-x: auto;
+    font-size: 0;
+}
 
+.soldproducts-cards-tall{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    grid-gap: 10px;
+    font-size: 0;
 }
 
 .soldproducts-title{

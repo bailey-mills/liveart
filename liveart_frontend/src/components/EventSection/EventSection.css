@@ -1,9 +1,18 @@
 .event-section{
+    display: grid;
+    align-items: center;
+    grid-gap: 10px;
+    grid-auto-flow: column;
+    overflow-x: auto;
+    font-size: 0;
+}
+
+.event-section-tall{
     display: flex;
     align-items: center;
+    justify-content: center;
     flex-wrap: wrap;
     grid-gap: 10px;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
     font-size: 0;
 }
 
@@ -14,7 +23,6 @@
     margin-left: 10px;
     font-size: 0;
     align-items: center;
-    
 }
 
 /* .event-frame > div{
@@ -24,9 +32,35 @@
     float: left;
 } */
 
-.event-img{
-    width: 400px;
+.event-card {
+    width: 382px;
+    overflow: hidden;
+}
+
+.event-img-blur{
+    object-fit:cover;
+    filter: blur(15px);
+        -webkit-backface-visibility:hidden;
+        -webkit-transform: scale(2);
+    width: 382px;
     height: 220px;
+}
+
+.event-img{
+    width: 96% !important;
+    height: 220px;
+    object-fit: contain;
+    position: absolute;
+    left: 8px !important;
+    z-index: 10;
+}
+
+.event-img-container{
+    background-repeat: no-repeat;
+    background-size: 382px 220px;
+    width: 382px;
+    height: 220px;
+    overflow: hidden;
 }
 
 .zone {
@@ -46,10 +80,7 @@
 .box{
     background-color: #444;
     width: 400px;
-    height: 460px;
-    margin: 20px;
-    /* padding: 130px;
-    margin: 20px; */
+    margin: 10px;
 }
 
 .card-body2{
@@ -68,13 +99,16 @@
     color: white;
     font-size: 20px;
     padding: 0px;
-    
+    margin-bottom: 6px !important;
+    margin-top: 4px;
+    width: 283px;
 }
 
 .eventdescription{
     color: white;
     font-size: 15px;
     padding: 0px;
+    width: 283px;
 }
 
 .eventtags{
@@ -82,11 +116,44 @@
     font-size: 15px;
     padding: 0px;
     margin: 0;
+    position: relative;
+    float: left;
 }
 
 .event-tags-ul > li{
     float: left;
-    margin: 3px;
+    margin-left: 3px;
     padding: 1px;
     border: 1px solid;
+    border-radius: 100px;
+    font-size: 14px;
+    padding: 4px 9px 4px 9px;
+    background-color: #303030;
+    border-color: #777;
+    margin-bottom: 5px;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 7px;
+    height: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #eee; 
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+  }
+
+html {
+    background-color: #eee;
 }
