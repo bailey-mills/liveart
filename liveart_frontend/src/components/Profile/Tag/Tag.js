@@ -14,7 +14,7 @@ export default function Tag(props){
     // let events = [];
 
     useEffect(()=>{
-        axios.get('http://localhost:5000/all-tags').then(res=>{
+        axios.get(process.env.REACT_APP_SERVER + '/all-tags').then(res=>{
             console.log("return code: " +res.status);
             if(res.status!==200)
             {

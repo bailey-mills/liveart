@@ -7,13 +7,6 @@ let dbDrive = new DbDrive();
 let queryBuilder = new QueryBuilder();
 
 module.exports = class RegistrationController {
-
-    getTags = async (req, res) => {
-            let data = await dbDrive.executeQuery("SELECT * FROM TAG");
-            
-            return res.send(data[0]);
-    }
-
     // [
     //     {
     //         "Email": "test@email",

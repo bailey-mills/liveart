@@ -119,7 +119,8 @@ function NewEvent(props) {
         //set to backend
 
         //redirect to event page
-        axios.post('http://localhost:5000/event/createEvent', event)
+        let userID = localStorage.getItem('userID');
+        axios.post(process.env.REACT_APP_SERVER + '/event/createEvent/' + userID, event)
         .then(res=>{
             
             if(res.status===200)
@@ -249,7 +250,7 @@ function NewEvent(props) {
                     <InputGroup.Prepend >
                     <InputGroup.Text id="basic-addon1" >Select a Category for the Event</InputGroup.Text>
                     </InputGroup.Prepend>
-                    <select class="custom-select" id="inputGroupSelect01" onChange={(e) => setCategory(e.target.value)}>
+                    <select className="custom-select" id="inputGroupSelect01" onChange={(e) => setCategory(e.target.value)}>
                         <option value="-1" selected="selected">-- Select a Category --</option>
                         {CategorySample.map((category, index) => <option key={category.id} value={category.id}>{category.name}</option>)}
                     </select>

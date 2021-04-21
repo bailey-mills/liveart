@@ -6,14 +6,19 @@
 
 .userinfo-tags-ul{
     float: left;
-    
 }
 
 .userinfo-tags-ul > li{
-    margin: 3px;
+    float: left;
+    margin-left: 3px;
     padding: 1px;
     border: 1px solid;
-    float: left;
+    border-radius: 100px;
+    font-size: 14px;
+    padding: 4px 9px 4px 9px;
+    background-color: #dedede;
+    border-color: #bbb;
+    margin-bottom: 5px;
 }
 
 .userinfo-body{
@@ -21,16 +26,18 @@
 }
 
 .userinfo-avatar{
-    width: 20vw;
+    width: 230px;
     /* display: grid; */
 }
 
 .userinfo-avatar-img{
-    width: 256px;
-    height: 256px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+}
+
+.sub-button-parent {
+    width: 200px;
 }
 
 .userinfo-avatar-subscribebtn{
@@ -41,11 +48,19 @@
 }
 
 .userinfo-info{
-    width: 80vw;
-    display: grid;
+    float:left;
+}
+
+.userinfo-info > div {
+    margin-bottom: 15px;
 }
 
 .userinfo-info > hr{
     margin-top: 20px;
     margin-bottom: 20px;
+}
+
+.user-info-title-header {
+    text-align: left;
+    margin-top: 25px;
 }

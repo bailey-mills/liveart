@@ -30,7 +30,7 @@ export default function Login(props) {
     };
 
 
-    axios.post('http://localhost:5000/user/login', formData)
+    axios.post(process.env.REACT_APP_SERVER + '/user/login', formData)
         .then(res=>{
           if(res.status === 201)
           {

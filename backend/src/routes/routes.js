@@ -3,21 +3,23 @@ const routes =  express.Router();
 const HomePageController = require('../controllers/HomePageController');
 const AnalyticsPageController = require('../controllers/AnalyticsPageController');
 const RegistrationPageController = require('../controllers/RegistrationController');
-const UserProfileController = require('../controllers/UserProfileController');
+const UserController = require('../controllers/UserController');
 const EventController = require('../controllers/EventController');
 const ProductController = require('../controllers/ProductController');
+const GeneralController = require('../controllers/GeneralController');
 const Auctioncontroller = require('../controllers/AuctionController');
 
 let homePageController = new HomePageController();
 let registrationController = new RegistrationPageController();
-let userProfileController = new UserProfileController();
+let userProfileController = new UserController();
 let eventController = new EventController();
 let productController = new ProductController();
 let analyticsPageController = new AnalyticsPageController();
+let generalController = new GeneralController();
 let auctionController = new Auctioncontroller();
 
 routes.use((req, res, next) => {
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     next();
 });
@@ -37,15 +39,24 @@ routes.patch('/user/updatePassword', userProfileController.updatePassword);
 // ---------
 //  GENERAL
 // ---------
-routes.get('/provinces',homePageController.getProvinces);
-routes.get('/all-tags', registrationController.getTags);
+routes.get('/provinces',generalController.getProvinces);
+routes.get('/all-tags', generalController.getTags);
+routes.get('/all-tags-sorted', generalController.getTagsSorted);
+routes.get('/categories', generalController.getCategories);
 
 // -------
 //  USERS
 // -------
 routes.get('/user/bio/:username', userProfileController.getBio);
 routes.get('/user/getUser/:username', userProfileController.getUser);
+routes.patch('/user/updateUser/:username', userProfileController.updateUser);
 routes.get('/user/getSubscribers/:username', userProfileController.getSubscribers);
+routes.get('/user/getSubscribedTo/:username', userProfileController.getSubscribedTo);
+routes.get('/user/getSubscribersCount/:username', userProfileController.getSubscribersCount);
+routes.get('/user/getSubscribedToCount/:username', userProfileController.getSubscribedToCount);
+routes.post('/user/toggleSubscription', userProfileController.toggleSubscription);
+routes.post('/user/checkSubscription', userProfileController.checkSubscription);
+routes.post('/user/search', userProfileController.search);
 
 // --------
 //  EVENTS
@@ -54,6 +65,8 @@ routes.get('/event/getRecommended/:username?', eventController.getRecommendEvent
 routes.get('/event/getSubscribed/:username', eventController.getSubscribedEvents);
 routes.get('/event/getPlanned/:username', eventController.getPlannedEvents);
 routes.post('/event/createEvent/:userID', eventController.createEvent);
+routes.get('/event/getByTag/:tagName', eventController.getTagEvents);
+routes.get('/event/getSlideshow', eventController.getSlideshow);
 
 // ----------
 //  PRODUCTS

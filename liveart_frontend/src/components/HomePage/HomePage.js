@@ -12,63 +12,55 @@ import Footer from "../Footer/Footer";
 
 function EventsPage(){
 
-    const [events, setEvents] = useState([]);
-    // let events = [];
+    const [subscribedEvents, setSubscribedEvents] = useState([]);
+    const [recommendedEvents, setRecommendedEvents] = useState([]);
+    const [slideshowEvents, setSlideshowEvents] = useState([]);
+    
+    let username = localStorage.getItem('user') || "";
 
     useEffect(()=>{
-        axios.get('http://localhost:5000/event/getRecommended').then(res=>{
-            console.log("return code: " +res.status);
-            if(res.status!==200)
+        // Subscribed Events
+        axios.get(process.env.REACT_APP_SERVER + '/event/getSubscribed/' + username).then(res=>{
+            if(res.status === 200)
             {
-                alert("Can't connect to the backend");
-                return;
+                setSubscribedEvents(res.data.UpcomingEvents);
             }
-            // events = res.data[0];
-            setEvents(res.data);
-        })
+        });
+
+        // Recommended Events
+        axios.get(process.env.REACT_APP_SERVER + '/event/getRecommended/' + username).then(res=>{
+            if(res.status === 200)
+            {
+                setRecommendedEvents(res.data);
+            }
+        });
+
+        // Slideshow Events
+        axios.get(process.env.REACT_APP_SERVER + '/event/getSlideshow/').then(res=>{
+            if(res.status === 200)
+            {
+                setSlideshowEvents(res.data);
+            }
+        });
     },[]);
 
-
-
-
-    // function getData(){
-    //     console.log("getdata");
-    //     axios.get('http://localhost:5000/event/getRecommended').then(res=>{
-    //         console.log("return code: " +res.status);
-    //         if(res.status!==200)
-    //         {
-    //             alert("Can't connect to the backend");
-    //             return;
-    //         }
-
-    //         useEffect(() => setA(2), [])
-    //         // events = res.data[0];
-    //         setEvents(res.data[0]);
-    //         console.log("json: "+events);
-    //     });
-    // }
-
-
-
-        return(
-            <React.StrictMode>
-
-                <Navbar />
-                <Slideshow />
-                <hr/>
-                <h1> Events You Subscribed</h1>
+    return(
+        <React.StrictMode>
+            <Navbar />
+            <div className="home-page-content">
+                <Slideshow events={slideshowEvents} />
+                <h2 style={{textAlign:"center", marginTop:"35px"}}>Subscriptions</h2>
                 <div className="eventBody">
                     {/* {getData()} */}
-                    <EventSection events={events}/>
+                    <EventSection events={subscribedEvents} eventClass="event-section"/>
                 </div>
-                <hr/>
-                <h1> Events You Might be interested in</h1>
-                <EventSection events={events}/>  
-                <Footer/>     
-            </React.StrictMode>
-        );
+                <h2 style={{textAlign:"center", marginTop:"35px"}}>Events You Might be Interested In</h2>
+                <EventSection events={recommendedEvents} eventClass="event-section"/>
+            </div>
+            <Footer/>     
+        </React.StrictMode>
+    );
 
 }
-
 
 export default EventsPage;
