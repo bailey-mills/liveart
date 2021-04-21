@@ -68,9 +68,11 @@ routes.get('/auction/getHost/:eventID', auctionController.getHost);
 routes.get('/auction/getProducts/:eventID',auctionController.getEventProducts);
 routes.get('/auction/getHighestBid/:productID?', auctionController.getHighestBid);
 routes.get('/auction/getCurrentBiddingProduct/:eventID', auctionController.getCurrentProductID);
+routes.get('/auction/getEventTags/:eventID', auctionController.getEventTags);
 routes.patch('/auction/skipProduct/:eventID', auctionController.skipProduct);
 routes.post('/auction/createBid/:productID', auctionController.createBid);
 routes.post('/auction/createTransaction/:bidID', auctionController.createTransaction);
+
 
 
 // Analytics

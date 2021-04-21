@@ -34,6 +34,18 @@ class AuctionController {
     }
 
 
+    getEventTags = async (req, res) => {
+        let eventID = req.params.eventID;
+        let tagsOfEventQuery = `SELECT DISTINCT ID, Name FROM ProductToTag 
+                                JOIN Tag on Tag.ID=ProductToTag.TagID
+                                JOIN ProductToEvent on ProductToEvent.ProductID=ProductToTag.ProductID
+                                WHERE ProductToEvent.EventID = ${eventID}`;
+        let result = await dbDrive.executeQuery(tagsOfEventQuery);
+        return res.status(200).send(result[0]);
+
+    }
+
+
     getHighestBid = async (req, res) => {
         let productID = req.params.productID;
 
