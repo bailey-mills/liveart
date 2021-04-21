@@ -45,10 +45,14 @@ function DoughnutChart(props) {
         ]
     };
 
+    let chart = <Doughnut data={settings} options={options}/>;
+    let noData = <div class="no-data">No Data Available</div>
+    let result = props.data.data.length ? chart : noData;
+
     return(
         <div className={props.class}>
             <h5>{props.title}</h5>
-            <Doughnut data={settings} options={options}/>
+            {result}
         </div>
     );
 }

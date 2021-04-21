@@ -19,7 +19,7 @@ require('dotenv').config();
 
 // Determine if all of the data sets have been gathered
 let loaded = 0;
-const loadRequired = 11;
+const loadRequired = 9;
 
 function AnalyticsPage(){
     Chart.plugins.register(ChartDataLabels);
@@ -32,14 +32,12 @@ function AnalyticsPage(){
     const [ageBoth, setAgeBoth] = useState();
     const [artistTags, setArtistTags] = useState();
     const [artistTagsBoth, setArtistTagsBoth] = useState();
-    const [artistTransactions, setArtistTransactions] = useState();
 
     // ----------------
     //  BUYER DATASETS
     // ----------------
     const [buyerSingles, setBuyerSingles] = useState();
     const [buyerTags, setBuyerTags] = useState();
-    const [buyerTransactions, setBuyerTransactions] = useState();
     
     // -----------------
     //  MUTUAL DATASETS
@@ -59,12 +57,10 @@ function AnalyticsPage(){
         getData("artist/ageBoth/" + userID, setAgeBoth);
         getData("artist/tags/" + userID, setArtistTags);
         getData("artist/tagsBoth/" + userID, setArtistTagsBoth);
-        getData("artist/transactions/" + userID, setArtistTransactions);
 
         // Buyer Data
         getData("buyer/singles/" + userID, setBuyerSingles);
         getData("buyer/tags/" + userID, setBuyerTags);
-        getData("buyer/transactions/" + userID, setBuyerTransactions);
 
         // Mutual Data
         getData("global/tagList", setTagList);
@@ -86,10 +82,14 @@ function AnalyticsPage(){
 
     // Display the charts
     loaded = 0;
-    console.log(artistTransactions);
+    
+    // Some calculations to use in the charts
+    let artistProductValueIncreaseFromBase = (artistSingles.GrossRevenue - artistSingles.SumBaseValue) / artistSingles.GrossRevenue * 100;
+    let buyerProductValueIncreaseFromBase = (buyerSingles.TotalSpent - buyerSingles.TotalSpentBase) / buyerSingles.TotalSpent * 100;
+
     return(
         <Tabs className="analytics">
-            <TabList>
+            <TabList style={{paddingTop:"10px"}}>
                 <Tab>Artist Activity</Tab>
                 <Tab>Buyer Activity</Tab>
             </TabList>
@@ -101,27 +101,16 @@ function AnalyticsPage(){
                         <div className="horizontalContainer">
                             <Tile title="Gross Revenue" value={artistSingles.GrossRevenue} prefix="$" accent="accent green" />
                             <Tile title="Average Product Value" value={artistSingles.AverageProductValue} prefix="$" accent="accent green" />
-                            <Tile title="<SumBaseValue>" value={artistSingles.SumBaseValue} prefix="$" accent="accent green" />
-                        </div>
-
-                        <hr />
-
-                        <h4 className="sectionTitle">Age Demographics</h4>
-                        <div className="horizontalContainer">
-                            <BarChart className="chartContainer" data={artistTransactions} label="Age" class="chart bar wide" title="Revenue over Time" />
-                        </div>
-
-                        <hr />
-
-                        <h4 className="sectionTitle">Age Demographics</h4>
-                        <div className="horizontalContainer">
-                            <BarChart className="chartContainer" data={age} label="Age" class="chart bar" title="Audience Age" />
-                            <DoubleBarChart className="chartContainer" data={ageBoth} label1="You (left)" label2="Global (right)" class="chart bar right" colours1="#3280e6" colours2="#9ec8ff" title="Audience Age Comparison (%)" />
+                            <Tile title="Average Final Price vs Base Price" value={artistProductValueIncreaseFromBase} prefix="+" suffix="%" accent="accent green" />
                         </div>
 
                         <hr />
 
                         <h4 className="sectionTitle">Tag Distribution</h4>
+                        <div className="horizontalContainer">
+                            <DoughnutChart className="chartContainer" data={artistTags} class="chart doughnut" colours={getColours(getIDsFromNames(tagList, artistTags.labels), true)} title="Your Tag Usage" />
+                            <DoughnutChart className="chartContainer" data={tagsGlobal} class="chart doughnut right" colours={getColours(getIDsFromNames(tagList, tagsGlobal.labels), true)} title="Global Tag Usage" />
+                        </div>
                         <div className="horizontalContainer">
                             <DoubleBarChart className="chartContainer" data={artistTagsBoth} label1="You (left)" label2="Global (right)" class="chart bar wide" tilt="true"
                                 colours1={getColours(getIDsFromNames(tagList, artistTagsBoth.labels), true)}
@@ -130,9 +119,13 @@ function AnalyticsPage(){
                                 hasSecondaryAxis
                             />
                         </div>
+
+                        <hr />
+
+                        <h4 className="sectionTitle">Age Demographics</h4>
                         <div className="horizontalContainer">
-                            <DoughnutChart className="chartContainer" data={artistTags} class="chart doughnut" colours={getColours(getIDsFromNames(tagList, artistTags.labels), true)} title="Your Tag Usage" />
-                            <DoughnutChart className="chartContainer" data={tagsGlobal} class="chart doughnut right" colours={getColours(getIDsFromNames(tagList, tagsGlobal.labels), true)} title="Global Tag Usage" />
+                            <BarChart className="chartContainer" data={age} label="Age" class="chart bar" title="Audience Age" />
+                            <DoubleBarChart className="chartContainer" data={ageBoth} label1="You (left)" label2="Global (right)" class="chart bar right" colours1="#3280e6" colours2="#9ec8ff" title="Audience Age Comparison (%)" />
                         </div>
                     </div>
                 </div>
@@ -144,7 +137,7 @@ function AnalyticsPage(){
                         <div className="horizontalContainer">
                             <Tile title="Sum of Transactions" value={buyerSingles.TotalSpent} prefix="$" accent="accent blue" />
                             <Tile title="Average Product Price" value={buyerSingles.AverageProductPrice} prefix="$" accent="accent blue" />
-                            <Tile title="<TotalSpentBase>" value={buyerSingles.TotalSpentBase} prefix="$" accent="accent blue" />
+                            <Tile title="Average Final Price vs Base Price" value={buyerProductValueIncreaseFromBase} prefix="+" suffix="%" accent="accent blue" />
                         </div>
 
                         <hr />

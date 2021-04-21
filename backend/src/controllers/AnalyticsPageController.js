@@ -184,16 +184,23 @@ module.exports = class AnalyticsPageController {
             JOIN [SellerToEvent] SE ON SE.UserID = ${userID} AND SE.EventID = B.EventID
             JOIN [Event] E ON E.ID = SE.EventID
             WHERE SE.UserID = ${userID}
-            GROUP BY E.StartTime, B.Timestamp
-            ORDER BY B.Timestamp`;
+            GROUP BY E.StartTime
+            ORDER BY E.StartTime`;
                 
         let result = await dbOps.executeQuery(query);
         result = result[0];
+
+        let keys = [];
+        let values = [];
+        for (let i = 0; i < result.length; i++) {
+            keys.push(result[i].EventDate);
+            values.push(result[i].Value);
+        }
         
         // Format results
         let ret = {
-            labels: result.EventDate,
-            data: result.Value
+            labels: keys,
+            data: values
         }
 
         res.json(ret);
@@ -205,16 +212,23 @@ module.exports = class AnalyticsPageController {
             JOIN [Transaction] T ON T.BidID = B.ID
             JOIN [Event] E ON E.ID = b.EventID
             WHERE B.UserID = ${userID}
-            GROUP BY E.StartTime, B.Timestamp
-            ORDER BY B.Timestamp`;
+            GROUP BY E.StartTime
+            ORDER BY E.StartTime`;
                 
         let result = await dbOps.executeQuery(query);
         result = result[0];
+
+        let keys = [];
+        let values = [];
+        for (let i = 0; i < result.length; i++) {
+            keys.push(result[i].EventDate);
+            values.push(result[i].Value);
+        }
         
         // Format results
         let ret = {
-            labels: result.EventDate,
-            data: result.Value
+            labels: keys,
+            data: values
         }
 
         res.json(ret);

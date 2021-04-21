@@ -69,3 +69,11 @@ h5 {
 .react-tabs__tab-list {
     margin-bottom: 0px;
 }
+
+.no-data {
+    color: gray;
+    height: 340px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}

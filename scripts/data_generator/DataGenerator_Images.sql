@@ -273,7 +273,6 @@ INSERT INTO ProductImages VALUES ('https://media.urbanstems.com/image/upload/f_a
 
 -- 13 Potted plant
 INSERT INTO ProductImages VALUES ('https://i.etsystatic.com/22623632/d/il/7904ab/2245401548/il_340x270.2245401548_rp6z.jpg?version=0', 3, 13);
-INSERT INTO ProductImages VALUES ('https://i.etsystatic.com/7020371/c/1828/1459/431/784/il/21d44b/2542870515/il_340x270.2542870515_k59h.jpg', 3, 13);
 INSERT INTO ProductImages VALUES ('https://i.etsystatic.com/19217281/d/il/0f9290/2862711508/il_340x270.2862711508_jmn6.jpg?version=0', 3, 13);
 INSERT INTO ProductImages VALUES ('https://i.etsystatic.com/7020371/c/2392/1901/92/531/il/5dca30/2192781053/il_340x270.2192781053_m3oj.jpg', 3, 13);
 INSERT INTO ProductImages VALUES ('https://i.etsystatic.com/14448469/c/1838/1461/667/204/il/585a38/3069569531/il_340x270.3069569531_q2by.jpg', 3, 13);
