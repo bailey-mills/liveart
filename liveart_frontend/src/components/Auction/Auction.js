@@ -21,6 +21,7 @@ export default function Auction(props){
 
     const currentEventID = props.match.params.eventid;
     const [allItems, setAllItems] = useState([]);
+    const [allTags, setAllTags] = useState([]);
     const [eventInfo, setEventInfo] = useState([]);
     const [currentOnBiddingItem, setCurrentOnBiddingItem] = useState(-1);
     const [currentItemCode, setCurrentItemCode] = useState(<div>Nothing</div>);
@@ -39,7 +40,7 @@ export default function Auction(props){
             .then(res=>{
               if(res.status === 200)
               {
-                console.log(res.data);
+                //console.log(res.data);
                 setAllItems(res.data);
               }
                 
@@ -49,7 +50,7 @@ export default function Auction(props){
             .then(res=>{
               if(res.status === 200)
               {
-                console.log(res.data);
+                //console.log(res.data);
                 setCurrentOnBiddingItem(res.data[0].CurrentBiddingProductID)
                 //setAllItems(res.data);
               }
@@ -61,7 +62,7 @@ export default function Auction(props){
               if(res.status === 200)
               {
                 setEventInfo(res.data[0]);
-                console.log("eventinfo",eventInfo);
+                //console.log("eventinfo",eventInfo);
                 if(res.data[0].Username === currentUsername)
                 {
                     setRole("host");
@@ -70,6 +71,19 @@ export default function Auction(props){
                     setRole("audience");
                 }
               }
+
+              axios.get('http://localhost:5000/auction/getEventTags/'+currentEventID)
+              .then(res=>{
+                if(res.status === 200)
+                {
+                  //console.log("tags==============",res.data);
+                  setAllTags(res.data);
+                  //setCurrentOnBiddingItem(res.data[0].CurrentBiddingProductID)
+                  //setAllItems(res.data);
+                }
+                  
+              });
+            
                 
             });
 
@@ -288,7 +302,14 @@ export default function Auction(props){
                 <div className="auction-title shadow p-2 mb-3 bg-body rounded">
                     <div className="title-area atitle rounded">
                         <h2>{eventInfo!==null ? eventInfo.EventTitle : "event title"}</h2>
-                        {eventInfo!==null ? eventInfo.EventSummary : "event description"}
+                        {eventInfo!==null ? 
+                            allTags.map((tag, index)=>{
+                                return(
+                                    <div className="auction-tags">{tag.Name}</div>
+                                );
+                            })
+
+                         : "event tags"}
                     </div>
                     <div className="title-area ahost rounded">
                         Host: <b>{eventInfo!==null ? eventInfo.Username : "host name"}</b>

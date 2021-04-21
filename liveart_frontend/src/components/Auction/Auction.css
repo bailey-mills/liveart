@@ -157,3 +157,17 @@
     text-align: center;
     padding: 10px;
 }
+
+.auction-tags{
+    float: left;
+    margin-left: 3px;
+    padding: 1px;
+    border: 1px solid;
+    border-radius: 100px;
+    font-size: 14px;
+    padding: 4px 9px 4px 9px;
+    background-color: #303030;
+    border-color: #777;
+    margin-bottom: 5px;
+    color: white;
+}
