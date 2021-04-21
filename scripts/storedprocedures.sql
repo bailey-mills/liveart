@@ -19,12 +19,17 @@ AS
 			JOIN [SellerToEvent] SE ON SE.UserID = @userID AND SE.EventID = B.EventID
 			WHERE SE.UserID = @userID
 	);
+	
+	DECLARE @sumOfBaseValues FLOAT;
+	SET @sumOfBaseValues = (
+		SELECT SUM(P.BasePrice) FROM [dbo].[Bid] B
+			JOIN [Transaction] T ON T.BidID = B.ID
+			JOIN [SellerToEvent] SE ON SE.UserID = @userID AND SE.EventID = B.EventID
+			JOIN [Product] P ON P.ID = B.ProductID
+			WHERE SE.UserID = @userID
+	);
 
-
-	DECLARE @averageEventValue FLOAT;
-	DECLARE @totalEvents FLOAT;
-
-	SELECT @grossRevenue AS 'GrossRevenue', @averageProductValue AS 'AverageProductValue';
+	SELECT @grossRevenue AS 'GrossRevenue', @averageProductValue AS 'AverageProductValue', @sumOfBaseValues AS 'SumBaseValue';
 GO
 
 
@@ -47,9 +52,14 @@ AS
 			JOIN [Bid] B ON B.ID = T.BidID
 			WHERE B.UserID = @userID
 	);
+	
+	DECLARE @totalSpentBase FLOAT;
+	SET @totalSpentBase = (
+		SELECT SUM(P.BasePrice) FROM [dbo].[Transaction] T
+			JOIN [Bid] B ON B.ID = T.BidID
+			JOIN [Product] P ON P.ID = B.ProductID
+			WHERE B.UserID = @userID
+	);
 
-	DECLARE @averageEventValue FLOAT;
-	DECLARE @totalEvents FLOAT;
-
-	SELECT @totalSpent AS 'TotalSpent', @averageProductPrice AS 'AverageProductPrice';
+	SELECT @totalSpent AS 'TotalSpent', @averageProductPrice AS 'AverageProductPrice', @totalSpentBase AS 'TotalSpentBase';
 GO

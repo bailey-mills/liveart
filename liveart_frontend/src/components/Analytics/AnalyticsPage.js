@@ -19,7 +19,7 @@ require('dotenv').config();
 
 // Determine if all of the data sets have been gathered
 let loaded = 0;
-const loadRequired = 9;
+const loadRequired = 11;
 
 function AnalyticsPage(){
     Chart.plugins.register(ChartDataLabels);
@@ -32,12 +32,14 @@ function AnalyticsPage(){
     const [ageBoth, setAgeBoth] = useState();
     const [artistTags, setArtistTags] = useState();
     const [artistTagsBoth, setArtistTagsBoth] = useState();
+    const [artistTransactions, setArtistTransactions] = useState();
 
     // ----------------
     //  BUYER DATASETS
     // ----------------
-    const [buyerSingles, setBuyerSingles] = useState();    
+    const [buyerSingles, setBuyerSingles] = useState();
     const [buyerTags, setBuyerTags] = useState();
+    const [buyerTransactions, setBuyerTransactions] = useState();
     
     // -----------------
     //  MUTUAL DATASETS
@@ -57,10 +59,12 @@ function AnalyticsPage(){
         getData("artist/ageBoth/" + userID, setAgeBoth);
         getData("artist/tags/" + userID, setArtistTags);
         getData("artist/tagsBoth/" + userID, setArtistTagsBoth);
+        getData("artist/transactions/" + userID, setArtistTransactions);
 
         // Buyer Data
         getData("buyer/singles/" + userID, setBuyerSingles);
         getData("buyer/tags/" + userID, setBuyerTags);
+        getData("buyer/transactions/" + userID, setBuyerTransactions);
 
         // Mutual Data
         getData("global/tagList", setTagList);
@@ -82,6 +86,7 @@ function AnalyticsPage(){
 
     // Display the charts
     loaded = 0;
+    console.log(artistTransactions);
     return(
         <Tabs className="analytics">
             <TabList>
@@ -96,6 +101,14 @@ function AnalyticsPage(){
                         <div className="horizontalContainer">
                             <Tile title="Gross Revenue" value={artistSingles.GrossRevenue} prefix="$" accent="accent green" />
                             <Tile title="Average Product Value" value={artistSingles.AverageProductValue} prefix="$" accent="accent green" />
+                            <Tile title="<SumBaseValue>" value={artistSingles.SumBaseValue} prefix="$" accent="accent green" />
+                        </div>
+
+                        <hr />
+
+                        <h4 className="sectionTitle">Age Demographics</h4>
+                        <div className="horizontalContainer">
+                            <BarChart className="chartContainer" data={artistTransactions} label="Age" class="chart bar wide" title="Revenue over Time" />
                         </div>
 
                         <hr />
@@ -131,6 +144,7 @@ function AnalyticsPage(){
                         <div className="horizontalContainer">
                             <Tile title="Sum of Transactions" value={buyerSingles.TotalSpent} prefix="$" accent="accent blue" />
                             <Tile title="Average Product Price" value={buyerSingles.AverageProductPrice} prefix="$" accent="accent blue" />
+                            <Tile title="<TotalSpentBase>" value={buyerSingles.TotalSpentBase} prefix="$" accent="accent blue" />
                         </div>
 
                         <hr />

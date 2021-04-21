@@ -115,7 +115,7 @@ namespace DataGenerator
 			List<List<string>> items = new List<List<string>>();
 
 			// Get sample data
-			List<string> titles = GetRowsByCategoryID(count, categoryIDs, Database.DB_SAMPLES, "EventName", "Value");
+			List<string> titles = GetRowsByFilterID(count, categoryIDs, Database.DB_SAMPLES, "EventName", "Value", "CategoryID", "Category");
 			List<string> summaries = new List<string>();
 			for (int j = 0; j < count; j++)
 			{
@@ -308,17 +308,20 @@ namespace DataGenerator
 			return items;
 		}
 
-		public static List<string> GetRowsByCategoryID(int count, List<string> categoryIDs, string database, string table, string column)
+		public static List<string> GetRowsByFilterID(int count, List<string> filterIDs, string database, string table, string column, string filterColumn, string filterTable)
 		{
 			List<string> items = new List<string>();
 
+			// Get number of rows in table
+			int refIDCount = Database.GetSampleRows(Database.DB_MAIN, filterTable);
+
 			// Get all images in groups
 			List<List<string>> itemGroups = new List<List<string>>();
-			for (int i = 0; i < 4; i++)
+			for (int i = 0; i < refIDCount; i++)
 			{
 				List<string> itemsInCategory = new List<string>();
 
-				string query = string.Format("SELECT {0} FROM [{1}] WHERE CategoryID = {2}", column, table, i + 1);
+				string query = string.Format("SELECT {0} FROM [{1}] WHERE {2} = {3}", column, table, filterColumn, i + 1);
 				using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[database].ConnectionString))
 				{
 					try
@@ -351,7 +354,7 @@ namespace DataGenerator
 			// Choose a random item for each categoryID
 			for (int i = 0; i < count; i++)
 			{
-				int categoryID = int.Parse(categoryIDs[i]);
+				int categoryID = int.Parse(filterIDs[i]);
 				List<string> itemGroup = itemGroups[categoryID - 1];
 				int index = r.Next(0, itemGroup.Count);
 				string item = itemGroup[index];

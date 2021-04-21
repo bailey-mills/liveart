@@ -167,6 +167,58 @@ module.exports = class AnalyticsPageController {
 
         res.json(ret);
     }
+    
+    getTransactionsOverTimeArtist = async (req, res)=> {
+        /*
+        SELECT SUM(B.Amount) AS 'Value', E.StartTime AS 'EventDate' FROM [dbo].[Bid] B
+            JOIN [Transaction] T ON T.BidID = B.ID
+            JOIN [SellerToEvent] SE ON SE.UserID = 2955 AND SE.EventID = B.EventID
+            JOIN [Event] E ON E.ID = SE.EventID
+            WHERE SE.UserID = 2955
+            GROUP BY E.StartTime
+        */
+
+        let userID = req.params.id;
+        let query = `SELECT SUM(B.Amount) AS 'Value', E.StartTime AS 'EventDate' FROM [dbo].[Bid] B
+            JOIN [Transaction] T ON T.BidID = B.ID
+            JOIN [SellerToEvent] SE ON SE.UserID = ${userID} AND SE.EventID = B.EventID
+            JOIN [Event] E ON E.ID = SE.EventID
+            WHERE SE.UserID = ${userID}
+            GROUP BY E.StartTime, B.Timestamp
+            ORDER BY B.Timestamp`;
+                
+        let result = await dbOps.executeQuery(query);
+        result = result[0];
+        
+        // Format results
+        let ret = {
+            labels: result.EventDate,
+            data: result.Value
+        }
+
+        res.json(ret);
+    }
+    
+    getTransactionsOverTimeBuyer= async (req, res)=> {
+        let userID = req.params.id;
+        let query = `SELECT SUM(B.Amount) AS 'Value', E.StartTime AS 'EventDate' FROM [dbo].[Bid] B
+            JOIN [Transaction] T ON T.BidID = B.ID
+            JOIN [Event] E ON E.ID = b.EventID
+            WHERE B.UserID = ${userID}
+            GROUP BY E.StartTime, B.Timestamp
+            ORDER BY B.Timestamp`;
+                
+        let result = await dbOps.executeQuery(query);
+        result = result[0];
+        
+        // Format results
+        let ret = {
+            labels: result.EventDate,
+            data: result.Value
+        }
+
+        res.json(ret);
+    }
 
     getTagsBoth = async (req, res)=> {
         // Get list of tags

@@ -380,7 +380,7 @@ namespace DataGenerator
 			return results;
 		}
 
-		private static int GetSampleRows(string database, string table)
+		public static int GetSampleRows(string database, string table)
 		{
 			int count = -1;
 
@@ -542,11 +542,17 @@ namespace DataGenerator
 			}
 			List<List<string>> productTags = CustomGenerator.GetTags(products[0].Count(), 1, categoryIDsProduct);
 
+			List<string> productsFirstTagID = new List<string>();
+			for (int i = 0; i < productTags.Count(); i++)
+			{
+				productsFirstTagID.Add(productTags[i][0]);
+			}
+
 			// Event
 			List<List<string>> events = CustomGenerator.GetEvents(count, currentBiddingIDs, categoryIDsEvent);
 
 			// Update products to have the correct images
-			List<string> productImages = CustomGenerator.GetRowsByCategoryID(products[0].Count(), categoryIDsProduct, DB_SAMPLES, "ProductImages", "Value");
+			List<string> productImages = CustomGenerator.GetRowsByFilterID(products[0].Count(), productsFirstTagID, DB_SAMPLES, "ProductImages", "Value", "TagID", "Tag");
 			products.Insert(3, productImages);
 
 			// Set the event image to the first product image
