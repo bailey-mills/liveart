@@ -1,0 +1,105 @@
+.messageBox {
+  background: white;
+  border-radius: 20px;
+  padding: 3px 15px;
+  color: white;
+  display: inline-block;
+  max-width: 80%;
+  justify-self: end;
+}
+
+.messageBox-others {
+  background: white;
+  border-radius: 20px;
+  padding: 3px 15px;
+  color: white;
+  display: inline-block;
+  max-width: 80%;
+  justify-self: start;
+}
+
+.messageText {
+  width: 100%;
+  letter-spacing: 0;
+  float: left;
+  font-size: 1.0em;
+  word-break: break-word;
+  margin-bottom: 5px;
+}
+
+.messageText img {
+  vertical-align: middle;
+}
+
+.messageContainer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 3%;
+  margin-top: 3px;
+}
+
+.messageGrid{
+  display: grid;
+  align-items: right;
+  grid-column: 1;
+}
+
+.messageNameBox{
+  max-width: 20%;
+  display: inline-block;
+  word-break: break-word;
+}
+
+.sentText {
+  display: flex;
+  align-items: center;
+  font-family: Helvetica;
+  color: #828282;
+  letter-spacing: 0.3px;
+  margin: 0px;
+  align-items: right;
+  justify-self: end;
+}
+
+.sentText-others {
+  display: flex;
+  align-items: center;
+  font-family: Helvetica;
+  color: #828282;
+  letter-spacing: 0.3px;
+  margin: 0px;
+  align-items: right;
+  justify-self: start;
+}
+
+.pl-10 {
+  padding-left: 10px;
+}
+
+.pr-10 {
+  padding-right: 10px;
+}
+
+.justifyStart {
+  justify-content: flex-start;
+}
+
+.justifyEnd {
+  justify-content: flex-end;
+}
+
+.colorWhite {
+  color: white;
+}
+
+.colorDark {
+  color: #353535;
+}
+
+.backgroundBlue {
+  background: #2979FF;
+}
+
+.backgroundLight {
+  background: white;
+}
