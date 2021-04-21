@@ -12,7 +12,7 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import ListGroupItem from 'react-bootstrap/ListGroupItem';
 
 
-function UserCard(props){
+function UserCardCompact(props){
     return(
         <Card>
             <Card.Body>
@@ -23,4 +23,4 @@ function UserCard(props){
     );
 }
 
-export default UserCard;
+export default UserCardCompact;

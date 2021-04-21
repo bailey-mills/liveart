@@ -38,10 +38,21 @@ function BarChart(props) {
         ]
     };
 
+    let hasData = false;
+    for (let i = 0; i < props.data.data.length; i++) {
+        if (props.data.data[i] > 0) {
+            hasData = true;
+            break;
+        }
+    }
+    let chart = <Bar data={settings} options={options} />;
+    let noData = <div class="no-data">No Data Available</div>
+    let result = hasData ? chart : noData;
+
     return(
         <div className={props.class}>
             <h5>{props.title}</h5>
-            <Bar data={settings} options={options} />
+            {result}
         </div>
     );
 }

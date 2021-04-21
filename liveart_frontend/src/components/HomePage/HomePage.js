@@ -55,7 +55,7 @@ function EventsPage(){
                     <EventSection events={subscribedEvents} eventClass="event-section"/>
                 </div>
                 <h2 style={{textAlign:"center", marginTop:"35px"}}>Events You Might be Interested In</h2>
-                <EventSection events={recommendedEvents} eventClass="event-section"/>
+                <EventSection events={recommendedEvents} eventClass="event-section-tall"/>
             </div>
             <Footer/>     
         </React.StrictMode>

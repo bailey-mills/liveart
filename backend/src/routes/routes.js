@@ -96,10 +96,12 @@ routes.get('/analytics/artist/location/:id', analyticsPageController.getLocation
 routes.get('/analytics/artist/tags/:id', analyticsPageController.getTagsArtist);
 routes.get('/analytics/artist/tagsBoth/:id', analyticsPageController.getTagsBoth);
 routes.get('/analytics/artist/singles/:id', analyticsPageController.getAnalyticsArtist);
+routes.get('/analytics/artist/transactions/:id', analyticsPageController.getTransactionsOverTimeArtist);
 
 // Buyer
 routes.get('/analytics/buyer/singles/:id', analyticsPageController.getAnalyticsBuyer);
 routes.get('/analytics/buyer/tags/:id', analyticsPageController.getTagsBuyer);
+routes.get('/analytics/buyer/transactions/:id', analyticsPageController.getTransactionsOverTimeBuyer);
 
 // Global
 routes.get('/analytics/global/tagList', analyticsPageController.getTagList);

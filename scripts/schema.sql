@@ -279,11 +279,10 @@ INSERT INTO [dbo].[Category] (Name) VALUES ('Painting'),('Sculpture'),('Flower')
 
 -- Tags
 INSERT INTO [dbo].[Tag] (Name, CategoryID) VALUES 
-('Realism', 1),('Photorealism', 1),('Abstraction', 1), ('Impressionism',1),
-('Expressionism', 1),('Painterly', 1),('Oil Painting',1),('Sand Painting',1),
-('Humanoid Figure',2),('Wooden Statue', 2),('Metallic Sculpture', 2),('Classic Sculpture', 2),('Abstract Sculpture', 2),
-('Flower bouquet',3),('Pot Plant',3),('Bonsai', 3),
-('Art Doll',4),('Glass Art Work', 4), ('Jade Art Work', 4), ('Embroidery', 4), ('Cutlery', 4);
+('Realism', 1),('Photorealism', 1),('Abstract', 1), ('Impressionism',1), ('Expressionism', 1),('Painterly', 1),('Oil Painting',1),
+('Humanoid Figure',2),('Metallic Sculpture', 2),('Classic Sculpture', 2),('Abstract Sculpture', 2),
+('Flower bouquet',3),('Potted Plant',3),('Bonsai', 3),
+('Glass Art Work', 4), ('Embroidery', 4), ('Cutlery', 4);
 go
 
 -- [LIVEART] Stored Procedures
