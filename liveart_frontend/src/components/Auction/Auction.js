@@ -334,7 +334,7 @@ export default function Auction(props){
                                         console.log();
                                         return(
                                             <div className={"preview-img "}>
-                                            <li><p>{item.Name}</p><img id={item.ID} src={item.PreviewURL} alt={item.ID} /> </li>
+                                            <li><p>{item.Name}</p><img className="auction-preview-img" id={item.ID} src={item.PreviewURL} alt={item.ID} /> </li>
                                             </div> 
                                         );
                                     })

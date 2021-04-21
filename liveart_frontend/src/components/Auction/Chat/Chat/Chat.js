@@ -4,14 +4,15 @@ import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import Messages from '../Messages/Messages';
 import Input from '../Input/Input';
+import { useHistory } from "react-router-dom";
 
 import './Chat.css';
 
-const ENDPOINT = 'https://project-chat-application.herokuapp.com/';
+const ENDPOINT = 'http://localhost:8000/';
 let socket;
 
 function Chat(props) {
-
+  let history = useHistory();
   let currentUsername = localStorage.getItem('user');;
   if(currentUsername===null)
   {
@@ -39,7 +40,9 @@ function Chat(props) {
     socket.emit('join', { name, room }, (error) => {
       console.log("join1");
         if(error) {
-          alert("here"+error);
+          //alert("here"+error);
+          history.go(0);
+
         }
       });
     

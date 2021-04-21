@@ -80,6 +80,13 @@
 
 .preview-img{
     border: 2px solid white;
+
+}
+
+.auction-preview-img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 .preview-img-unsold{
