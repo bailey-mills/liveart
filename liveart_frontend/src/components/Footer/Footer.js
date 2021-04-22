@@ -24,24 +24,26 @@ function Footer(){
                     <h5 className="text-uppercase text-light">LIVE.ART</h5>
             
                     <p>
-                      Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iste atque ea quis
-                      molestias. Fugiat pariatur maxime quis culpa corporis vitae repudiandae aliquam
-                      voluptatem veniam, est atque cumque eum delectus sint!
+                    LIVE.ART is a Live Event Based Virtual Auction Platform dedicated for Art Works. It brings dynamic unique user experiences to the world of online auction. 
+                    Virtual auction websites are traditionally product-oriented, resulting in insufficient engagement between buyers and sellers. LIVE.ART extends the online auction 
+                    experience with comprehensive event recommendations, real-time interactions, and informative business analytics. 
                     </p>
+                    <p><strong>Welcome to the Carnival of Creators</strong></p>
                   </div>
 
                   <div className="col-lg-3 col-md-6 mb-4 mb-md-0">
-                    <h5 className="text-uppercase">Programmers - Team Sherba</h5>
-            
-                    <ul className="list-unstyled mb-0">
+                    <h5 className="text-uppercase">Developers</h5>
+                    <h5 className="">Team Sherba</h5>
+
+                    <ul className="list-unstyled mb-0 mt-1">
                       <li>
-                        <a href="#!" className="text-light">Eric Lin</a>
+                        <a href="https://github.com/EricL414" rel="noopener noreferrer" target="_blank" className="text-light">Eric Lin</a>
                       </li>
                       <li>
-                        <a href="#!" className="text-light">Shuang Liang</a>
+                        <a href="https://github.com/Bug-Shuang-Code-Not-Work" rel="noopener noreferrer" target="_blank" className="text-light">Shuang Liang</a>
                       </li>
                       <li>
-                        <a href="#!" className="text-light">Bailey Mills</a>
+                        <a href="https://github.com/bailey-mills" rel="noopener noreferrer" target="_blank" className="text-light">Bailey Mills</a>
                       </li>
                     </ul>
                   </div>
@@ -51,7 +53,7 @@ function Footer(){
             
                     <ul className="list-unstyled">
                       <li>
-                        <a href="#!" className="text-dark">Github Link</a>
+                         <a href="https://github.com/bailey-mills/liveart" rel="noopener noreferrer" target="_blank" className="text-light"><img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="icon" style={{width: 20, height: 20}}/> Github</a>
                       </li>
                     </ul>
                   </div>
@@ -61,8 +63,7 @@ function Footer(){
               </div>
 
               <div className="text-center text-light p-3" >
-                © 2020 Copyright:
-                <a className="text-light" href="https://mdbootstrap.com/">Team Sherba</a>
+                Conestoga College SET 2021 Winter Capstone Project - LIVE.ART by Team Sherba
               </div>
 
             </footer>

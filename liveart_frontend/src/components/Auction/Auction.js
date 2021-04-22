@@ -110,7 +110,7 @@ export default function Auction(props){
 
                             </div>
                             <div className="auction-currentitem-img">
-                            <img src={allItems[i].PreviewURL} alt={allItems[i].ID} />
+                            <img src={allItems[i].PreviewURL} alt={allItems[i].ID} className="auction-currentitem-img-pic"/>
                             </div>
                         </div>
                     );
@@ -184,6 +184,7 @@ export default function Auction(props){
     }
 
     function handleBidding(){
+        setError("");
         if(bidinput!== null && bidinput > currentItemBasePrice)
         {
             const bidinfo = {"EventID": currentEventID, "UserID":currentUserID, "Amount" : bidinput};
@@ -227,7 +228,8 @@ export default function Auction(props){
             <button className="btn btn-outline-danger btn-sm auction-btn" onClick={handleSkip}>Skip this item</button>
             </div>
             <div className="mt-3">
-                Current Highest Bidding: <input className="mr-1 ml-1" value={"$ "+currentHighestBidding.Amount} disabled /> by User: <b>{currentHighestBidding.Username}</b> at {moment(currentHighestBidding.Timestamp).format('h:mm A')}
+                
+            Current Highest Bidding: <input className="mr-1 ml-1" value={currentHighestBidding.Amount != undefined ? "$ "+currentHighestBidding.Amount : "No Bid"} disabled /> <strong>{currentHighestBidding.Amount != undefined ? "by User: "+currentHighestBidding.Username+" at "+moment(currentHighestBidding.Timestamp).format('h:mm A') : ""} </strong>
             </div>
         
         </div>
@@ -237,7 +239,7 @@ export default function Auction(props){
     {
         controllbox = <div className="auction-controller-audience">
             <div className="">
-                Current Highest Bidding: <input className="mr-1 ml-1" value={"$ "+currentHighestBidding.Amount} disabled /> by User: <b>{currentHighestBidding.Username}</b> at {moment(currentHighestBidding.Timestamp).format('h:mm A')}
+            Current Highest Bidding: <input className="mr-1 ml-1" value={currentHighestBidding.Amount != undefined ? "$ "+currentHighestBidding.Amount : "No Bid"} disabled /> <strong>{currentHighestBidding.Amount != undefined ? "by User: "+currentHighestBidding.Username+" at "+moment(currentHighestBidding.Timestamp).format('h:mm A') : ""} </strong>
 
             </div>
             <div className="mt-2">
