@@ -43,34 +43,22 @@ function NewEvent(props) {
     const [newitemimages, setNewitemimages] = useState("");
 
     const [newitems,setNewitems] = useState([]);
+
+    const [categoryList, setCategoryList] = useState();
+
     let history = useHistory();
 
     let currentUsername = localStorage.getItem('user');
-    if(currentUsername===null)
-    {
-        //jump to login page
-       
-    }
-
 
     function onDrop(picture) {
         setNewitemimages(newitemimages.concat(picture));
     }
 
     function handleNewItem(){
-        //validator
-        // if(!newitemname || !newitemdescrption || newitemprice<=0 || !newitemimages || !newitemtags.length){
-        //     return;
-        // }
-
         const newitem = {'Name': newitemname, 'Description': newitemdescrption, 'BasePrice': newitemprice, 'Tags': newitemtags, 'URL': newitemimages};
         console.log(newitem);
         
         setNewitems(newitems.concat(newitem));
-
-        //console.log("list", newitems);
-
-        
 
         setShow(false);
 
@@ -79,15 +67,18 @@ function NewEvent(props) {
         setNewitemprice(0);
         setNewitemtags([]);
         setNewitemimages([]);
-
-        
-
     }
 
     useEffect(()=>{
-        console.log("list", newitems);
-
-    },[newitems])
+        axios.get(process.env.REACT_APP_SERVER + '/categories')
+        .then(res=>{
+            if(res.status===200)
+            {
+                setCategoryList(res.data);
+            }
+        
+        })
+    },[])
 
 
     function handleDelete(index){
@@ -104,7 +95,6 @@ function NewEvent(props) {
 
     function handleCreate()
     {
-        console.log("create clicked");
         const event = {
             "EventTitle" : title,
             "StartTime" : startdate + " " + starttime,
@@ -122,25 +112,14 @@ function NewEvent(props) {
         let userID = localStorage.getItem('userID');
         axios.post(process.env.REACT_APP_SERVER + '/event/createEvent/' + userID, event)
         .then(res=>{
-            
             if(res.status===200)
             {
-                console.log("return message", res.data.message);
-
                 history.push({
-                pathname: '/userprofile/plannedevents',
+                    pathname: '/userprofile/plannedevents',
                 });
             }
         
         })
-        .catch(function (error) {          
-            if(error.response.status===400)
-            {                
-                alert("Can't connect to the backend");
-            }
-        })
-
-
     }
 
   return (
@@ -252,7 +231,7 @@ function NewEvent(props) {
                     </InputGroup.Prepend>
                     <select className="custom-select" id="inputGroupSelect01" onChange={(e) => setCategory(e.target.value)}>
                         <option value="-1" selected="selected">-- Select a Category --</option>
-                        {CategorySample.map((category, index) => <option key={category.id} value={category.id}>{category.name}</option>)}
+                        {categoryList ? categoryList.map((category, index) => <option key={category.ID} value={category.ID}>{category.Name}</option>) : ''}
                     </select>
             </InputGroup>
           </Row>
@@ -285,14 +264,7 @@ function NewEvent(props) {
                                 Base Price: {item.BasePrice}
                                 
                                 </Card.Text>
-                                <Card.Text>
-                                {/* Image: {item.Images.map((image,index)=>{
-                                    return(
-                                        <div>{image.name} <img href={image.name} alt="i"/></div>
-                                        
-                                    );
-                                })} */}
-                                </Card.Text>
+
                                 <Card.Text>
                                 Tags: {item.Tags.map((tag,index)=>{
                                     return(

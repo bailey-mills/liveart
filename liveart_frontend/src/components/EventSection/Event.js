@@ -54,7 +54,7 @@ function Event(props){
                 </div>
                 <div className="eventtags">
                         <ul className="event-tags-ul">
-                            <li>{props.event.CategoryName}</li>
+                            <li className="event-tags-category">{props.event.CategoryName}</li>
                             {
                                 props.event.EventTags.map((tag, index) => {
                                     return(

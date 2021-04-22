@@ -120,6 +120,16 @@
     float: left;
 }
 
+.event-tags-category {
+    background-color: rgb(58, 64, 87) !important;
+    border-color: rgb(99, 107, 139) !important;
+}
+
+.event-tags-category-light {
+    background-color: rgb(218, 225, 255) !important;
+    border-color: rgb(143, 160, 216) !important;
+}
+
 .event-tags-ul > li{
     float: left;
     margin-left: 3px;
@@ -155,5 +165,23 @@
   }
 
 html {
+    background-color: #ddd;
+}
+
+.carousel {
     background-color: #eee;
+}
+
+.carousel-control-prev-icon {
+    background-color: #ccc !important;
+    height: 30px !important;
+    width: 30px !important;
+    border-radius: 50%;
+}
+
+.carousel-control-next-icon {
+    background-color: #ccc !important;
+    height: 30px !important;
+    width: 30px !important;
+    border-radius: 50%;
 }

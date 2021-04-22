@@ -116,7 +116,6 @@ function UserInfo(props){
             </div>
             <div>Followers: {subCount}</div>
             <div>Following: {subToCount}</div>
-            <div>Birthday: {moment(userinfo.Birthday).format('YYYY-MM-DD')}</div>
             
             <div>
                 <div>Interests: </div>

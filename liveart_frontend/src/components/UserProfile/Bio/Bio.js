@@ -269,7 +269,7 @@ function Bio(props){
                     {/* tags */}
                     <Form.Row className="register-row">
                         <Form.Group as={Col} md="3" controlId="validationCustom08">
-                            <Form.Label>Add some tags for yourself!</Form.Label>
+                            <Form.Label>Add some tags of interest!</Form.Label>
                             <Tag onSelectedTag={setSelectedtags} currentTags={currenttags}/> 
                         </Form.Group>         
                     </Form.Row>

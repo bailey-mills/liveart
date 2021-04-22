@@ -275,7 +275,7 @@ function Register() {
         <hr className="divide-line"/>
 
         <div className="register-tagbox register-row">
-            <Form.Label>Add some tags for yourself!</Form.Label>
+            <Form.Label>Add some tags of interest!</Form.Label>
             <Tag onSelectedTag={setSelectedtags}/> 
         </div>
 

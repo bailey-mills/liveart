@@ -15,15 +15,10 @@ export default function Tag(props){
 
     useEffect(()=>{
         axios.get(process.env.REACT_APP_SERVER + '/all-tags').then(res=>{
-            console.log("return code: " +res.status);
-            if(res.status!==200)
+            if(res.status===200)
             {
-                alert("Can't connect to the backend");
-                return;
+                setTags(res.data);
             }
-            
-            setTags(res.data);
-            //console.log("tags",tags);
         })
     },[]);
 
@@ -39,8 +34,16 @@ export default function Tag(props){
 
     return(
         <div>
-            <Multiselect options={tags} displayValue="Name" selectedValues={props.currentTags} onSelect={selectChange} onRemove={selectChange} avoidHighlightFirstOption="true" closeOnSelect="false" placeholder="Pick your tags!"/>
-            {/* here: {JSON.stringify(selected)} */}
+            <Multiselect 
+                options={tags} 
+                displayValue="Name" 
+                selectedValues={props.currentTags} 
+                onSelect={selectChange} 
+                onRemove={selectChange} 
+                avoidHighlightFirstOption="true" 
+                closeOnSelect="false" 
+                placeholder="Pick your interests!"
+            />
         </div>
     );
 

@@ -5,7 +5,8 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import "./Auction.css";
 import workimg from "../../Assets/workimgSample.json";
 import Button from "react-bootstrap/Button";
-import Chat from "./Chat/Chat/Chat"
+import Chat from "./Chat/Chat/Chat";
+import SubscribeButton from "../SubscribeButton/SubscribeButton";
 
 export default function Auction(props){
     let signedin = true;
@@ -32,7 +33,6 @@ export default function Auction(props){
     const [error, setError] = useState("");
     const [feedback, setFeedback] = useState("");
     const [mylastbid, setMylastbid] = useState("");
-    const [subsribecondition, setSubsribecondition] = useState(false);
 
         useEffect(() => {
             console.log("getProducts");
@@ -254,19 +254,6 @@ export default function Auction(props){
 
 
     }
-
-    function handleSubscribe(){
-        if(subsribecondition===false)
-        {
-            //send backend a subscribe statement
-            setSubsribecondition(true);
-        }
-        else
-        {
-            //send backend a unsubscribe statement
-            setSubsribecondition(false);
-        }
-    }
     
     if(signedin === true)
     {
@@ -301,7 +288,8 @@ export default function Auction(props){
             <div className="auction-body">
                 <div className="auction-title shadow p-2 mb-3 bg-body rounded">
                     <div className="title-area atitle rounded">
-                        <h2>{eventInfo!==null ? eventInfo.EventTitle : "event title"}</h2>
+                        <h2>{eventInfo!==null ? eventInfo.EventTitle : "..."}</h2>
+                        {eventInfo ? <div className="event-tags-category-light auction-tags">{eventInfo.CategoryName}</div> : ''}
                         {eventInfo!==null ? 
                             allTags.map((tag, index)=>{
                                 return(
@@ -313,8 +301,7 @@ export default function Auction(props){
                     </div>
                     <div className="title-area ahost rounded">
                         Host: <b>{eventInfo!==null ? eventInfo.Username : "host name"}</b>
-
-                        {role==="audience"&&signedin===true ? subsribecondition===false ?  <Button className="btn-success btn-sm mt-2" onClick={handleSubscribe}>Subscribe</Button> : <Button className="btn-danger btn-sm mt-2" onClick={handleSubscribe}>Unsubscribe</Button> : ""}
+                        <SubscribeButton user={currentUsername} target={eventInfo.Username} />
                     </div>
                     {/* <div className="title-area aaudience rounded">
                         audience number: 100
