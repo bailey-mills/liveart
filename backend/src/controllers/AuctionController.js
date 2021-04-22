@@ -10,10 +10,11 @@ class AuctionController {
     getHost = async (req, res) => {
         let eventID = req.params.eventID;
 
-       let hostResult = await dbDrive.executeQuery(`SELECT [dbo].[User].ID as EventID, [dbo].[User].Username, [dbo].[Event].Title as 'EventTitle', [dbo].[Event].Summary as 'EventSummary'
+       let hostResult = await dbDrive.executeQuery(`SELECT [dbo].[User].ID as EventID, [dbo].[User].Username, [dbo].[Event].Title as 'EventTitle', [dbo].[Event].Summary as 'EventSummary', C.Name as 'CategoryName'
        from [dbo].[User] 
        JOIN SellerToEvent on [dbo].[User].ID=SellerToEvent.UserID 
        JOIN [dbo].[Event] on SellerToEvent.EventID = [dbo].[Event].ID
+       JOIN [dbo].[Category] C on C.ID = [Event].CategoryID
        WHERE SellerToEvent.EventID=${eventID}`);
 
 

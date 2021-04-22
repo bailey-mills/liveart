@@ -49,12 +49,12 @@ function EventsPage(){
             <Navbar />
             <div className="home-page-content">
                 <Slideshow events={slideshowEvents} />
-                <h2 style={{textAlign:"center", marginTop:"35px"}}>Subscriptions</h2>
+                { subscribedEvents && subscribedEvents.length > 0 ? <h2 style={{textAlign:"center", marginTop:"35px"}}>Subscriptions</h2> : ''}
                 <div className="eventBody">
                     {/* {getData()} */}
                     <EventSection events={subscribedEvents} eventClass="event-section"/>
                 </div>
-                <h2 style={{textAlign:"center", marginTop:"35px"}}>Events You Might be Interested In</h2>
+                <h2 style={{textAlign:"center", marginTop:"35px", marginBottom:"5px"}}>Events You Might be Interested In</h2>
                 <EventSection events={recommendedEvents} eventClass="event-section-tall"/>
             </div>
             <Footer/>     

@@ -288,6 +288,8 @@ module.exports = class EventController {
     createEvent = async (req, res) => {
         let event = req.body;
 
+        console.log(event);
+
         let valid = true;
         // Validate Event
         if (event) {
@@ -304,7 +306,7 @@ module.exports = class EventController {
                 valid = false;
             }
             // url
-            if (!event.ThumbnailURL || event.ThumbnailURL.length <= 0) {
+            if (!event.URL || event.URL.length <= 0) {
                 valid = false;
             }
             // categoryid
@@ -321,7 +323,7 @@ module.exports = class EventController {
         else {
             valid = false;
         }
-
+        console.log(valid);
         // Validate products
         if (valid && event.Items.length > 0) {
             let products = event.Items;
@@ -378,7 +380,7 @@ module.exports = class EventController {
 
         if (userID && userID > 0) {
             // EVENT
-            let eventID = await dbDrive.executeQuery(`INSERT INTO [Event] (Title, Summary, StartTime, EndTime, ThumbnailURL, CategoryID) OUTPUT Inserted.ID VALUES ('${event.EventTitle}', '', '${event.StartTime}', '${event.EndTime}', '${event.ThumbnailURL}', ${event.CategoryID})`);
+            let eventID = await dbDrive.executeQuery(`INSERT INTO [Event] (Title, Summary, StartTime, EndTime, ThumbnailURL, CategoryID) OUTPUT Inserted.ID VALUES ('${event.EventTitle}', '', '${event.StartTime}', '${event.EndTime}', '${event.URL}', ${event.CategoryID})`);
             eventID = eventID[0][0].ID;
             
             // PRODUCT
@@ -387,6 +389,8 @@ module.exports = class EventController {
                 let product = event.Items[i];
                 let productID = await dbDrive.executeQuery(`INSERT INTO [Product] (Name, SellerID, Summary, PreviewURL, BasePrice, IsSold) OUTPUT Inserted.ID VALUES ('${product.Name}', ${userID}, '${product.Description}','${product.URL}', ${product.BasePrice}, 0)`);
                 productID = productID[0][0].ID;
+
+                // Update 
 
                 // PRODUCT TO TAG
                 let j = 0;
@@ -402,14 +406,12 @@ module.exports = class EventController {
             // SELLER TO EVENT
             await dbDrive.executeQuery(`INSERT INTO [SellerToEvent] (UserID, EventID) VALUES (${userID}, ${eventID})`);
 
-
             //Set the first Product to be the current bidding product
-
             await dbDrive.executeQuery(`
-            Update Event SET CurrentBiddingProductID = (
-                select Top 1 ProductID from ProductToEvent where eventID = ${eventID}
-            ) WHERE ID = ${eventID}
-            `)
+                Update Event SET CurrentBiddingProductID = (
+                    select Top 1 ProductID from ProductToEvent where eventID = ${eventID}
+                ) WHERE ID = ${eventID}
+            `);
         }
         else {
             return res.status(400).send({message: 'Missing userID session variable'});

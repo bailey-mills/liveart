@@ -12,6 +12,8 @@
 .title-area{
     border: 1px solid white;
     height: 10vh;
+    padding-left: 10px;
+    padding-top: 4px;
 }
 
 .atitle{
@@ -174,13 +176,22 @@
     border-radius: 100px;
     font-size: 14px;
     padding: 4px 9px 4px 9px;
-    background-color: #303030;
-    border-color: #777;
+    background-color: #dedede;
+    border-color: #bbb;
     margin-bottom: 5px;
-    color: white;
+    color: black;
+    margin-top: 10px;
 }
 
 .auction-currentitem-img-pic{
     max-height: 540px;
     max-width: 700px;
+}
+
+.empty-auction{
+    width: 100%;
+    height: 100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }

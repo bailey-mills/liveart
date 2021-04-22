@@ -32,7 +32,7 @@ function SubscribeButton(props){
     }
 
     let button = null;
-    if (props.user !== props.target) {
+    if (props.user !== props.target && props.user) {
         button = <Button className="btn-secondary userinfo-avatar-subscribebtn" onClick={handleSubscribe}>Unsubscribe</Button>;
         if(status === true)
         {

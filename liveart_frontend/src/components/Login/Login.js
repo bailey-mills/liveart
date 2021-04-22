@@ -38,18 +38,15 @@ export default function Login(props) {
             localStorage.setItem('userID', res.data.UserID);
             history.push('/')
           }
-            
-
         })
         .catch(function (error) {          
           if(error.response && error.response.status===401){
-            alert("Password is wrong");
-            console.log("Password is wrong");
+            setPassword("");
           }
           else if(error.response && error.response.status === 404)
           {
-            alert("User does not exist");
-            console.log("User does not exist");
+            setEmail("");
+            setPassword("");
           }
       })
 

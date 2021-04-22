@@ -8,7 +8,12 @@ module.exports = class GeneralController {
     }
     
     getTags = async (req, res) => {
-        let data = await dbDrive.executeQuery("SELECT * FROM [Tag]");        
+        let data = await dbDrive.executeQuery(
+            `SELECT T.ID, CONCAT(C.Name, ' - ', T.Name) AS 'Name'
+                FROM [Tag] T
+                JOIN [Category] C ON C.ID = T.CategoryID
+                ORDER BY C.ID`
+        );        
         return res.send(data[0]);
     }
     
