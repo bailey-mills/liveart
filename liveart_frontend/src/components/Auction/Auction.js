@@ -6,6 +6,7 @@ import "./Auction.css";
 import workimg from "../../Assets/workimgSample.json";
 import Button from "react-bootstrap/Button";
 import Chat from "./Chat/Chat/Chat"
+import moment from 'moment';
 
 export default function Auction(props){
     let signedin = true;
@@ -50,7 +51,6 @@ export default function Auction(props){
             .then(res=>{
               if(res.status === 200)
               {
-                //console.log(res.data);
                 setCurrentOnBiddingItem(res.data[0].CurrentBiddingProductID)
                 //setAllItems(res.data);
               }
@@ -97,7 +97,7 @@ export default function Auction(props){
             for(let i=0;i<allItems.length;i++){
                 if(allItems[i].ID == currentOnBiddingItem)
                 {
-                    console.log("here",allItems[i].ID);
+
                     setCurrentItemBasePrice(allItems[i].BasePrice);
                     setCurrentItemCode(
                         <div className="auction-currentitem">
@@ -130,7 +130,6 @@ export default function Auction(props){
                     .then(res=>{
                     if(res.status === 200)
                     {
-                        console.log(res.data);
                         setCurrentOnBiddingItem(res.data[0].CurrentBiddingProductID)
                         //setAllItems(res.data);
                     }
@@ -143,10 +142,7 @@ export default function Auction(props){
                       {
                           if(res.data.length > 0)
                           {
-                            console.log("current highest bid",res.data);
                             setCurrentHighestBidding(res.data[0]);
-                            console.log(res.data[0].Amount);
-                            console.log("event info",eventInfo);
                           }
                           
                           
@@ -197,10 +193,17 @@ export default function Auction(props){
               if(res.status === 201)
               {
                 setMylastbid(bidinput);
-                setFeedback("You successfully bidded."+bidinput);
+                setFeedback("You successfully bidded. $"+bidinput);
                 setBidinput("");
               }
                 
+            })
+            .catch(function (error) {          
+                if(error.response.status===400)
+                {                
+                    setBidinput("");
+                    setError(error.response.data.message);
+                }
             });
         }
         else
@@ -223,9 +226,8 @@ export default function Auction(props){
             <button className="btn btn-outline-warning btn-sm auction-btn" onClick={handleSold}>Finish Bidding for this item</button>
             <button className="btn btn-outline-danger btn-sm auction-btn" onClick={handleSkip}>Skip this item</button>
             </div>
-            <div>
-                <p>Current Highest Bidding: </p>
-                <input value={currentHighestBidding.Amount} disabled />
+            <div className="mt-3">
+                Current Highest Bidding: <input className="mr-1 ml-1" value={"$ "+currentHighestBidding.Amount} disabled /> by User: <b>{currentHighestBidding.Username}</b> at {moment(currentHighestBidding.Timestamp).format('h:mm A')}
             </div>
         
         </div>
@@ -234,18 +236,17 @@ export default function Auction(props){
     else
     {
         controllbox = <div className="auction-controller-audience">
-            <div>
-                Current Highest Bidding: 
-                <input value={currentHighestBidding.Amount} disabled />
+            <div className="">
+                Current Highest Bidding: <input className="mr-1 ml-1" value={"$ "+currentHighestBidding.Amount} disabled /> by User: <b>{currentHighestBidding.Username}</b> at {moment(currentHighestBidding.Timestamp).format('h:mm A')}
+
             </div>
-            <br />
-            <div>
+            <div className="mt-2">
             Enter your bidding: 
-            <input value={bidinput} onChange={(e) => setBidinput(e.target.value)} onClick={clearNotice} ></input>
-            <button className="ml-3 btn btn-outline-success btn-sm " onClick={handleBidding}>submit</button>
+            <input value={bidinput} onChange={(e) => setBidinput(e.target.value)} onClick={clearNotice} className="mr-2 ml-1"></input>
+            <button className=" btn btn-outline-success btn-sm " onClick={handleBidding}>submit</button>
             </div>
-            <div>
-                <p>Your Last Bid: {mylastbid}</p>
+            <div className="mt-2">
+                Your Last Bid: <input className="mr-1 ml-1" value={"$ "+mylastbid} disabled />
                 <div className="text-danger">{error}</div>
                 <div className="text-success">{feedback}</div>
             </div>
@@ -302,14 +303,16 @@ export default function Auction(props){
                 <div className="auction-title shadow p-2 mb-3 bg-body rounded">
                     <div className="title-area atitle rounded">
                         <h2>{eventInfo!==null ? eventInfo.EventTitle : "event title"}</h2>
+                        <div className="mt-2">
                         {eventInfo!==null ? 
                             allTags.map((tag, index)=>{
                                 return(
                                     <div className="auction-tags">{tag.Name}</div>
                                 );
                             })
-
+                            
                          : "event tags"}
+                        </div>
                     </div>
                     <div className="title-area ahost rounded">
                         Host: <b>{eventInfo!==null ? eventInfo.Username : "host name"}</b>
@@ -331,7 +334,6 @@ export default function Auction(props){
                             <ul>
                                 {                                   
                                     allItems && allItems.map((item,index) =>{
-                                        console.log();
                                         return(
                                             <div className={"preview-img "}>
                                             <li><p>{item.Name}</p><img className="auction-preview-img" id={item.ID} src={item.PreviewURL} alt={item.ID} /> </li>
