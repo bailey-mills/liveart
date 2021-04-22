@@ -127,6 +127,7 @@
 
 .auction-currentitem-img{
     text-align: center;
+    object-fit: contain;
 }
 
 .auction-controller-host{
@@ -177,4 +178,9 @@
     border-color: #777;
     margin-bottom: 5px;
     color: white;
+}
+
+.auction-currentitem-img-pic{
+    max-height: 540px;
+    max-width: 700px;
 }
