@@ -33,7 +33,7 @@ export default function Tag(props){
 
 
     return(
-        <div>
+        <div style={{width:"300px"}}>
             <Multiselect 
                 options={tags} 
                 displayValue="Name" 
@@ -42,7 +42,7 @@ export default function Tag(props){
                 onRemove={selectChange} 
                 avoidHighlightFirstOption="true" 
                 closeOnSelect="false" 
-                placeholder="Pick your interests!"
+                placeholder="Pick some tags!"
             />
         </div>
     );

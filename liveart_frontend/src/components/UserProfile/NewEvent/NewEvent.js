@@ -100,7 +100,7 @@ function NewEvent(props) {
             "StartTime" : startdate + " " + starttime,
             "EndTime" : enddate + " " + endtime,
             "CategoryID": category,
-            "ThumbNailURL": thumbnail,
+            "URL": thumbnail,
             "Items" : newitems
         };
 
@@ -247,28 +247,31 @@ function NewEvent(props) {
             
             {
                 newitems.map((item,index) => {
+                    console.log(item);
                     return(
                         <Card style={{ width: '18rem' }} key={index} className="m-2">
                             <Card.Img 
-                            width={171}
-                            height={180} 
-                            variant="top" 
-                            src={item.Images} 
-                            alt={item.ItemName} />
+                                width={171}
+                                height={180} 
+                                variant="top" 
+                                src={item.URL} 
+                                alt={item.Name}
+                                style={{objectFit:"contain"}} 
+                            />
                             <Card.Body>
-                                <Card.Title>{item.ItemName}</Card.Title>
+                                <Card.Title>{item.Name}</Card.Title>
                                 <Card.Text>
-                                Desciption: {item.ItemDescription}
+                                Desciption: {item.Description}
                                 </Card.Text>
                                 <Card.Text>
-                                Base Price: {item.BasePrice}
+                                Base Price: ${item.BasePrice}
                                 
                                 </Card.Text>
 
                                 <Card.Text>
                                 Tags: {item.Tags.map((tag,index)=>{
                                     return(
-                                        <div key={index}>{tag.Name}</div>
+                                        <li key={index}>{tag.Name}</li>
                                     );
                                 })}
                                 </Card.Text>
@@ -371,7 +374,7 @@ function NewEvent(props) {
                 </Row>
                 <Row>
                 <p className="mr-3">Tags:</p>
-                <Tag onSelectedTag={setNewitemtags} /> 
+                    <Tag onSelectedTag={setNewitemtags} /> 
                 </Row>
                 
             </Container>

@@ -133,7 +133,6 @@ INSERT INTO ProductImages VALUES ('https://s31531.pcdn.co/wp-content/uploads/201
 INSERT INTO ProductImages VALUES ('https://s31531.pcdn.co/wp-content/uploads/2018/05/8-The-Pond-in-Spring_MMarino-1024x777.jpg', 1, 4);
 INSERT INTO ProductImages VALUES ('https://shelburnemuseum.org/wp-content/uploads/2016/05/Collec_Impressionist_Primary-1800x600.jpg', 1, 4);
 INSERT INTO ProductImages VALUES ('https://thecollector.b-cdn.net/wp-content/uploads/2020/11/what-is-impressionism-monet-1.jpg', 1, 4);
-INSERT INTO ProductImages VALUES ('https://thecollector.b-cdn.net/wp-content/uploads/2020/11/impressionist-art-painting-renoir-lakeside-1-e1604882165704.jpg', 1, 4);
 INSERT INTO ProductImages VALUES ('https://thecollector.b-cdn.net/wp-content/uploads/2020/11/caillebotte-rainy-day-paris-painting-impressionist-art-1-e1604882239724.jpg', 1, 4);
 
 

@@ -40,7 +40,6 @@ function Chat(props) {
     socket.emit('join', { name, room }, (error) => {
       console.log("join1");
         if(error) {
-          //alert("here"+error);
           history.go(0);
 
         }
