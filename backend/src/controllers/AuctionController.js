@@ -101,6 +101,28 @@ class AuctionController {
         let amount = parseInt(req.body.Amount);
         let date = moment.utc(moment()).format("YYYY-MM-DD HH:MM:ss");
         
+       // check base price and current highest bidding price
+       let basePriceResult = await dbDrive.executeQuery(`SELECT BasePrice FROM [dbo].[Product] WHERE ID=${productID}`);
+       let basePrice = basePriceResult[0][0].BasePrice;
+
+       if(amount <= basePrice) {
+           return res.status(400).send({message: 'Bidding price can not be lower than base price!'});
+       }
+
+       let curHighestBiddingPriceQuery = queryBuilder.getFromjoin(['Bid'], 
+       ['TOP 1 Bid.ID','[dbo].[User].Username', '[dbo].[Bid].Amount', '[dbo].[Bid].Timestamp'],
+       [{joinTable: '[dbo].[User]', referenceKeys: '[dbo].[User].ID = Bid.userID'}], 
+       `Bid.ProductID = ${productID}`, '[dbo].[Bid].Amount DESC');
+       let curHighestBiddingPriceResult = await dbDrive.executeQuery(curHighestBiddingPriceQuery);
+       
+       if(curHighestBiddingPriceResult[0].length > 0) {
+           let curHighestBiddingPrice = curHighestBiddingPriceResult[0][0].Amount;
+
+           if(amount <= curHighestBiddingPrice) {
+               return res.status(400).send({message: 'Bidding price can not be lower than current highest price!'})
+           }
+       }
+
 
         let query = `INSERT INTO Bid (ProductID, EventID, UserID, Amount, Timestamp) 
         VALUES (${productID}, ${eventID}, ${userID}, ${amount}, '${date}')`;
