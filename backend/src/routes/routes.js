@@ -84,7 +84,7 @@ routes.get('/auction/getCurrentBiddingProduct/:eventID', auctionController.getCu
 routes.get('/auction/getEventTags/:eventID', auctionController.getEventTags);
 routes.patch('/auction/skipProduct/:eventID', auctionController.skipProduct);
 routes.post('/auction/createBid/:productID', auctionController.createBid);
-routes.post('/auction/createTransaction/:bidID', auctionController.createTransaction);
+routes.post('/auction/createTransaction', auctionController.createTransaction);
 
 
 

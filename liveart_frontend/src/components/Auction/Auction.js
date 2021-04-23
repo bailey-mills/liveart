@@ -1,12 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import axios from "axios";
 import Navbar from "../Navbar/Navbar";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import "./Auction.css";
 import workimg from "../../Assets/workimgSample.json";
 import Button from "react-bootstrap/Button";
-import Chat from "./Chat/Chat/Chat";
-import SubscribeButton from "../SubscribeButton/SubscribeButton";
+import Chat from "./Chat/Chat/Chat"
 import moment from 'moment';
 
 export default function Auction(props){
@@ -26,7 +25,7 @@ export default function Auction(props){
     const [allTags, setAllTags] = useState([]);
     const [eventInfo, setEventInfo] = useState([]);
     const [currentOnBiddingItem, setCurrentOnBiddingItem] = useState(-1);
-    const [currentItemCode, setCurrentItemCode] = useState();
+    const [currentItemCode, setCurrentItemCode] = useState(<div className="mt-3 ml-3 h3"><strong>Currently No item On Auctioned</strong></div>);
     const [currentHighestBidding, setCurrentHighestBidding] = useState(0);
     const [currentItemBasePrice, setCurrentItemBasePrice] = useState(0);
     const [role, setRole] = useState("");
@@ -34,6 +33,9 @@ export default function Auction(props){
     const [error, setError] = useState("");
     const [feedback, setFeedback] = useState("");
     const [mylastbid, setMylastbid] = useState("");
+    const [subsribecondition, setSubsribecondition] = useState(false);
+
+    const chatroomchild = useRef();
 
         useEffect(() => {
             console.log("getProducts");
@@ -91,10 +93,13 @@ export default function Auction(props){
 
         }, [] );
 
-        if (currentItemCode === undefined) {
+
+        useEffect(() => {
+            console.log("all items", allItems);
             for(let i=0;i<allItems.length;i++){
                 if(allItems[i].ID == currentOnBiddingItem)
                 {
+
                     setCurrentItemBasePrice(allItems[i].BasePrice);
                     setCurrentItemCode(
                         <div className="auction-currentitem">
@@ -104,7 +109,7 @@ export default function Auction(props){
                                 <li>Description: <b>{allItems[i].Summary}</b></li>
                                 <li>Base Price: <b>${allItems[i].BasePrice}</b></li>
                             </ul>
-    
+
                             </div>
                             <div className="auction-currentitem-img">
                             <img src={allItems[i].PreviewURL} alt={allItems[i].ID} className="auction-currentitem-img-pic"/>
@@ -112,14 +117,13 @@ export default function Auction(props){
                         </div>
                     );
                 }
-
-                if (currentOnBiddingItem === null) {
-                    setCurrentItemCode(<div className="empty-auction">The auction has concluded</div>);
-                }
             }
-        }
+                       
+            
+        }, [currentOnBiddingItem, allItems]);
 
         useEffect(() => {
+            console.log("current on bidding item", currentOnBiddingItem);
             if(currentOnBiddingItem!==-1 && currentOnBiddingItem!==null)
             {
                 const interval = setInterval(() => {
@@ -148,28 +152,57 @@ export default function Auction(props){
                       }
                           
                       })
+
+                      axios.get('http://localhost:5000/auction/getCurrentBiddingProduct/'+currentEventID)
+                      .then(res=>{
+                        if(res.status === 200)
+                        {
+                          setCurrentOnBiddingItem(res.data[0].CurrentBiddingProductID)
+                          //setAllItems(res.data);
+                        }
+                          
+                      });
+          
       
                   }, 1000);
                   return () => clearInterval(interval);
                 
             }
-        }, [currentOnBiddingItem]);
+        }, [currentOnBiddingItem, currentEventID]);
             
 
-    function handleSold(event){
-        axios.post('http://localhost:5000/auction/createTransaction/'+currentHighestBidding.ID)
-        .then(res=>{
-          if(res.status !== 201)
-          {
-            alert("Auction Wrong");
-          }
-            
-        });
+        function handleSold(event){
+            for(let i=0;i<allItems.length;i++){
+                if(allItems[i].ID == currentOnBiddingItem)
+                {
+                    chatroomchild.current.boardCastMessage("Item: "+allItems[i].Name+" has been auctioned to "+currentHighestBidding.Username+" at $"+currentHighestBidding.Amount);
 
+                }
+            }
+
+            const transctionInfo = {"BiddingID": currentHighestBidding.ID , "EventID": currentEventID};
+            console.log(transctionInfo);
+            axios.post('http://localhost:5000/auction/createTransaction', transctionInfo)
+            .then(res=>{
+              if(res.status !== 201)
+              {
+                alert("Auction Wrong");
+              }
+                
+            });
+            
         //setCurrentOnBiddingItem(currentOnBiddingItem+1);
     }
 
     function handleSkip(){
+        for(let i=0;i<allItems.length;i++){
+            if(allItems[i].ID == currentOnBiddingItem)
+            {
+                chatroomchild.current.boardCastMessage("Item: "+allItems[i].Name+" has been skipped by the host.");
+
+            }
+        }
+        // console.log("skipped");
         axios.patch('http://localhost:5000/auction/skipProduct/'+currentEventID)
         .then(res=>{
           if(res.status !== 204)
@@ -182,9 +215,11 @@ export default function Auction(props){
 
     function handleBidding(){
         setError("");
+
         if(bidinput!== null && bidinput > currentItemBasePrice)
         {
             const bidinfo = {"EventID": currentEventID, "UserID":currentUserID, "Amount" : bidinput};
+            console.log("new bid:",bidinfo);
             axios.post('http://localhost:5000/auction/createBid/'+currentOnBiddingItem, bidinfo)
             .then(res=>{
               if(res.status === 201)
@@ -225,7 +260,7 @@ export default function Auction(props){
             </div>
             <div className="mt-3">
                 
-            Current Highest Bidding: <input className="mr-1 ml-1" value={currentHighestBidding.Amount != undefined ? "$ "+currentHighestBidding.Amount : "No Bid"} disabled /> <strong>{currentHighestBidding.Amount != undefined ? "by User: "+currentHighestBidding.Username+" at "+moment(currentHighestBidding.Timestamp).format('h:mm A') : ""} </strong>
+            Current Highest Bidding: <input className="mr-1 ml-1" value={currentHighestBidding.Amount != null ? "$ "+currentHighestBidding.Amount : "No Bid"} disabled /> <strong>{currentHighestBidding.Amount != undefined ? "by User: "+currentHighestBidding.Username+" at "+moment(currentHighestBidding.Timestamp).format('h:mm A') : ""} </strong>
             </div>
         
         </div>
@@ -235,7 +270,7 @@ export default function Auction(props){
     {
         controllbox = <div className="auction-controller-audience">
             <div className="">
-            Current Highest Bidding: <input className="mr-1 ml-1" value={currentHighestBidding.Amount != undefined ? "$ "+currentHighestBidding.Amount : "No Bid"} disabled /> <strong>{currentHighestBidding.Amount != undefined ? "by User: "+currentHighestBidding.Username+" at "+moment(currentHighestBidding.Timestamp).format('h:mm A') : ""} </strong>
+            Current Highest Bidding: <input className="mr-1 ml-1" value={currentHighestBidding.Amount != null ? "$ "+currentHighestBidding.Amount : "No Bid"} disabled /> <strong>{currentHighestBidding.Amount != undefined ? "by User: "+currentHighestBidding.Username+" at "+moment(currentHighestBidding.Timestamp).format('h:mm A') : ""} </strong>
 
             </div>
             <div className="mt-2">
@@ -253,11 +288,24 @@ export default function Auction(props){
 
 
     }
+
+    function handleSubscribe(){
+        if(subsribecondition===false)
+        {
+            //send backend a subscribe statement
+            setSubsribecondition(true);
+        }
+        else
+        {
+            //send backend a unsubscribe statement
+            setSubsribecondition(false);
+        }
+    }
     
     if(signedin === true)
     {
         chatroom = <div>
-            <Chat roomid={currentEventID} />
+            <Chat roomid={currentEventID} ref={chatroomchild}/>
         </div>
     }
     else
@@ -287,20 +335,22 @@ export default function Auction(props){
             <div className="auction-body">
                 <div className="auction-title shadow p-2 mb-3 bg-body rounded">
                     <div className="title-area atitle rounded">
-                        <h2>{eventInfo!==null ? eventInfo.EventTitle : "..."}</h2>
-                        {eventInfo ? <div className="event-tags-category-light auction-tags">{eventInfo.CategoryName}</div> : ''}
+                        <h2>{eventInfo!==null ? eventInfo.EventTitle : "event title"}</h2>
+                        <div className="mt-2">
                         {eventInfo!==null ? 
                             allTags.map((tag, index)=>{
                                 return(
                                     <div className="auction-tags">{tag.Name}</div>
                                 );
                             })
-
+                            
                          : "event tags"}
+                        </div>
                     </div>
                     <div className="title-area ahost rounded">
                         Host: <b>{eventInfo!==null ? eventInfo.Username : "host name"}</b>
-                        <SubscribeButton user={currentUsername} target={eventInfo.Username} />
+
+                        {role==="audience"&&signedin===true ? subsribecondition===false ?  <Button className="btn-success btn-sm mt-2" onClick={handleSubscribe}>Subscribe</Button> : <Button className="btn-danger btn-sm mt-2" onClick={handleSubscribe}>Unsubscribe</Button> : ""}
                     </div>
                     {/* <div className="title-area aaudience rounded">
                         audience number: 100

@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect, forwardRef, useRef, useImperativeHandle} from "react";
 import io from "socket.io-client";
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
@@ -11,7 +11,7 @@ import './Chat.css';
 const ENDPOINT = 'http://localhost:8000/';
 let socket;
 
-function Chat(props) {
+const Chat = forwardRef((props, ref) =>{
   let history = useHistory();
   let currentUsername = localStorage.getItem('user');;
   if(currentUsername===null)
@@ -67,6 +67,18 @@ function Chat(props) {
     }
   }
 
+
+
+  useImperativeHandle(ref, () => ({
+
+    boardCastMessage(systemNotification){
+      //event.preventDefault();
+      if(systemNotification) {
+        socket.emit('sendMessage', systemNotification, () => setMessage(''));
+      }
+    }
+  }));
+
   return (
     <div>
     <div className="chat-overall">
@@ -102,6 +114,7 @@ function Chat(props) {
       </Modal>
         </div>
   );
-}
+})
+
 
 export default Chat;
