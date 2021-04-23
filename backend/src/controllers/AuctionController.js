@@ -137,8 +137,8 @@ class AuctionController {
     }
 
     createTransaction = async (req, res) => {
-        let eventID = req.body.EventID;
-        let bidID = req.body.BidID;
+        let eventID = parseInt(req.body.EventID);
+        let bidID = parseInt(req.body.BiddingID);
 
         //update product table IsSold
         await dbDrive.executeQuery(`UPDATE Product SET IsSold=1 WHERE ID=(SELECT ProductID FROM Bid WHERE ID = ${bidID})`);
