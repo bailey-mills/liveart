@@ -226,7 +226,7 @@ export default function Auction(props){
               if(res.status === 201)
               {
                 setMylastbid(bidinput);
-                setFeedback("You successfully bidded. $"+bidinput);
+                setFeedback("You successfully bid $"+bidinput);
                 setBidinput("");
               }
                 
