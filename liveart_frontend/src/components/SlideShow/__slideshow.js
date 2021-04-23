@@ -1,3 +1,8 @@
+/**
+ * @file __slideshow.js - The source code of the Carousel/Slideshow/Gallery component in the home page
+ * @author Eric Lin & Bailey Mills
+ * 
+ */ 
 import React from "react";
 // import Carousel from "react-elastic-carousel";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";

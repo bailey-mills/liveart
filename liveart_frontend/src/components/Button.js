@@ -1,3 +1,8 @@
+/**
+ * @file Button.js - The source code of the styled Button component based on bootstrap
+ * @author Bailey Mills
+ * 
+ */
 import React from 'react'
 import './Button.css'
 

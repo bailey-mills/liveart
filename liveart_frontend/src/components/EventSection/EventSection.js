@@ -1,3 +1,8 @@
+/**
+ * @file EventSection.js - The source code of a card deck component for Events card
+ * @author Eric Lin & Bailey Mills
+ * 
+ */   
 import React, {useState, useEffect} from "react";
 import Event from "./Event"
 import "./EventSection.css"

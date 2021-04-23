@@ -1,3 +1,8 @@
+/**
+ * @file DoubleBarChart.js - The source code of the double bar chart component
+ * @author Bailey Mills
+ * 
+ */
 import { Bar } from "react-chartjs-2";
 import '../AnalyticsPage.css';
 require('dotenv').config();

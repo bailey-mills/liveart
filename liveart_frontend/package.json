@@ -11,6 +11,7 @@
     "chartjs-plugin-datalabels": "^0.7.0",
     "dotenv": "^8.2.0",
     "formik": "^2.2.6",
+    "jsdoc": "^3.6.6",
     "multiselect-react-dropdown": "^1.6.11",
     "react": "^17.0.1",
     "react-bootstrap": "^1.5.1",
@@ -35,7 +36,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "doc": "jsdoc -c jsdoc.json"
   },
   "eslintConfig": {
     "extends": [

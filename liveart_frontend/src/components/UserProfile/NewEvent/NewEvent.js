@@ -1,3 +1,8 @@
+/**
+ * @file NewEvent.js - The source code of the new event creating sub-page component 
+ * @author Eric Lin & Bailey Mills
+ * 
+ */ 
 import React, { useState, useEffect } from "react";
 import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Sidebar/Sidebar";
@@ -20,8 +25,6 @@ import { useHistory } from "react-router-dom";
 
 
 function NewEvent(props) {
-
-    const CategorySample = [{"name": "category1", "id":"1"},{"name": "category2","id":"2"},{"name": "category3","id":"3"}];
 
     const [show, setShow] = useState(false);
 
@@ -54,6 +57,12 @@ function NewEvent(props) {
         setNewitemimages(newitemimages.concat(picture));
     }
 
+    /**
+     * @method handleNewItem 
+     * @description New item adding button handler - Add the new item into the item list
+     * @param {null} - none
+     * @returns {null} - none
+     */
     function handleNewItem(){
         const newitem = {'Name': newitemname, 'Description': newitemdescrption, 'BasePrice': newitemprice, 'Tags': newitemtags, 'URL': newitemimages};
         console.log(newitem);
@@ -81,6 +90,12 @@ function NewEvent(props) {
     },[])
 
 
+    /**
+     * @method handleDelete 
+     * @description Item deleting in the list event handler - Delete the certain item from the new event list
+     * @param {index} - index of the item in the list
+     * @returns {null} - none
+     */
     function handleDelete(index){
         let buf = [];   
         for(var i=0; i<newitems.length; i++){
@@ -93,6 +108,12 @@ function NewEvent(props) {
         
     }
 
+    /**
+     * @method handleCreate 
+     * @description Event creating button handler - Send all data about the new creating event to the server
+     * @param {null} - index of the item in the list
+     * @returns {null} - none
+     */
     function handleCreate()
     {
         const event = {

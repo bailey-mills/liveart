@@ -1,3 +1,8 @@
+/**
+ * @file AnalyticsPage.js - The source code of the AnalyticsPage component
+ * @author Bailey Mills
+ * 
+ */
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';

@@ -1,3 +1,8 @@
+/**
+ * @file PlannedEvents.js - The source code of the related events for the current user sub-page component
+ * @author Eric Lin & Bailey Mills
+ * 
+ */ 
 import React, { useState, useEffect } from "react";
 import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Sidebar/Sidebar";

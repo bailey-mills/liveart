@@ -1,12 +1,15 @@
+/**
+ * @file Bio.js - The source code of the User Bio modification sub-page component
+ * @author Eric Lin & Bailey Mills
+ * 
+ */ 
 import React, { useState, useEffect } from "react";
 import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Sidebar/Sidebar";
 import "./Bio.css";
-import sampleuser from "../../../Assets/userSample.json"
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Col from 'react-bootstrap/Col';
-import InputGroup from 'react-bootstrap/InputGroup';
 import '../../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import axios from "axios";
 import Tag from "../../Profile/Tag/Tag";
@@ -81,6 +84,12 @@ function Bio(props){
         })
     },[]);
 
+    /**
+     * @method handleSubmit 
+     * @description Bio modification form submit event handler - Send the updated data to the server
+     * @param {event} - target form
+     * @returns {null} - none
+     */
     const handleSubmit = (event) => {
         const form = event.currentTarget;
 
@@ -117,6 +126,12 @@ function Bio(props){
         setValidated(true);
     };
 
+    /**
+     * @method handleChangeAvatar 
+     * @description Avatar Changing button hanlder
+     * @param {null} - none
+     * @returns {null} - none
+     */
     function handleChangeAvatar() {
         setAvatar(changeavatar);
         setShow(false);

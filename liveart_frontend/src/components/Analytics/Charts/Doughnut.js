@@ -1,3 +1,8 @@
+/**
+ * @file Doughnut.js - The source code of the Doughnut chart component
+ * @author Bailey Mills
+ * 
+ */
 import { Doughnut } from "react-chartjs-2";
 import '../AnalyticsPage.css';
 require('dotenv').config();

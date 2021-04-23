@@ -1,14 +1,10 @@
+/**
+ * @file SearchBar.js - The source code of the user searching bar component
+ * @author Bailey Mills
+ * 
+ */
 import React, {useState, useEffect} from "react";
-import Events from "../../Assets/sampleEvents.json";
-import Tags from "../../Assets/TagSample.json";
-import EventSection from "../EventSection/EventSection";
-import Select from "react-select";
-import Navbar from "../Navbar/Navbar";
 import axios from "axios";
-import Button from "react-bootstrap/Button";
-import Card from 'react-bootstrap/Card';
-import ListGroup from 'react-bootstrap/ListGroup';
-import ListGroupItem from 'react-bootstrap/ListGroupItem';
 import UserCardCompact from"./UserCardCompact";
 import "./SearchBar.css"
 
@@ -16,6 +12,12 @@ function SearchBar(){
     const [searchInput, setSearchInput] = useState("");
     const [userList, setUserList] = useState();
 
+    /**
+     * @method handleSearch 
+     * @description User Searching handlder - send the keyword input to the server
+     * @param {string} - value(username)
+     * @returns {null} - none
+     */
     function handleSearch(value){
         let input = value;
 
@@ -39,6 +41,12 @@ function SearchBar(){
         }
     }
 
+    /**
+     * @method onBlur 
+     * @description Check the newly focused element in the next tick of the event loop
+     * @param {event} - target event
+     * @returns {null} - none
+     */
     function onBlur(e) {
         const currentTarget = e.currentTarget;
         // Check the newly focused element in the next tick of the event loop

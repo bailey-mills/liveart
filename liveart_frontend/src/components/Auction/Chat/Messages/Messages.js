@@ -1,3 +1,8 @@
+/**
+ * @file Messages.js - The source code of the chat room's messages area component
+ * @author Eric Lin
+ * 
+ */   
 import React from 'react';
 
 import ScrollToBottom from 'react-scroll-to-bottom';

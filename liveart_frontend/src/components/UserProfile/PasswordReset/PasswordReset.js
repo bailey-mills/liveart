@@ -1,3 +1,8 @@
+/**
+ * @file PasswordReset.js - The source code of the password reset sub-page component 
+ * @author Eric Lin & Bailey Mills
+ * 
+ */ 
 import React, { useState, useEffect } from "react";
 import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Sidebar/Sidebar";
@@ -21,6 +26,12 @@ function PasswordReset(props) {
 
     let currentUsername = localStorage.getItem('user');;
 
+/**
+ * @method handleSubmit 
+ * @description Password reset form submit handler
+ * @param {event} - target form
+ * @returns {null} - none
+ */
   const handleSubmit = (event) => {
     setError("");
     const form = event.currentTarget;
@@ -129,19 +140,10 @@ function PasswordReset(props) {
                 </Form.Group>
                 </Form.Row>
                 <Form.Row className="justify-content-md-center mt-5 text-danger">
-
                     {error}
-
-
-
-
                 </Form.Row>
                 <Form.Row className="justify-content-md-center mt-5">
-
-
                     <Button type="submit" >Confirm</Button>
-
-
                 </Form.Row>
         </Form>
     

@@ -1,9 +1,10 @@
+/**
+ * @file UserInfo.js - The source code of the User Information details page component
+ * @author Eric Lin & Bailey Mills
+ * 
+ */  
 import React, { useState, useEffect } from "react";
 import Navbar from "../Navbar/Navbar";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from 'react-bootstrap/Col';
-import Button from "react-bootstrap/Button";
 import Image from 'react-bootstrap/Image';
 import Event from "../EventSection/Event";
 import ItemCard from "../ItemCard/ItemCard";
@@ -24,6 +25,7 @@ function UserInfo(props){
 
     const loggedInUser = localStorage.getItem('user');
 
+    /* Fetch user's data */
     useEffect(()=>{
         axios.get(process.env.REACT_APP_SERVER + '/user/getUser/'+props.match.params.username).then(res=>{
             if(res.status == 200){
@@ -45,6 +47,7 @@ function UserInfo(props){
         
     },[]);
 
+    /* Apply user's data */
     const activeEvents = userinfo.PlannedEvents && userinfo.PlannedEvents.ActiveEvents.length <= 0 ? "" :
         <div>
             <h5 className="user-info-title-header">Active Events</h5>

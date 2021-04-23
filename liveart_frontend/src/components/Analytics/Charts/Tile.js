@@ -1,3 +1,8 @@
+/**
+ * @file Tile.js - The source code of the Tile chart component
+ * @author Bailey Mills
+ * 
+ */
 import './Tile.css';
 require('dotenv').config();
 

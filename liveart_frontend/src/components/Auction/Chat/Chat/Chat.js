@@ -1,3 +1,9 @@
+/**
+ * @file Chat.js - The source code of the chat room client side component.
+ * @author Eric Lin
+ * 
+ */   
+
 import React, { useState, useEffect, forwardRef, useRef, useImperativeHandle} from "react";
 import io from "socket.io-client";
 import Modal from 'react-bootstrap/Modal'
@@ -59,6 +65,12 @@ const Chat = forwardRef((props, ref) =>{
     });
 }, []);
 
+    /**
+     * @method sendMessage 
+     * @description send the message to the server
+     * @param {event} - event
+     * @returns {null} - none
+     */
   const sendMessage = (event) => {
     event.preventDefault();
 
@@ -71,6 +83,11 @@ const Chat = forwardRef((props, ref) =>{
 
   useImperativeHandle(ref, () => ({
 
+    /**
+     * boardCastMessage
+     * @param {string} systemNotification - First number
+     * @returns {null} - none
+     */
     boardCastMessage(systemNotification){
       //event.preventDefault();
       if(systemNotification) {

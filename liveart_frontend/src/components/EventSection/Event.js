@@ -1,3 +1,9 @@
+/**
+ * @file Event.js - The source code of a single Event Card component
+ * @author Eric Lin & Bailey Mills
+ * 
+ */   
+
 import React, { useEffect, useState } from "react";
 import "./EventSection.css"
 import Card from "react-bootstrap/Card";

@@ -1,10 +1,13 @@
+/**
+ * @file DataVis.js - The source code of the data visualization sub-page component 
+ * @author Eric Lin & Bailey Mills
+ * 
+ */ 
 import React, { useState } from "react";
 import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Sidebar/Sidebar";
 import AnalyticsPage from "../../Analytics/AnalyticsPage"
 import "./DataVis.css";
-
-
 
 function DataVis(props){
 
@@ -15,7 +18,6 @@ function DataVis(props){
         //jump to login page
     }
 
-
     return(
         <div>
             <Navbar />
@@ -25,9 +27,6 @@ function DataVis(props){
                 <div className="content-body">
                     <AnalyticsPage />
                 </div>
-                {/* This is UserProfile page for {props.match.params.username} */}
-                {/* This is UserProfile page for {currentUsername} */}
-                
 
             </div>
         </div>

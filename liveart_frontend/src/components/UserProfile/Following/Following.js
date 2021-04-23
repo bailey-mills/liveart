@@ -1,3 +1,8 @@
+/**
+ * @file Following.js - The source code of the following details sub-page component 
+ * @author Eric Lin & Bailey Mills
+ * 
+ */ 
 import React, { useState, useEffect } from "react";
 import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Sidebar/Sidebar";
@@ -5,8 +10,6 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import axios from "axios";
 import UserCardCompact from"../../UserSearch/UserCardCompact";
 import "./Following.css";
-
-
 
 function Following(props){
     // console.log(props.match.params.username);
