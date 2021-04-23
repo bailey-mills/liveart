@@ -1,4 +1,29 @@
-﻿using System;
+﻿/**
+	\mainpage Data Generator
+	\subsection What What it does
+	The data generator aims to create data simulating real user activity for the LIVE.ART capstone project (Team Sherba)
+	.
+	\subsection How How it Works
+	The data generator is primarily used by choosing the table group to output data for:
+	- Users (User, Address, UserToTag)
+	- Events (Event, Product, ProductToTag, ProductToEvent, SellerToEvent)
+	- Subscribers
+	- Bids (Bid, Transaction)
+	
+	The data is made to look realistic by creating events / event interest from users with similar tags of 
+	interest (ex. A user interested in paintings will participate in auctions for paintings).
+
+	Similarily, events are created with products who all fall into the same category (painting, sculpture, etc.).
+
+	Lastly, subscriptions are scaled by the number of events each user has in the database. The more events, the more subscribers
+	the user is able to increase their cap to when generating the data.
+
+	\subsection Navigating Navigating Doxygen
+	To see the documentation for the application, head over to the Namespace/Class list and take a look at the different classes that make up
+	the data generator.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
