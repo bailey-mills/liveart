@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace DataGenerator
 {
+	/**
+		\brief Class used to contain all necessary information from the forms datagridview the user inputted (for the un-used custom generator).
+	*/
 	class Summary
 	{
 		public string database;
@@ -19,6 +22,12 @@ namespace DataGenerator
 		public bool runQuery = true;
 		public bool customQuery = false;
 
+		/**
+			\param database DB to use.
+			\param table Table to use.
+			\param format Format of the data (number or string).
+			\brief Set up the Summary object as needed. Decides how based on the incoming database choice. This is now not used in the data generator for LIVE.ART.
+		*/
 		public Summary(string database, string table, string column, string format)
 		{
 			if (database == Database.DB_NONE)

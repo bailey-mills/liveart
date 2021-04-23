@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import "./Auction.css";
 import workimg from "../../Assets/workimgSample.json";
 import Button from "react-bootstrap/Button";
+import SubscribeButton from "../SubscribeButton/SubscribeButton";
 import Chat from "./Chat/Chat/Chat"
 import moment from 'moment';
 
@@ -260,7 +261,7 @@ export default function Auction(props){
             </div>
             <div className="mt-3">
                 
-            Current Highest Bidding: <input className="mr-1 ml-1" value={currentHighestBidding.Amount != null ? "$ "+currentHighestBidding.Amount : "No Bid"} disabled /> <strong>{currentHighestBidding.Amount != undefined ? "by User: "+currentHighestBidding.Username+" at "+moment(currentHighestBidding.Timestamp).format('h:mm A') : ""} </strong>
+            Current Highest Bid: <input className="mr-1 ml-1" value={currentHighestBidding.Amount != null ? "$ "+currentHighestBidding.Amount : "No Bid"} disabled /> <strong>{currentHighestBidding.Amount != undefined ? "by "+currentHighestBidding.Username+" at "+moment(currentHighestBidding.Timestamp).format('h:mm A') : ""} </strong>
             </div>
         
         </div>
@@ -270,11 +271,11 @@ export default function Auction(props){
     {
         controllbox = <div className="auction-controller-audience">
             <div className="">
-            Current Highest Bidding: <input className="mr-1 ml-1" value={currentHighestBidding.Amount != null ? "$ "+currentHighestBidding.Amount : "No Bid"} disabled /> <strong>{currentHighestBidding.Amount != undefined ? "by User: "+currentHighestBidding.Username+" at "+moment(currentHighestBidding.Timestamp).format('h:mm A') : ""} </strong>
+            Current Highest Bid: <input className="mr-1 ml-1" value={currentHighestBidding.Amount != null ? "$ "+currentHighestBidding.Amount : "No Bid"} disabled /> <strong>{currentHighestBidding.Amount != undefined ? "by "+currentHighestBidding.Username+" at "+moment(currentHighestBidding.Timestamp).format('h:mm A') : ""} </strong>
 
             </div>
             <div className="mt-2">
-            Enter your bidding: 
+            Enter your bid: 
             <input value={bidinput} onChange={(e) => setBidinput(e.target.value)} onClick={clearNotice} className="mr-2 ml-1"></input>
             <button className=" btn btn-outline-success btn-sm " onClick={handleBidding}>submit</button>
             </div>
@@ -348,9 +349,8 @@ export default function Auction(props){
                         </div>
                     </div>
                     <div className="title-area ahost rounded">
-                        Host: <b>{eventInfo!==null ? eventInfo.Username : "host name"}</b>
-
-                        {role==="audience"&&signedin===true ? subsribecondition===false ?  <Button className="btn-success btn-sm mt-2" onClick={handleSubscribe}>Subscribe</Button> : <Button className="btn-danger btn-sm mt-2" onClick={handleSubscribe}>Unsubscribe</Button> : ""}
+                        <b>{eventInfo!==null ? eventInfo.Username : "host name"}</b>
+                        <SubscribeButton user={currentUsername} target={eventInfo.Username} />
                     </div>
                     {/* <div className="title-area aaudience rounded">
                         audience number: 100
