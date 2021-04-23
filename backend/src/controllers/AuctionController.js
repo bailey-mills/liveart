@@ -1,3 +1,8 @@
+/**
+ * @file AuctionController.js contains methods to implement Auction Process
+ * @author Shuang Liang, Bailey Mills
+ * 
+ */
 const DbDrive = require('../dal/dbDrive');
 const QueryBuilder = require('../dal/queryBuilder');
 const moment = require('moment');
@@ -5,8 +10,27 @@ const moment = require('moment');
 let dbDrive = new DbDrive();
 let queryBuilder = new QueryBuilder();
 
-class AuctionController {
 
+/**
+ * @module AuctionController
+ * 
+ */
+class AuctionController {
+    
+    /**
+    * @typedef {object} EventInfo
+    * @prop {string} eventID - eventID
+    * @prop {string} username - username
+    * @prop {string} EventTitle - event title
+    * @prop {string} EventSummary - event summary
+    * @prop {string} CategoryName - category name
+    */
+    /**
+     * @method getHost 
+     * @description get buyer tag group
+     * @param {number} eventID - eventID
+     * @returns {EventInfo} - Event Object
+     */ 
     getHost = async (req, res) => {
         let eventID = req.params.eventID;
 
@@ -21,7 +45,15 @@ class AuctionController {
        return res.send(hostResult[0]);
                 
     }
+    
+    
 
+    /**
+     * @method getEventProducts 
+     * @description get event products
+     * @param {number} eventID - eventID
+     * @returns {Array<Object>} - Event Product Rows
+     */ 
     getEventProducts = async (req, res) => {
         let eventID = req.params.eventID;
 
@@ -34,7 +66,18 @@ class AuctionController {
         return res.send(productsResult[0]);
     }
 
-
+    
+    /**
+    * @typedef {object} Tag
+    * @prop {string} ID - tagid
+    * @prop {string} name - tag name
+    */
+    /**
+     * @method getEventTags 
+     * @description get tags for event
+     * @param {number} eventID - eventID
+     * @returns {Array<Tag>} - Tags
+     */ 
     getEventTags = async (req, res) => {
         let eventID = req.params.eventID;
         let tagsOfEventQuery = `SELECT DISTINCT ID, Name FROM ProductToTag 
@@ -46,7 +89,19 @@ class AuctionController {
 
     }
 
-
+    
+    /**
+    * @typedef {object} Bid
+    * @prop {string} username - username
+    * @prop {number} Amount - amount of bidding price
+    * @prop {string} timestamp - timestamp of bid
+    */
+    /**
+     * @method getHighestBid 
+     * @description get highest bid
+     * @param {number} productID -  productID
+     * @returns {Bid} - Highest BId
+     */ 
     getHighestBid = async (req, res) => {
         let productID = req.params.productID;
 
@@ -63,7 +118,15 @@ class AuctionController {
 
         return res.send(highestBidResult[0]);
     }
+    
 
+
+    /**
+     * @method getCurrentProductID 
+     * @description get the current ProductID of the Event
+     * @param {number} eventID -  eventID
+     * @returns {number} - current bidding ID
+     */ 
     getCurrentProductID = async(req, res)=> {
         let eventID = req.params.eventID;
 
@@ -73,6 +136,12 @@ class AuctionController {
     }
 
 
+    /**
+     * @method skipProduct 
+     * @description allow artist to skip the current bidding product 
+     * @param {number} eventID -  eventID
+     * @returns {null} - None
+     */ 
     skipProduct = async (req, res) => {
         let eventID = req.params.eventID;
         // get the next productID of the event
@@ -94,7 +163,15 @@ class AuctionController {
         
     }
 
-
+    /**
+     * @method createBid 
+     * @description create a new bid from the buyer
+     * @param {number} eventID -  eventID
+     * @param {number} userID -  userID
+     * @param {number} Amount - Price
+     * @param {number} productID - productID
+     * @returns {null} - None
+     */ 
     createBid = async (req,res) => {
         let productID = req.params.productID;
         let eventID = parseInt(req.body.EventID);
@@ -135,7 +212,16 @@ class AuctionController {
 
 
     }
+    
 
+
+    /**
+     * @method createTransaction 
+     * @description create a transaction from the current highest bidding
+     * @param {number} eventID -  eventID
+     * @param {number} bidID -  BiddingID
+     * @returns {null} - None
+     */ 
     createTransaction = async (req, res) => {
         let eventID = parseInt(req.body.EventID);
         let bidID = parseInt(req.body.BiddingID);

@@ -1,3 +1,8 @@
+/**
+ * @file RegistrationController.js contains method to create a new user
+ * @author Shuang Liang, Bailey Mills
+ * 
+ */
 const DbDrive = require('../dal/dbDrive');
 const QueryBuilder = require('../dal/queryBuilder');
 
@@ -6,6 +11,10 @@ const QueryBuilder = require('../dal/queryBuilder');
 let dbDrive = new DbDrive();
 let queryBuilder = new QueryBuilder();
 
+/**
+ * @module RegistrationController
+ * 
+ */
 module.exports = class RegistrationController {
     // [
     //     {
@@ -21,6 +30,25 @@ module.exports = class RegistrationController {
     //         ]
     //     }
     // ]
+    
+
+        /**
+    * @typedef {object} UserInfo
+    * @prop {string} Email - Email
+    * @prop {string} Username - Username
+    * @prop {string} Birthday - Birthday
+    * @prop {string} Password - Password
+    * @prop {string} Street - Street
+    * @prop {string} City - City
+    * @prop {string} Postalcode - Postalcode
+    * @prop {number} ProvinceID - ProvinceID
+    */
+    /**
+     * @method createUser 
+     * @description  createUser
+     * @param {UserInfo} user - new user
+     * @returns {Null} - None
+     */ 
     createUser = async (req, res)=> {
         let data = req.body;
 

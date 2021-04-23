@@ -1,3 +1,8 @@
+/**
+ * @file EventController.js contains methods related to event activities
+ * @author Shuang Liang, Bailey Mills
+ * 
+ */
 const DbDrive = require('../dal/dbDrive');
 const QueryBuilder = require('../dal/queryBuilder');
 const moment = require('moment');
@@ -6,8 +11,27 @@ const e = require('express');
 let dbDrive = new DbDrive();
 let queryBuilder = new QueryBuilder();
 
+/**
+ * @module EventController
+ * 
+ */
 module.exports = class EventController {
     
+    /**
+    * @typedef {object} Event
+    * @prop {string} ID - Event ID
+    * @prop {string} Title - Event Title
+    * @prop {string} Summary - Event Description
+    * @prop {string} StartTime - start time
+    * @prop {string} EndTime - end time
+    * @prop {string} ThumbNailURL - URL for ThumbNail
+    */
+    /**
+     * @method getHighestBid 
+     * @description get recommendation events
+     * @param {string} username -  username
+     * @returns {Array<Event>} - recommended events
+     */ 
     getRecommendEvents = async (req, res) => {
         /*
             // GET SUBSCRIBED EVENTS
@@ -100,6 +124,12 @@ module.exports = class EventController {
         return res.json(randomEvents[0]);
     }
 
+    /**
+     * @method getSubscribedEvents 
+     * @description get user subscribed events
+     * @param {string} username -  username
+     * @returns {Array<Event>} - subscribed events
+     */ 
     getSubscribedEvents = async (req, res) => {
         let username = req.params.username;
 
@@ -129,6 +159,13 @@ module.exports = class EventController {
         return res.json(subscribedEvents);
     }
     
+
+    /**
+     * @method getTagEvents 
+     * @description get events of a certain tag
+     * @param {string} tagName -  name of tag
+     * @returns {Array<Event>} - tagged events
+     */ 
     getTagEvents = async (req, res) => {
         let tagName = req.params.tagName;
 
@@ -157,6 +194,11 @@ module.exports = class EventController {
         return res.json(events[0]);
     }
     
+    /**
+     * @method getSlideshow 
+     * @description get upcoming events in the home page slideshow
+     * @returns {Array<Event>} - top 6 events
+     */ 
     getSlideshow = async (req, res) => {
         // GET 6 UPCOMING / ACTIVE EVENTS
         let now = moment().utc().toISOString();
@@ -173,6 +215,12 @@ module.exports = class EventController {
         return res.json(events[0]);
     }
     
+    /**
+     * @method getPlannedEvents 
+     * @description get events in the futuren plan
+     * @param {string} username -  username
+     * @returns {Array<Event>} - planned events
+     */ 
     getPlannedEvents = async (req, res) => {
         let username = req.params.username;
             
@@ -180,7 +228,14 @@ module.exports = class EventController {
         let plannedEvents = await this.methodPlannedEvents(username);
         return res.json(plannedEvents);
     }
+    
 
+    /**
+     * @method methodEventTags 
+     * @description Get the tags for each product in each event in the array of events
+     * @param {Array<Event>} eventList - original events
+     * @returns {Array<Event>} - processed event
+     */ 
     async methodEventTags(eventList) {
         // Get the tags for each product in each event in the array of events
         if (eventList[0].length > 0) {
@@ -212,7 +267,14 @@ module.exports = class EventController {
 
         return eventList;
     }
+   
 
+    /**
+     * @method methodPlannedEvents 
+     * @description organize planned events with tags
+     * @param {string} eventList - username
+     * @returns {Array<Event>} - processed event
+     */ 
     async methodPlannedEvents(username) {
         // GET PLANNED EVENTS
         let plannedEvents = await dbDrive.executeQuery(
@@ -233,6 +295,12 @@ module.exports = class EventController {
         return plannedEvents;
     }
     
+    /**
+     * @method methodPlannedEvents 
+     * @description organize events into past, current and future 3 groups
+     * @param {Array<number>} eventListReference - event reference
+     * @returns {Array<Event>} - processed event
+     */ 
     async methodOrganizeEvents(eventListReference) {
         let eventList = {
             PastEvents: [],
@@ -277,7 +345,14 @@ module.exports = class EventController {
 
         return eventList;
     }
-
+    
+    /**
+     * @method getDateRange 
+     * @description get a date range
+     * @param {string} daysBack - date
+     * @param {string} daysForward - date
+     * @returns {Object} - date range
+     */ 
     getDateRange(daysBack, daysForward) {        
         return { 
             daysBack: moment().utc().subtract(daysBack, 'days').toISOString(), 
@@ -285,6 +360,13 @@ module.exports = class EventController {
         };
     }
 
+
+    /**
+     * @method getDateRange 
+     * @description Craete an event
+     * @param {Event} event - an event object
+     * @returns {null} - None
+     */ 
     createEvent = async (req, res) => {
         let event = req.body;
 

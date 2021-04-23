@@ -1,3 +1,8 @@
+/**
+ * @file HomePageController.js contains methods to render data for the Home Page
+ * @author Shuang Liang, Bailey Mills
+ * 
+ */
 const DbDrive = require('../dal/dbDrive');
 const QueryBuilder = require('../dal/queryBuilder');
 const { sha256 } = require('js-sha256');
@@ -7,11 +12,23 @@ const { user } = require('../dal/dbconfig');
 let dbDrive = new DbDrive();
 let queryBuilder = new QueryBuilder();
 
+/**
+ * @module HomePageController
+ * 
+ */
 module.exports = class HomePageController {
     // {
     //     "Username":"userb",
     //     "Password" : "123"
     // }
+
+    /**
+     * @method authenticate 
+     * @description authenticate in logging
+     * @param {string} username - Username
+     * @param {string} Password - password
+     * @returns {null} - None
+     */ 
     authenticate = async (req, res, next) => {
          let clientPassword = req.body.Password;
          let clientUsername = req.body.Username;
@@ -35,7 +52,13 @@ module.exports = class HomePageController {
             return res.status(401).send({message: 'Incorrent credential!'});
          }
     }
-
+    
+    /**
+     * @method createSession  
+     * @description create session for the logged in user
+     * @param {string} username - Username
+     * @returns {null} - None
+     */ 
     createSession = async (req, res) => {
         req.session.loggedIn = true;
         req.session.username = res.locals.username;
@@ -46,7 +69,13 @@ module.exports = class HomePageController {
         
         res.status(201).send({UserID:userID, username: req.session.username});
     }
-
+    
+    
+        /**
+     * @method logOut  
+     * @description destroies session of the logged in user
+     * @returns {null} - None
+     */ 
     logOut = async (req, res, next) => {
         //console.log(req.query.username)
         req.session.destroy(err => {if(err) console.log(err)})

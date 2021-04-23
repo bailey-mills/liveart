@@ -1,10 +1,36 @@
+/**
+ * @file ProductController.js contains methods to get product details
+ * @author Shuang Liang, Bailey Mills
+ * 
+ */
 const DbDrive = require('../dal/dbDrive');
 const QueryBuilder = require('../dal/queryBuilder');
 
 let dbDrive = new DbDrive();
 let queryBuilder = new QueryBuilder();
 
+
+/**
+ * @module ProductController
+ * 
+ */
 module.exports = class ProductController {    
+
+    /**
+    * @typedef {object} Product
+    * @prop {string} name - name
+    * @prop {string} ProductDescription - ProductDescription
+    * @prop {string} ProductURL - ProductURL
+    * @prop {number} FinalPrice - FinalPrice
+    * @prop {number} EventID - EventID
+    * @prop {string} UserName - Host Name
+    */
+    /**
+     * @method methodSoldProducts 
+     * @description  organize Sold Products
+     * @param {number} username - username
+     * @returns {Array<Product>} - Product information
+     */ 
     async methodSoldProducts(username) {
         // GET SOLD PRODUCTS
         let soldProducts = await dbDrive.executeQuery(
@@ -40,7 +66,13 @@ module.exports = class ProductController {
 
         return soldProducts;
     }
-
+    
+    /**
+     * @method getSoldProducts 
+     * @description  get sold products
+     * @param {number} username - username
+     * @returns {Array<Product>} - Product information
+     */ 
     getSoldProducts = async (req, res) => {
         let username = req.params.username;
 
@@ -49,7 +81,14 @@ module.exports = class ProductController {
 
         return res.json(soldProducts[0]);
     }
-
+    
+    
+    /**
+     * @method getPurchasedProducts 
+     * @description  get purchased products
+     * @param {number} username - username
+     * @returns {Array<Product>} - Product information
+     */ 
     getPurchasedProducts = async (req, res) => {
         /*
             [
