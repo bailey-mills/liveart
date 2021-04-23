@@ -8,8 +8,19 @@ using System.Text;
 
 namespace DataGenerator
 {
+	/**
+		\brief Handle the organization processes required to set up the Lists of strings in a format Database.cs can interpret
+		consistently when generating SQL insert statements. Contains various methods that usually return lists of similar but often
+		random data (ex. Images, Names, Addresses, etc.).
+	*/
 	class CustomGenerator
 	{
+		/**
+			\return List<string> the names of the methods the CustomGenerator could use.
+			\brief A now un-used method that would previously generate data based on a generic input field 
+			the user could customize data for. Was found to not be useful because data needed to be customized and 
+			inserted with FK relationships, etc.
+		*/
 		public static List<string> GetMethods()
 		{
 			List<string> methods = new List<string>();
@@ -27,6 +38,11 @@ namespace DataGenerator
 			return methods;
 		}
 
+		/**
+			\param count The number of items to return.
+			\return List<string> containing the requested data.
+			\brief Returns a list of random numbers.
+		*/
 		public static List<string> GetNumber(int count)
 		{
 			List<string> items = new List<string>();
@@ -41,6 +57,11 @@ namespace DataGenerator
 			return items;
 		}
 
+		/**
+			\param count The number of items to return.
+			\return List<string> containing the requested data.
+			\brief Returns a list of random addresses.
+		*/
 		public static List<List<string>> GetAddresses(int count)
 		{
 			List<List<string>> items = Database.GetRows(count, Database.DB_SAMPLES, "Address", new string[] { "StreetAddress", "City", "ProvinceID", "PostalCode" });
@@ -48,6 +69,14 @@ namespace DataGenerator
 			return items;
 		}
 
+		/**
+			\param count The number of items to return.
+			\param randomSellers The owners of the event.
+			\param startEventID Autoincrement start ID for event
+			\param startProductID Autoincrement start ID product
+			\return List<string> containing the requested data.
+			\brief Returns a list of random products.
+		*/
 		public static List<List<string>> GetProducts(int count, List<string> randomSellers, int startEventID, int startProductID)
 		{
 			List<List<string>> items = new List<List<string>>();
@@ -110,6 +139,13 @@ namespace DataGenerator
 			return items;
 		}
 
+		/**
+			\param count The number of items to return.
+			\param currentBiddingIDs List containing all IDs from the Bid table. Necessary for inserting into Transaction here.
+			\param currentBiddingIDs List containing all IDs from the Category table (randomly selected previously, based on products for the event).
+			\return List<string> containing the requested data.
+			\brief Returns a list of random events.
+		*/
 		public static List<List<string>> GetEvents(int count, List<string> currentBiddingIDs, List<string> categoryIDs)
 		{
 			List<List<string>> items = new List<List<string>>();
@@ -137,6 +173,12 @@ namespace DataGenerator
 			return items;
 		}
 
+		/**
+			\param count The number of items to return.
+			\param startAddressID The current auto-increment ID for the address table.
+			\return List<string> containing the requested data.
+			\brief Returns a list of random users.
+		*/
 		public static List<List<string>> GetUsers(int count, int startAddressID)
 		{
 			List<List<string>> items = new List<List<string>>();
@@ -171,6 +213,13 @@ namespace DataGenerator
 			return items;
 		}
 
+		/**
+			\param count The number of items to return.
+			\param tagCount The number of tags provided (count = productCount/userCount, tagCount is the list containing the number of tags per product)
+			\param categoryID List containing all category IDs for each product/user.
+			\return List<string> containing the requested data.
+			\brief Returns a list of random tag sets for products or users.
+		*/
 		public static List<List<string>> GetTags(int count, int tagCount, List<string> categoryID)
 		{
 			List<List<string>> items = new List<List<string>>();
@@ -186,6 +235,13 @@ namespace DataGenerator
 			return items;
 		}
 
+		/**
+			\param count The number of items to return.
+			\param firstNames List of all first names to use in the username generation
+			\param lastNames List of all last names to use in the username generation
+			\return List<string> containing the requested data.
+			\brief Returns a list of random usernames (in the format of 'first_last_randomNumber'.
+		*/
 		public static List<string> GetUsernames(int count, List<string> firstNames, List<string> lastNames)
 		{
 			List<string> items = new List<string>();
@@ -200,7 +256,13 @@ namespace DataGenerator
 
 			return items;
 		}
-
+		
+		/**
+			\param count The number of items to return.
+			\param usernames The list of usernames to generate emails for.
+			\return List<string> containing the requested data.
+			\brief Returns a list of random emails. Based on the username (format is 'username@hotmail.com'). Used by custom generation system, currently un-used.
+		*/
 		public static List<string> GetEmails(int count, List<string> usernames)
 		{
 			List<string> items = new List<string>();
@@ -215,6 +277,12 @@ namespace DataGenerator
 			return items;
 		}
 
+		/**
+			\param count The number of items to return.
+			\param usernames The list of usernames to generate emails for.
+			\return List<string> containing the requested data.
+			\brief Returns a list of random emails. Based on the first/last name.
+		*/
 		public static List<string> GetEmails(int count, List<string> firstNames, List<string> lastNames)
 		{
 			List<string> items = new List<string>();
@@ -230,6 +298,12 @@ namespace DataGenerator
 			return items;
 		}
 
+		/**
+			\param count The number of items to return.
+			\param usernames The list of usernames to generate passwords from.
+			\return List<string> containing the requested data.
+			\brief Returns a list of passwords. Sample user password is the same as their username for simplicity. Hashed for when inserted into DB.
+		*/
 		public static List<string> GetPasswords(int count, List<string> usernames)
 		{
 			List<string> items = new List<string>();
@@ -258,6 +332,11 @@ namespace DataGenerator
 			return items;
 		}
 
+		/**
+			\param count The number of items to return.
+			\return List<string> containing the requested data.
+			\brief Returns a list of random birthdays (1950-2000)
+		*/
 		public static List<string> GetBirthday(int count)
 		{
 			// 1950-2000
@@ -277,6 +356,15 @@ namespace DataGenerator
 			return items;
 		}
 
+		/**
+			\param count The number of items to return.
+			\param startDate start date/time for the random date
+			\param rangeInDays number of days after start date allowed
+			\param minStartHour min start time for the event
+			\param maxStartHour max start time for the event
+			\return List<string> containing the requested data.
+			\brief Returns a list of random datetime objects that will be used when selecting semi-random dates for events.
+		*/
 		public static List<string> GetDates(int count, DateTime startDate, int rangeInDays, int minStartHour, int maxStartHour)
 		{
 			List<string> items = new List<string>();
@@ -293,6 +381,14 @@ namespace DataGenerator
 			return items;
 		}
 
+		/**
+			\param count The number of items to return.
+			\param startDate start date/time for the random date
+			\param minMinutes min time to add to date
+			\param maxMinutes max time to add to date
+			\return List<string> containing the requested data.
+			\brief Returns a new list of dates, by adding time onto the incoming list of date/times.
+		*/
 		public static List<string> GetDatesFromReference(int count, List<string> startDates, int minMinutes, int maxMinutes)
 		{
 			List<string> items = new List<string>();
@@ -308,6 +404,16 @@ namespace DataGenerator
 			return items;
 		}
 
+		/**
+			\param count The number of items to return.
+			\param filterIDs The IDs to filter the selection by.
+			\param database The DB to use.
+			\param table The table to use.
+			\param column The column to select by.
+			\param filterColumn The column to filter by.
+			\param filterTable The table to use when filtering.
+			\brief Returns a list of items from the requested database. Used to return random images / tags from the sample database, and allow filtering to only retrieve images for a certain TagID for example.
+		*/
 		public static List<string> GetRowsByFilterID(int count, List<string> filterIDs, string database, string table, string column, string filterColumn, string filterTable)
 		{
 			List<string> items = new List<string>();
@@ -364,6 +470,12 @@ namespace DataGenerator
 			return items;
 		}
 
+		/**
+			\param count The number of items to return.
+			\param str The string to repeat.
+			\return List<string> containing the requested data.
+			\brief Returns a list of strings, repeated over and over based on the inputs given.
+		*/
 		public static List<string> GetRepeat(int count, string str)
 		{
 			List<string> items = new List<string>();

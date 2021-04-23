@@ -8,9 +8,9 @@ namespace DataGenerator
 {
 	static class Program
 	{
-		/// <summary>
-		/// The main entry point for the application.
-		/// </summary>
+		/**
+			\brief Entry point for the application.
+		*/
 		[STAThread]
 		static void Main()
 		{

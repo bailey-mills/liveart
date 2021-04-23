@@ -12,6 +12,11 @@ using System.Windows.Forms;
 
 namespace DataGenerator
 {
+	/**
+		\brief The input form the user can modify/interact with to generate SQL statements for sample data. At the current time, 
+		the datagridview input system is not needed. For now, the system uses the User/Event/Subscriber/Button to generate all 
+		of the data the application uses for testing/display purposes.
+	*/
 	public partial class frmDataGenerator : Form
 	{
 		const int MIN_WIDTH = 900;
@@ -23,6 +28,9 @@ namespace DataGenerator
 		public static string TYPE_BID = "bid";
 		string outputType = TYPE_CUSTOM;
 
+		/**
+			\brief Initializes all content on the form.
+		*/
 		public frmDataGenerator()
 		{
 			InitializeComponent();
@@ -31,6 +39,9 @@ namespace DataGenerator
 			ResizeWindow();
 		}
 
+		/**
+			\brief Sets up the combo boxes for database choices based on the connection string config file.
+		*/
 		private void SetupDatabaseComboBox()
 		{
 			var connectionStrings = ConfigurationManager.ConnectionStrings;
@@ -45,6 +56,9 @@ namespace DataGenerator
 			comboDatabase.SelectedIndex = 0;
 		}
 
+		/**
+			\brief Sets up the combo boxes for tables choices based on the first item in the database combobox.
+		*/
 		private void SetupTableComboBox()
 		{
 			List<string> tables = Database.GetTables(comboDatabase.SelectedItem.ToString());
@@ -58,18 +72,27 @@ namespace DataGenerator
 			comboTable.SelectedIndex = 0;
 		}
 
+		/**
+			\brief Update list of tables when database is updated.
+		*/
 		private void ComboDatabase_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			SetupTableComboBox();
 			ResizeWindow();
 		}
 
+		/**
+			\brief Update the datagridview when the table selection is changed.
+		*/
 		private void ComboTable_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			Database.SetupTable(dgvInput, comboDatabase.SelectedItem.ToString(), comboTable.SelectedItem.ToString());
 			ResizeWindow();
 		}
 
+		/**
+			\brief Update DGV as needed when a cell is updated.
+		*/
 		private void DgvInput_CellClick(object sender, DataGridViewCellEventArgs e)
 		{
 			if (e.ColumnIndex >= 0 && e.RowIndex >= 0)
@@ -122,6 +145,9 @@ namespace DataGenerator
 			}
 		}
 
+		/**
+			\brief Resize the window to fit the new dgv size.
+		*/
 		private void ResizeWindow()
 		{
 			// Calculate the width of the window
@@ -137,6 +163,9 @@ namespace DataGenerator
 			this.Width = width + 40;
 		}
 
+		/**
+			\brief Update the text box with the results from the current selection of data the user has put in.
+		*/
 		private void BtnPreview_Click(object sender, EventArgs e)
 		{
 			string result = GetOutput(5);
@@ -146,6 +175,9 @@ namespace DataGenerator
 			}
 		}
 
+		/**
+			\brief Generate SQL statements based on user input and prepare to save the file as a SQL file.
+		*/
 		private void BtnOutput_Click(object sender, EventArgs e)
 		{
 			string result = GetOutput(Int32.Parse(numCount.Value.ToString()));
@@ -171,6 +203,10 @@ namespace DataGenerator
 			}
 		}
 
+		/**
+			\param count The number the user has inputted into the combo box.
+			\brief Handles how to direct user input, and how much data should be generated and displayed/saved as a sql file.
+		*/
 		private string GetOutput(int count)
 		{
 			string result = "";
@@ -199,6 +235,9 @@ namespace DataGenerator
 			return result;
 		}
 
+		/**
+			\brief Update UI to reflect 'Custom' generation selection.
+		*/
 		private void BtnCustom_Click(object sender, EventArgs e)
 		{
 			btnCustom.Enabled = false;
@@ -214,6 +253,9 @@ namespace DataGenerator
 			lblNote.Text = "";
 		}
 
+		/**
+			\brief Update UI to reflect 'User' generation selection.
+		*/
 		private void BtnUser_Click(object sender, EventArgs e)
 		{
 			btnCustom.Enabled = true;
@@ -229,6 +271,9 @@ namespace DataGenerator
 			lblNote.Text = "";
 		}
 
+		/**
+			\brief Update UI to reflect 'Event' generation selection.
+		*/
 		private void BtnEvent_Click(object sender, EventArgs e)
 		{
 			btnCustom.Enabled = true;
@@ -243,6 +288,9 @@ namespace DataGenerator
 			lblNote.Text = "";
 		}
 
+		/**
+			\brief Update UI to reflect 'Subscriber' generation selection.
+		*/
 		private void BtnSubscriber_Click(object sender, EventArgs e)
 		{
 			btnCustom.Enabled = true;
@@ -258,6 +306,9 @@ namespace DataGenerator
 			lblNote.Text = "IMPORTANT: Very slow. Test out in preview mode first (uses 5 count each time)";
 		}
 
+		/**
+			\brief Update UI to reflect 'Bid' generation selection.
+		*/
 		private void BtnBid_Click(object sender, EventArgs e)
 		{
 			btnCustom.Enabled = true;

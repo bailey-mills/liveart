@@ -1,6 +1,4 @@
-﻿// Manage all interactions with the databases to prepare data.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -13,6 +11,9 @@ using System.Reflection;
 
 namespace DataGenerator
 {
+	/**
+		\brief Handle all database interaction required by the Data Generation tool in support of LIVE.ART.
+	*/
 	class Database
 	{
 		public static string DB_NONE = "N/A";
@@ -28,11 +29,10 @@ namespace DataGenerator
 
 		public static int COL_WIDTH = 100;
 
-		/*
-			METHOD: GetConnectionString()
-			PARAMETERS: ---
-			RETURN: string: the connection string
-			DESCRIPTION: Returns the connection string from the config file
+		/**
+			\param type The type of connection string to retrieve from the config file.
+			\return The requested connection string.
+			\brief Returns the connection string from the config file.
 		*/
 		public static string GetConnectionString(string type)
 		{
@@ -54,7 +54,13 @@ namespace DataGenerator
 
 			return returnValue;
 		}
-		
+
+		/**
+			\param dgv The datagridview to set up.
+			\param database The database name to use.
+			\param table The table to use.
+			\brief Sets up the datagrid view element with the necessary structure of the given database table.
+		*/
 		public static void SetupTable(DataGridView dgv, string database, string table)
 		{
 			List<string> schema = GetColumns(database, table);
@@ -78,6 +84,12 @@ namespace DataGenerator
 			dgv.RowHeadersVisible = false;
 		}
 
+		/**
+			\param database The database the query should use.
+			\param table The table to get column list from.
+			\return List<string> containing the columns in the table.
+			\brief Returns a list of column names from the given database/table.
+		*/
 		public static List<string> GetColumns(string database, string table)
 		{
 			List<string> items = new List<string>();
@@ -115,6 +127,11 @@ namespace DataGenerator
 			return items;
 		}
 
+		/**
+			\param database The database to use.
+			\return List<string> of the tables in the database.
+			\brief Returns a list of tables in the given database.
+		*/
 		public static List<string> GetTables(string database)
 		{
 			List<string> tables = new List<string>();
@@ -148,6 +165,10 @@ namespace DataGenerator
 			return tables;
 		}
 
+		/**
+			\return List<string> of all databases in the connection string config file section.
+			\brief Retrieve database list from the config file.
+		*/
 		public static List<string> GetSourceDatabases()
 		{
 			List<string> items = new List<string>();
@@ -169,6 +190,11 @@ namespace DataGenerator
 			return items;
 		}
 
+		/**
+			\param database The database to use.
+			\return List<string> The table list.
+			\brief Returns a list of tables in the given database. If the db is set to retrieve 'Custom' tables, it will do so.
+		*/
 		public static List<string> GetSourceTables(string database)
 		{
 			List<string> tables = new List<string>();
@@ -185,6 +211,14 @@ namespace DataGenerator
 			return tables;
 		}
 
+		/**
+			\param dgv DataGridView to modify
+			\param count The number of loops required to run
+			\param database The DB to use.
+			\param table The table to insert into.
+			\return string The insert statement
+			\brief Generate an insert statement based on the data in the provided DGV.
+		*/
 		public static string GenerateQuery(DataGridView dgv, int count, string database, string table)
 		{
 			// Sample Output: "USE liveart_db; INSERT INTO Person VALUES ('Bailey', 'Mills', 'A1A1A1', 0);"
@@ -269,6 +303,15 @@ namespace DataGenerator
 			return PrepareOutputReverse(count, database, table, items, valid);
 		}
 
+		/**
+			\param count Number of loops to run.
+			\param database DB to use.
+			\param table Table to use.
+			\param column Column to use.
+			\param format The format of the incoming data (string, or number). FORMAT_STRING, FORMAT_NUMBER.
+			\return List<string> containining the rows from the query.
+			\brief Retrieve a given number of random rows from the requested table. Calls a stored procedure.
+		*/
 		public static List<string> GetRows(int count, string database, string table, string column, string format)
 		{
 			List<string> currResults = new List<string>();
@@ -313,8 +356,15 @@ namespace DataGenerator
 			return currResults;
 		}
 
-
-
+		/**
+			\param count Number of loops to run.
+			\param database DB to use.
+			\param table Table to use.
+			\param columns Columns to use.
+			\param whereClause An optional where clause to include in the query.
+			\return List<List<string>> containing all data from query.
+			\brief C# version that will retrieve the requested number of random rows from a table. It will loop if needed (if count > total row count)
+		*/
 		public static List<List<string>> GetRows(int count, string database, string table, string[] columns, string whereClause = "")
 		{
 			List<List<string>> results = new List<List<string>>();
@@ -342,15 +392,18 @@ namespace DataGenerator
 					int currCount = 0;
 					while (i < loops)
 					{
+						// Determine loop count required to gather all data.
 						currCount = sampleRows;
 						if (extra != 0 && i == loops - 1)
 						{
 							currCount = extra;
 						}
 
+						// Query for a number of random rows.
 						string query = string.Format("USE [{0}]; SELECT TOP ({1}) {2} FROM [{3}] {4} ORDER BY NEWID();",
 							database, currCount, string.Join(",", columns), table, whereClause);
 
+						// Execute query, looping where needed to gather all rows.
 						using (var command = new SqlCommand(query, conn))
 						{
 							conn.Open();
@@ -380,6 +433,12 @@ namespace DataGenerator
 			return results;
 		}
 
+		/**
+			\param database The db to use.
+			\param table The table to use.
+			\return int The number of rows.
+			\brief Gets the number of rows currently in the given table.
+		*/
 		public static int GetSampleRows(string database, string table)
 		{
 			int count = -1;
@@ -409,6 +468,14 @@ namespace DataGenerator
 			return count;
 		}
 
+		/**
+			\param count Number of loops to run.
+			\param database DB to use.
+			\param table Table to use.
+			\param List<List<string>> items to prepare the output for.
+			\return string Resulting output query
+			\brief Same as PrepareOutput, except it handles lists in a different format (outer list contains each row, instead of each column)
+		*/
 		static string PrepareOutputReverse(int count, string database, string table, List<List<string>> items, bool valid)
 		{
 			// Loop through all requested rows and format them into queries
@@ -439,6 +506,15 @@ namespace DataGenerator
 			return output;
 		}
 
+		/**
+			\param count Number of loops to run.
+			\param database DB to use.
+			\param table Table to use.
+			\param List<List<string>> items to prepare the output for.
+			\param asString Array of bools telling function whether this function should be surrounded by '' for the query.
+			\return string Resulting output query
+			\brief Generates a large INSERT statement for the given data.
+		*/
 		static string PrepareOutput(int count, string table, List<List<string>> items, bool[] asString)
 		{
 			string result = "\n";
@@ -470,6 +546,13 @@ namespace DataGenerator
 			return result;
 		}
 
+		/**
+			\param table Table to use.
+			\param List<List<string>> items to prepare the output for.
+			\param startID the starting Autoincrement ID for this data set.
+			\return string Resulting output query
+			\brief Alternate version of PrepareOutput that handles tags (user, product)
+		*/
 		static string PrepareOutputTags(string table, List<List<string>> tagGroupList, int startID)
 		{
 			List<List<string>> formattedGroup = new List<List<string>>();
@@ -493,6 +576,12 @@ namespace DataGenerator
 			return PrepareOutput(count, table, formattedGroup, new bool[] { false, false });
 		}
 
+		/**
+			\param count Number of events to generate
+			\param database DB to insert into.
+			\return string The SQL query.
+			\brief Generates the number of requested events, randomly selecting data where needed to create random data (Product, Event, ProductToTag, ProductToEvent, SellerToEvent).
+		*/
 		public static string GenerateEvents(int count, string database)
 		{
 			string result = "USE " + database + ";\n";
@@ -612,6 +701,12 @@ namespace DataGenerator
 			return result;
 		}
 
+		/**
+			\param count Number of users to generate
+			\param database DB to use in query.
+			\return Generated SQL query.
+			\brief Generates the number of given users using random pieces of data, for random looking users (User, Address, UserToTag)
+		*/
 		public static string GenerateUsers(int count, string database)
 		{
 			string result = "USE " + database + ";\n";
@@ -645,6 +740,12 @@ namespace DataGenerator
 			return result;
 		}
 
+		/**
+			\param database DB to use..
+			\param table Table to get auto inc ID of.
+			\return Auto-increment ID of given table.
+			\brief Returns the auto-increment integer of the given table.
+		*/
 		static int GetAutoIncrementID(string database, string table)
 		{
 			string query = "USE [" + database + "]; SELECT IDENT_CURRENT('" + table + "');";
@@ -678,6 +779,12 @@ namespace DataGenerator
 			return id;
 		}
 
+		/**
+			\param count Number of subscribers per user to approximately generate.
+			\param database DB to use.
+			\return string The resulting query.
+			\brief Generates a semi-random number of subscriber matchups for every user in the database. The more events the artists have, the higher your 'count' will scale up.
+		*/
 		public static string GenerateSubscribers(int count, string database)
 		{
 			// Prepare output statement
@@ -788,6 +895,13 @@ namespace DataGenerator
 			return sb.ToString();
 		}
 
+		/**
+			\param table Table to insert into.
+			\param List<string>[] Columns to use in the insert statement
+			\param isString Whether each column is a string, and should have a '' around it.
+			\return Resulting SQL query.
+			\brief Format the given data into compact SQL queries (up to 1000 lines per INSERT INTO grouping). Required because some individual INSERT INTO statements with only one line per will cause SSMS to run out of memory.
+		*/
 		public static string CompactQueries(string table, List<string>[] columns, bool[] isString)
 		{
 			const int max = 1000;
@@ -848,6 +962,12 @@ namespace DataGenerator
 			return sb.ToString();
 		}
 
+		/**
+			\param count Max number of bids a product can have on it.
+			\param database DB to use.
+			\return Resulting SQL query
+			\brief Generates bids on every single event that occured before todays date. Each product will have 1-{count} bids on it, rising slightly based on a % of the base item price.
+		*/
 		public static string GenerateBids(int count, string database)
 		{
 			// Prepare output statement
