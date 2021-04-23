@@ -1,3 +1,8 @@
+/**
+ * @file Navbar.js - The source code of the Navigation bar component that widely used in LIVE.ART
+ * @author Eric Lin & Bailey Mills
+ * 
+ */  
 import React, { useState, useEffect} from "react";
 import './Navbar.css'
 import logo from '../../Assets/logo/logo2.png';
@@ -24,6 +29,13 @@ function MyNavbar(){
         // this.setState({ clicked: !this.state.clicked })
         clicked = !clicked;
     }
+
+    /**
+     * @method logoutuser 
+     * @description User logs out button event handler - log out the current logged in user
+     * @param {null} - none
+     * @returns {null} - none
+     */
 
     function logoutuser(){
         

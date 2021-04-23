@@ -1,3 +1,8 @@
+/**
+ * @file ItemCard.js - The source code of a single item card component
+ * @author Eric Lin & Bailey Mills
+ * 
+ */  
 import React from "react";
 import Card from "react-bootstrap/Card";
 import "./ItemCard.css";

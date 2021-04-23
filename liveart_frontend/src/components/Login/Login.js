@@ -1,3 +1,8 @@
+/**
+ * @file Login.js - The source code of the login page component
+ * @author Eric Lin & Bailey Mills
+ * 
+ */  
 import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -17,10 +22,22 @@ export default function Login(props) {
   let directFromRegister;
 
 
+  /**
+     * @method validateForm 
+     * @description Validate the login form inputs
+     * @param {null} - none
+     * @returns {null} - none
+     */
   function validateForm() {
     return email.length > 0 && password.length > 0;
   }
 
+  /**
+     * @method handleSubmit 
+     * @description Login form submit event handler - send the login credential to the server
+     * @param {event} - target form
+     * @returns {null} - none
+     */
   function handleSubmit(event) {
 
     event.preventDefault();

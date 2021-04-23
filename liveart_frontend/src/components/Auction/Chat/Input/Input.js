@@ -1,3 +1,8 @@
+/**
+ * @file Input.js - The source code of the chat room's Input box component
+ * @author Eric Lin
+ * 
+ */   
 import React from 'react';
 
 import './Input.css';

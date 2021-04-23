@@ -1,3 +1,9 @@
+/**
+ * @file HomePage.js - The source code of the main/home page component of LIVE.ART
+ * @author Eric Lin & Bailey Mills
+ * 
+ */  
+
 import React, {useState, useEffect}from "react";
 import Slideshow from "../SlideShow/__slideshow";
 import Navbar from "../Navbar/Navbar";
@@ -10,7 +16,7 @@ import axios from "axios";
 import Footer from "../Footer/Footer";
 
 
-function EventsPage(){
+function HomePage(){
 
     const [subscribedEvents, setSubscribedEvents] = useState([]);
     const [recommendedEvents, setRecommendedEvents] = useState([]);
@@ -63,4 +69,4 @@ function EventsPage(){
 
 }
 
-export default EventsPage;
+export default HomePage;

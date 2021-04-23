@@ -1,11 +1,11 @@
+/**
+ * @file Footer.js - The source code of the footer component
+ * @author Eric Lin
+ * 
+ */  
 import React, { Component } from 'react';
 import './Footer.css'
-import logo from '../../Assets/logo/logo2.png';
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import Button from "react-bootstrap/Button";
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
-import axios from "axios";
-import { useHistory } from "react-router-dom";
 
 
 function Footer(){

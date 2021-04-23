@@ -1,3 +1,8 @@
+/**
+ * @file UserCard.js - The source code of the user info card component
+ * @author Eric Lin & Bailey Mills
+ * 
+ */
 import React, {useState, useEffect} from "react";
 import Events from "../../Assets/sampleEvents.json";
 import Tags from "../../Assets/TagSample.json";

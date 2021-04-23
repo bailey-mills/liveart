@@ -1,3 +1,8 @@
+/**
+ * @file Tag.js - The source code of the tag selection component
+ * @author Eric Lin & Bailey Mills
+ * 
+ */  
 import React, {useState, useEffect} from 'react';
 import Select from "react-select";
 import {Multiselect} from "multiselect-react-dropdown";
@@ -21,6 +26,13 @@ export default function Tag(props){
             }
         })
     },[]);
+
+    /**
+     * @method selectChange 
+     * @description Tag multiselect list onSelect changed event hanlder
+     * @param {selectedList} - the list with selected tags
+     * @returns {null} - none
+     */
 
     function selectChange(selectedList, selectedItem)
     {

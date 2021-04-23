@@ -1,3 +1,8 @@
+/**
+ * @file Message.js - The source code of the chat room's each single message in the messages area component
+ * @author Eric Lin
+ * 
+ */   
 import React from 'react';
 
 import './Message.css';

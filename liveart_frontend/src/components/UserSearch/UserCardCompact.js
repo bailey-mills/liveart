@@ -1,3 +1,8 @@
+/**
+ * @file UserCardCompact.js - The source code of the user info card compact component
+ * @author Bailey Mills
+ * 
+ */
 import React, {useState, useEffect} from "react";
 import Events from "../../Assets/sampleEvents.json";
 import Tags from "../../Assets/TagSample.json";

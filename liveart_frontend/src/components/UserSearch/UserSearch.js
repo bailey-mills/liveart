@@ -1,3 +1,8 @@
+/**
+ * @file UserSearch.js - The source code of the user searching page component
+ * @author Eric Lin & Bailey Mills
+ * 
+ */
 import React, {useState, useEffect} from "react";
 import Events from "../../Assets/sampleEvents.json";
 import Tags from "../../Assets/TagSample.json";
@@ -17,6 +22,12 @@ function UserSearch(){
     const [searchInput, setSearchInput] = useState("");
     const [userList, setUserList] = useState();
 
+    /**
+     * @method handleSkip 
+     * @description User Searching event handler
+     * @param {event} - target event
+     * @returns {null} - none
+     */
     function handleSearch(e){
         setSearchInput(e.target.value);
 

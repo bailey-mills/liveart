@@ -1,3 +1,8 @@
+/**
+ * @file Sidebar.js - The source code of the side menu/bar component in the user profile page
+ * @author Eric Lin & Bailey Mills
+ * 
+ */  
 import React, { useState } from "react";
 import "./Sidebar.css";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";

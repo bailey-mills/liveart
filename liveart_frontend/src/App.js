@@ -1,3 +1,8 @@
+/**
+ * @file App.js - The source code of the default App component in react, contains the Router with all routes in LIVE.ART frontend
+ * @author Eric Lin
+ * 
+ */
 import React from "react";
 import { BrowserRouter as Router, Switch} from 'react-router-dom';
 import Route from 'react-router-dom/Route';
@@ -15,22 +20,15 @@ import Follower from "./components/UserProfile/Follower/Follower";
 import Following from "./components/UserProfile/Following/Following";
 import PasswordReset from "./components/UserProfile/PasswordReset/PasswordReset";
 import NewEvent from "./components/UserProfile/NewEvent/NewEvent";
-import Contactus from "./components/Contactus/Contactus";
-import UserSearch from "./components/UserSearch/UserSearch";
 import UserInfo from "./components/UserInfo/UserInfo";
-
-
 import Auction from "./components/Auction/Auction";
 
 
 class App extends React.Component {
 
-
-
     render(){
         return(
             // <React.StrictMode>
-
                 <Router>
                     <Switch>
                         <Route path="/" exact component={HomePage} />    
@@ -56,9 +54,6 @@ class App extends React.Component {
             // </React.StrictMode>
         );
     }
-
-
-
 }
 
 export default App;

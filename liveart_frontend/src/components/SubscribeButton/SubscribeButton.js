@@ -1,3 +1,8 @@
+/**
+ * @file SubscribeButton.js - The source code of the subscribe button component
+ * @author Bailey Mills
+ * 
+ */ 
 import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 
@@ -11,6 +16,12 @@ function SubscribeButton(props){
         Target: props.target
     }
     
+    /**
+     * @method handleSubscribe 
+     * @description Subscribe button clicked hanlder - Subscribe the target user
+     * @param {null} - none
+     * @returns {null} - none
+     */
     async function handleSubscribe(){
         // Toggle subscription
         await axios.post(process.env.REACT_APP_SERVER + '/user/toggleSubscription', body).then(res=>{

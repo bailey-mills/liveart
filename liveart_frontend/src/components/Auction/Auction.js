@@ -1,13 +1,18 @@
+/**
+ * @file Auction.js - The source code of the entire Auction page component
+ * @author Eric Lin & Bailey Mills
+ * 
+ */   
 import React, {useState, useEffect, useRef} from 'react';
 import axios from "axios";
 import Navbar from "../Navbar/Navbar";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import "./Auction.css";
-import workimg from "../../Assets/workimgSample.json";
 import Button from "react-bootstrap/Button";
 import SubscribeButton from "../SubscribeButton/SubscribeButton";
 import Chat from "./Chat/Chat/Chat"
 import moment from 'moment';
+
 
 export default function Auction(props){
     let signedin = true;
@@ -21,6 +26,7 @@ export default function Auction(props){
         signedin = false;
     }
 
+    //UseState Constants
     const currentEventID = props.match.params.eventid;
     const [allItems, setAllItems] = useState([]);
     const [allTags, setAllTags] = useState([]);
@@ -38,13 +44,12 @@ export default function Auction(props){
 
     const chatroomchild = useRef();
 
+        /* Get all products, current on auction item and the seller in this event */
         useEffect(() => {
-            console.log("getProducts");
             axios.get('http://localhost:5000/auction/getProducts/'+currentEventID)
             .then(res=>{
               if(res.status === 200)
               {
-                //console.log(res.data);
                 setAllItems(res.data);
               }
                 
@@ -55,7 +60,6 @@ export default function Auction(props){
               if(res.status === 200)
               {
                 setCurrentOnBiddingItem(res.data[0].CurrentBiddingProductID)
-                //setAllItems(res.data);
               }
                 
             });
@@ -65,7 +69,6 @@ export default function Auction(props){
               if(res.status === 200)
               {
                 setEventInfo(res.data[0]);
-                //console.log("eventinfo",eventInfo);
                 if(res.data[0].Username === currentUsername)
                 {
                     setRole("host");
@@ -79,24 +82,15 @@ export default function Auction(props){
               .then(res=>{
                 if(res.status === 200)
                 {
-                  //console.log("tags==============",res.data);
                   setAllTags(res.data);
-                  //setCurrentOnBiddingItem(res.data[0].CurrentBiddingProductID)
-                  //setAllItems(res.data);
                 }
                   
-              });
-            
-                
+              });                    
             });
-
-
-
         }, [] );
 
-
+        //Get all items in this event
         useEffect(() => {
-            console.log("all items", allItems);
             for(let i=0;i<allItems.length;i++){
                 if(allItems[i].ID == currentOnBiddingItem)
                 {
@@ -123,8 +117,8 @@ export default function Auction(props){
             
         }, [currentOnBiddingItem, allItems]);
 
+        /* Get current on auction item, the highest bid of the item from the server once per second*/
         useEffect(() => {
-            console.log("current on bidding item", currentOnBiddingItem);
             if(currentOnBiddingItem!==-1 && currentOnBiddingItem!==null)
             {
                 const interval = setInterval(() => {
@@ -134,7 +128,6 @@ export default function Auction(props){
                     if(res.status === 200)
                     {
                         setCurrentOnBiddingItem(res.data[0].CurrentBiddingProductID)
-                        //setAllItems(res.data);
                     }
                         
                     });
@@ -147,9 +140,6 @@ export default function Auction(props){
                           {
                             setCurrentHighestBidding(res.data[0]);
                           }
-                          
-                          
-                          //setAllItems(res.data);
                       }
                           
                       })
@@ -159,7 +149,6 @@ export default function Auction(props){
                         if(res.status === 200)
                         {
                           setCurrentOnBiddingItem(res.data[0].CurrentBiddingProductID)
-                          //setAllItems(res.data);
                         }
                           
                       });
@@ -172,17 +161,20 @@ export default function Auction(props){
         }, [currentOnBiddingItem, currentEventID]);
             
 
+        /**
+         * @method handleSold 
+         * @description Seller Finish bidding button event handler - Finish the bidding for the current item, the latest user who offered the bidding is the winner
+         * @param {event} - event
+         * @returns {null} - none
+         */
         function handleSold(event){
             for(let i=0;i<allItems.length;i++){
                 if(allItems[i].ID == currentOnBiddingItem)
                 {
                     chatroomchild.current.boardCastMessage("Item: "+allItems[i].Name+" has been auctioned to "+currentHighestBidding.Username+" at $"+currentHighestBidding.Amount);
-
                 }
             }
-
             const transctionInfo = {"BiddingID": currentHighestBidding.ID , "EventID": currentEventID};
-            console.log(transctionInfo);
             axios.post('http://localhost:5000/auction/createTransaction', transctionInfo)
             .then(res=>{
               if(res.status !== 201)
@@ -195,6 +187,12 @@ export default function Auction(props){
         //setCurrentOnBiddingItem(currentOnBiddingItem+1);
     }
 
+    /**
+     * @method handleSkip 
+     * @description Seller skip button event handler - Skip the auction for the current item and move to the next item
+     * @param {null} - none
+     * @returns {null} - none
+     */
     function handleSkip(){
         for(let i=0;i<allItems.length;i++){
             if(allItems[i].ID == currentOnBiddingItem)
@@ -203,7 +201,6 @@ export default function Auction(props){
 
             }
         }
-        // console.log("skipped");
         axios.patch('http://localhost:5000/auction/skipProduct/'+currentEventID)
         .then(res=>{
           if(res.status !== 204)
@@ -214,13 +211,18 @@ export default function Auction(props){
         });
     }
 
+    /**
+     * @method handleBidding 
+     * @description Buyer bidding submit button event handler - Create the bid
+     * @param {null} - none
+     * @returns {null} - none
+     */
     function handleBidding(){
         setError("");
 
         if(bidinput!== null && bidinput > currentItemBasePrice)
         {
             const bidinfo = {"EventID": currentEventID, "UserID":currentUserID, "Amount" : bidinput};
-            console.log("new bid:",bidinfo);
             axios.post('http://localhost:5000/auction/createBid/'+currentOnBiddingItem, bidinfo)
             .then(res=>{
               if(res.status === 201)
@@ -246,12 +248,17 @@ export default function Auction(props){
 
     }
 
+    /**
+     * @method clearNotice 
+     * @description Clean error message and feedback message in the control box
+     * @param {null} - none
+     * @returns {null} - none
+     */
     function clearNotice(){
         setError("");
         setFeedback("");
     }
 
-    
     if(role==="host")    //current user is the host
     {
         controllbox = <div className="auction-controller-host">
@@ -288,19 +295,6 @@ export default function Auction(props){
         
 
 
-    }
-
-    function handleSubscribe(){
-        if(subsribecondition===false)
-        {
-            //send backend a subscribe statement
-            setSubsribecondition(true);
-        }
-        else
-        {
-            //send backend a unsubscribe statement
-            setSubsribecondition(false);
-        }
     }
     
     if(signedin === true)
@@ -383,10 +377,8 @@ export default function Auction(props){
                     <div className="auction-area livestream-area rounded">
                         <div className="livestream-videobox">
                         {currentItemCode}
-                        {/* {currentOnBiddingItem} */}
                         </div>
-                        <div className="livestream-controlltable">
-                        
+                        <div className="livestream-controlltable">                     
                         {controllbox}
                         </div>
                     </div>

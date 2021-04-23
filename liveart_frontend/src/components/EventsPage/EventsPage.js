@@ -1,3 +1,9 @@
+/**
+ * @file EventsPage.js - The source code of displaying all events based on certain item tags component
+ * @author Eric Lin & Bailey Mills
+ * 
+ */   
+
 import React, {useState, useEffect} from "react";
 import Events from "../../Assets/sampleEvents.json";
 //import Tags from "../../Assets/TagSample.json";

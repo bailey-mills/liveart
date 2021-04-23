@@ -1,3 +1,8 @@
+/**
+ * @file SubsEvents.js - The source code of the Subscribed events of the current user sub-page component
+ * @author Eric Lin & Bailey Mills
+ * 
+ */
 import React, { useState, useEffect } from "react";
 import Navbar from "../../Navbar/Navbar";
 import Sidebar from "../../Sidebar/Sidebar";

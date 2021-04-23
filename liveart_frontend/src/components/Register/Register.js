@@ -1,3 +1,8 @@
+/**
+ * @file Register.js - The source code of the register form component
+ * @author Eric Lin & Bailey Mills
+ * 
+ */  
 import React, { useState, useEffect } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -7,7 +12,6 @@ import Navbar from "../Navbar/Navbar";
 import { useHistory } from "react-router-dom";
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
-import Formik from "formik";
 import Tag from "../Profile/Tag/Tag";
 import axios from "axios";
 
@@ -38,6 +42,13 @@ function Register() {
         })
     },[]);
 
+
+    /**
+     * @method handleSubmit 
+     * @description Register form submit event handler - Send all user inputs to the server to register
+     * @param {event} - target form
+     * @returns {null} - none
+     */
 
     const handleSubmit = (event) => {
 
