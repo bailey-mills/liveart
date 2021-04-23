@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import "./Auction.css";
 import workimg from "../../Assets/workimgSample.json";
 import Button from "react-bootstrap/Button";
+import SubscribeButton from "../SubscribeButton/SubscribeButton";
 import Chat from "./Chat/Chat/Chat"
 import moment from 'moment';
 
@@ -274,7 +275,7 @@ export default function Auction(props){
 
             </div>
             <div className="mt-2">
-            Enter your bidding: 
+            Enter your bid: 
             <input value={bidinput} onChange={(e) => setBidinput(e.target.value)} onClick={clearNotice} className="mr-2 ml-1"></input>
             <button className=" btn btn-outline-success btn-sm " onClick={handleBidding}>submit</button>
             </div>
