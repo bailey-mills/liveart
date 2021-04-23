@@ -132,8 +132,6 @@ INSERT INTO ProductImages VALUES ('https://s31531.pcdn.co/wp-content/uploads/201
 INSERT INTO ProductImages VALUES ('https://s31531.pcdn.co/wp-content/uploads/2018/06/MMarino_Isle-of-Swans-1024x626.jpg', 1, 4);
 INSERT INTO ProductImages VALUES ('https://s31531.pcdn.co/wp-content/uploads/2018/05/8-The-Pond-in-Spring_MMarino-1024x777.jpg', 1, 4);
 INSERT INTO ProductImages VALUES ('https://shelburnemuseum.org/wp-content/uploads/2016/05/Collec_Impressionist_Primary-1800x600.jpg', 1, 4);
-INSERT INTO ProductImages VALUES ('https://thecollector.b-cdn.net/wp-content/uploads/2020/11/what-is-impressionism-monet-1.jpg', 1, 4);
-INSERT INTO ProductImages VALUES ('https://thecollector.b-cdn.net/wp-content/uploads/2020/11/caillebotte-rainy-day-paris-painting-impressionist-art-1-e1604882239724.jpg', 1, 4);
 
 
 -- 5 Expressionism
@@ -165,7 +163,6 @@ INSERT INTO ProductImages VALUES ('https://images.template.net/wp-content/upload
 INSERT INTO ProductImages VALUES ('https://images.template.net/wp-content/uploads/2014/12/xpressionist-Painting-from-Africa.jpg?width=600', 1, 5);
 INSERT INTO ProductImages VALUES ('https://images.template.net/wp-content/uploads/2014/12/Flamenco-Dancer-029.jpg?width=600', 1, 5);
 INSERT INTO ProductImages VALUES ('https://images.template.net/wp-content/uploads/2014/12/Flamenco-Dancer.jpg?width=600', 1, 5);
-INSERT INTO ProductImages VALUES ('https://thecollector.b-cdn.net/wp-content/uploads/2020/05/henri_matisse_red_room_1908-main.jpg', 1, 5);
 
 
 -- 6 Painterly
