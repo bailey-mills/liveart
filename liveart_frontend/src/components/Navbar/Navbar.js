@@ -88,9 +88,11 @@ function MyNavbar(){
 
                 <NavDropdown title={user} id="collasible-nav-dropdown" className="pr-4 pt-3 pb-3 text-light" >
                     <NavDropdown.Item href="/userprofile/bio">Bio</NavDropdown.Item>
+                    <NavDropdown.Item href="/userprofile/passwordreset">Update Password</NavDropdown.Item>
                     <NavDropdown.Divider />
                     <NavDropdown.Item href="/userprofile/subsevents">Subscribed Events</NavDropdown.Item>
                     <NavDropdown.Item href="/userprofile/plannedevents">Planned Events</NavDropdown.Item>
+                    <NavDropdown.Item href="/userprofile/newevent">Create an Event</NavDropdown.Item>
                     <NavDropdown.Divider />
                     <NavDropdown.Item href="/userprofile/soldproducts">Sold Items</NavDropdown.Item>
                     <NavDropdown.Item href="/userprofile/purchasedproducts">Purchased Items</NavDropdown.Item>

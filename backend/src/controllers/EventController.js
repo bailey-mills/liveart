@@ -288,8 +288,6 @@ module.exports = class EventController {
     createEvent = async (req, res) => {
         let event = req.body;
 
-        console.log(event);
-
         let valid = true;
         // Validate Event
         if (event) {
@@ -379,6 +377,11 @@ module.exports = class EventController {
         let userID = req.params.userID;
 
         if (userID && userID > 0) {
+            // Update to UTC
+            event.StartTime = moment(event.StartTime).utc().format("YYYY-MM-DD HH:mm");
+            event.EndTime = moment(event.EndTime).utc().format("YYYY-MM-DD HH:mm");
+            console.log(event);
+
             // EVENT
             let eventID = await dbDrive.executeQuery(`INSERT INTO [Event] (Title, Summary, StartTime, EndTime, ThumbnailURL, CategoryID) OUTPUT Inserted.ID VALUES ('${event.EventTitle}', '', '${event.StartTime}', '${event.EndTime}', '${event.URL}', ${event.CategoryID})`);
             eventID = eventID[0][0].ID;
