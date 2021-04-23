@@ -100,7 +100,7 @@ class AuctionController {
         let eventID = parseInt(req.body.EventID);
         let userID = parseInt(req.body.UserID);
         let amount = parseInt(req.body.Amount);
-        let date = moment.utc(moment()).format("YYYY-MM-DD HH:MM:ss");
+        let date = moment.utc(moment()).format("YYYY-MM-DD HH:mm:ss");
         
        // check base price and current highest bidding price
        let basePriceResult = await dbDrive.executeQuery(`SELECT BasePrice FROM [dbo].[Product] WHERE ID=${productID}`);
@@ -137,15 +137,16 @@ class AuctionController {
     }
 
     createTransaction = async (req, res) => {
-        let bidID = req.params.bidID;
+        let eventID = parseInt(req.body.EventID);
+        let bidID = parseInt(req.body.BiddingID);
 
         //update product table IsSold
         await dbDrive.executeQuery(`UPDATE Product SET IsSold=1 WHERE ID=(SELECT ProductID FROM Bid WHERE ID = ${bidID})`);
 
         //update event table currentBiddingProductID if nextproductID is not null
-        let nextProductIDResult = await dbDrive.executeQuery(`SELECT TOP 1 ProductToEvent.ProductID from ProductToEvent 
-        Join Bid on ProductToEvent.EventID = Bid.EventID AND
-        ProductToEvent.ProductID > (SELECT CurrentBiddingProductID FROM Event JOIN Bid on Event.ID = Bid.EventID WHERE Bid.ID=${bidID})`);
+        let nextProductIDResult = await dbDrive.executeQuery(`SELECT TOP 1 ProductID from ProductToEvent 
+        Join Event on ProductToEvent.EventID =Event.ID WHERE Event.ID=${eventID} AND
+        ProductToEvent.ProductID > (SELECT CurrentBiddingProductID FROM Event WHERE ID=${eventID})`);
 
 
         //update event table currentBiddingProductID to the nextProductID
