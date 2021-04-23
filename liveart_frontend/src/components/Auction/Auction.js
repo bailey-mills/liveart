@@ -338,6 +338,7 @@ export default function Auction(props){
                     <div className="title-area atitle rounded">
                         <h2>{eventInfo!==null ? eventInfo.EventTitle : "event title"}</h2>
                         <div className="mt-2">
+                        {eventInfo ? <div className="event-tags-category-light auction-tags">{eventInfo.CategoryName}</div> : ''}
                         {eventInfo!==null ? 
                             allTags.map((tag, index)=>{
                                 return(
