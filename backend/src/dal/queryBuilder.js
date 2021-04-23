@@ -1,14 +1,23 @@
-// let users = await dbOps.executeQuery("SELECT * FROM [dbo].[User]");
-// let test;
-// let test2 = 'hi';
-// let test3 = 3;
+/**
+ * @file queryBuilder.js contains methods to execute SQL queries and encryption
+ * @author Shuang Liang, Bailey Mills
+ * 
+ */
 
-// console.log(typeof test === 'undefined');
-// console.log(typeof test2 === 'string');
-// console.log(typeof test3 === 'number');
-
+/**
+ * @module QueryBuilder
+ * 
+ */
 module.exports = class QueryBuilder {
-
+    
+      /**
+     * @method insertInto 
+     * @description execute SQL Insert Query
+     * @param {string} table - table name
+     * @param {Array<string>} column - columns of the table
+     * @param {Array<string>} value - actual
+     * @returns {null} - None
+     */  
     insertInto = (table, columns, values) => {
       let query = `INSERT INTO ${table} ( ${columns.join(', ')} ) VALUES`;
 
@@ -53,7 +62,15 @@ module.exports = class QueryBuilder {
 
       
     
-
+      /**
+     * @method getFrom 
+     * @description execute SQL SELECT to get data from table
+     * @param {string} table - table name
+     * @param {Array<string>} columns - columns of the table
+     * @param {string} codition - condition after WHERE clause
+     * @param {string} orderBy - column used by ORDER BY clause
+     * @returns {Array<Object>} - Data Rows from Table
+     */ 
     getFrom(table, columns, condition, orderBy){
       let query = `SELECT ${columns.join(', ')} FROM ${table}`;
       if (condition !== undefined) {query += ` WHERE ${condition}`};
@@ -63,6 +80,21 @@ module.exports = class QueryBuilder {
     }
 
 
+    /**
+    * @typedef {object} joinQueryPairs
+    * @prop {string} joinTables - table after JOIN clause
+    * @prop {string} referenceKeys - JOIN foreign keys pair 
+    */
+
+      /**
+     * @method getFromJoin 
+     * @description execute SQL SELECT JOIN mutiple tables to get data from tables
+     * @param {string} table - table name
+     * @param {Array<joinQueryPairs>} joinQueryPairs - columns of the tables to JOIN
+     * @param {string} codition - condition after WHERE clause
+     * @param {string} orderBy - column used by ORDER BY clause
+     * @returns {Array<Object>} - Data Rows from Table
+     */ 
     getFromjoin(tables, columns, joinQueryPairs, condition, orderBy){
       let query = `SELECT ${columns.join(', ')} FROM ${tables.join(', ')} `;
       joinQueryPairs.map((pair) => {
@@ -76,11 +108,19 @@ module.exports = class QueryBuilder {
 
 
 
-      //   queryDB.updateTable(
-      //   'User',
-      //   [{ column: 'email', value: 'test@email.com' }],
-      //   `username = 'userb'`
-      // );
+    /**
+    * @typedef {object} updatePairs
+    * @prop {string} column - column in table
+    * @prop {string|number|null} value - actual value
+    */
+
+      /**
+     * @method updateTable 
+     * @description execute SQL UPDATE to update values in table
+     * @param {Array<updatePairs>} updatePairs - acutal column to update and actual value
+     * @param {Array<string>} condition - condtion after WHERE clause
+     * @returns {null} - None
+     */ 
     updateTable(table, updatePairs, condition){
       let validatedUpdates = [];
       let stringifiedUpdates = [];
@@ -105,6 +145,14 @@ module.exports = class QueryBuilder {
 
     }
 
+
+    /**
+     * @method deleteFrom 
+     * @description execute SQL DELETE to delete row from a table
+     * @param {string} table - table name
+     * @param {string} column  - column condition after WHERE clause
+     * @param {string} value = value condition 
+     */ 
     deleteFrom(table, column, value){
       let query = `DELETE FROM ${table} WHERE ${column} = '${value}' `;
       return query;

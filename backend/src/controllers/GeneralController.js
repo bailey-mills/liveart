@@ -1,12 +1,32 @@
+/**
+ * @file GeneralController.js contains methods to provide common data for user selection
+ * @author Shuang Liang, Bailey Mills
+ * 
+ */
 const DbDrive = require('../dal/dbDrive');
 let dbDrive = new DbDrive();
 
+/**
+ * @module GeneralController
+ * 
+ */
 module.exports = class GeneralController {
+    
+    /**
+     * @method getProvinces 
+     * @description get all provinces
+     * @returns {Array<Object>} - provinces
+     */ 
     getProvinces = async (req, res)=> {
         let result = await dbDrive.executeQuery('SELECT * FROM [Province]');    
         return res.json(result[0]);
     }
     
+    /**
+     * @method getTags 
+     * @description get all tags
+     * @returns {Array<Object>} - tags
+     */ 
     getTags = async (req, res) => {
         let data = await dbDrive.executeQuery(
             `SELECT T.ID, CONCAT(C.Name, ' - ', T.Name) AS 'Name'
@@ -17,6 +37,11 @@ module.exports = class GeneralController {
         return res.send(data[0]);
     }
     
+    /**
+     * @method getTagsSorted 
+     * @description sort the tags
+     * @returns {Array<Object>} - sorted tags
+     */ 
     getTagsSorted = async (req, res) => {
         let result = [];
         let categories = await dbDrive.executeQuery("SELECT ID, Name FROM [Category]");
@@ -44,6 +69,11 @@ module.exports = class GeneralController {
         return res.send(result);
     }
 
+    /**
+     * @method getCategories 
+     * @description get all categories
+     * @returns {Array<Object>} - sorted Categories
+     */ 
     getCategories = async (req, res) => {
         let data = await dbDrive.executeQuery("SELECT * FROM [Category]");
         return res.send(data[0]);

@@ -1,3 +1,8 @@
+/**
+ * @file AnalyticsPageController.js contains methods to support Data Visualization
+ * @author Shuang Liang, Bailey Mills
+ * 
+ */
 const DbDrive = require('../dal/dbDrive');
 const moment =  require('moment');
 
@@ -14,6 +19,10 @@ SELECT U.Birthday FROM [dbo].[Transaction] T
 */
 const QUERY_ARTIST_AGE = "SELECT U.Birthday FROM [dbo].[Transaction] T JOIN [dbo].[Bid] B ON B.ID = T.BidID JOIN [dbo].[User] U ON U.ID = B.UserID JOIN [dbo].[Event] E ON E.ID = B.EventID JOIN [dbo].[SellerToEvent] SE ON SE.EventID = E.ID WHERE SE.UserID = ";
 
+/**
+ * @module AnalyticsPageController
+ * 
+ */
 module.exports = class AnalyticsPageController {
     //let result = await dbOps.executeQuery('SELECT * from Province');
     //res.json(result);
@@ -23,6 +32,13 @@ module.exports = class AnalyticsPageController {
     // Artist Tab Methods
     // ------------------
 
+      /**
+     * @method calculateAgeSet 
+     * @description calculate age set 
+     * @param {Array<Object>} rawData - data to be processed
+     * @param {Array<object>} ret - ret array
+     * @returns {null} - None
+     */  
     calculateAgeSet(rawData, ret) {
         var i = 0;
         var now = moment();
@@ -54,7 +70,13 @@ module.exports = class AnalyticsPageController {
 
         return ret;
     }
+    
 
+     /**
+     * convertDataToPercent
+     * @param {Array<Object>} data - data to be processed
+     * @returns {Array<Object>} - data after percent convertion
+     */
     convertDataToPercent(data) {
         var i = 0;
         var sum = 0;
@@ -69,7 +91,20 @@ module.exports = class AnalyticsPageController {
 
         return data;
     }
+    
+    /**
+    * @typedef {object} ageComparisonGroup
+    * @prop {Array<string>} labels - age groups
+    * @prop {Array<number>} data1 - user data 
+    * @prop {Array<number>} data2 - global data 
+    */
 
+    /**
+     * @method getAgeBoth 
+     * @description get a set of comparison data of user related and global related age data
+     * @param {Array<Object>} userID - UserID
+     * @returns {ageComparisonGroup} - Age Comparison Object
+     */  
     getAgeBoth = async (req, res)=> {
         // 18-24, 25-34, 45-54, 55-64, 65+
         var userData = [0, 0, 0, 0, 0, 0];
@@ -112,7 +147,14 @@ module.exports = class AnalyticsPageController {
 
         res.json(ret);
     }
+    
 
+    /**
+     * @method getAge 
+     * @description get age
+     * @param {string} userID - UserID
+     * @returns {Object} - Age Group Object
+     */  
     getAge = async (req, res)=> {
         // 18-24, 25-34, 45-54, 55-64, 65+
         var data = [0, 0, 0, 0, 0, 0];
@@ -144,6 +186,17 @@ module.exports = class AnalyticsPageController {
         res.json("Incomplete");
     }
     
+    /**
+    * @typedef {object} ArtistTags
+    * @prop {string} name - artist name
+    * @prop {number} count - count of the tags
+    */
+    /**
+     * @method getTagsArtist 
+     * @description get tags of the artist
+     * @param {string} userID - UserID
+     * @returns {ArtistTags} - Tag count for Artist
+     */  
     getTagsArtist = async (req, res)=> {
         /*
         SELECT T.Name, COUNT(T.ID) AS 'Count' FROM [dbo].[ProductToTag] PT
@@ -168,6 +221,18 @@ module.exports = class AnalyticsPageController {
         res.json(ret);
     }
     
+
+    /**
+    * @typedef {object} transactions
+    * @prop {Array<number>} amount - amount of income for each transaction
+    * @prop {Array<string>} date - timestamp of transaction
+    */
+    /**
+     * @method getTransactionsOverTimeArtist 
+     * @description get all transaction income historically of the artists
+     * @param {string} userID - UserID
+     * @returns {transactions} - Array of transactions
+     */ 
     getTransactionsOverTimeArtist = async (req, res)=> {
         /*
         SELECT SUM(B.Amount) AS 'Value', E.StartTime AS 'EventDate' FROM [dbo].[Bid] B
@@ -206,6 +271,14 @@ module.exports = class AnalyticsPageController {
         res.json(ret);
     }
     
+
+
+    /**
+     * @method getTransactionsOverTimeBuyer 
+     * @description get all transaction cost historically of the buyers
+     * @param {string} userID - UserID
+     * @returns {transactions} - Array of transactions
+     */ 
     getTransactionsOverTimeBuyer= async (req, res)=> {
         let userID = req.params.id;
         let query = `SELECT SUM(B.Amount) AS 'Value', E.StartTime AS 'EventDate' FROM [dbo].[Bid] B
@@ -233,7 +306,21 @@ module.exports = class AnalyticsPageController {
 
         res.json(ret);
     }
+    
+    
 
+    /**
+    * @typedef {object} tagComparsionGroup
+    * @prop {Array<string>} tags - name of tags
+    * @prop {Array<number>} list1 - user list 
+    * @prop {Array<number>} list2 - global globallist 
+    */
+      /**
+     * @method getTagsBoth 
+     * @description get tags comparision between user and globally
+     * @param {string} userID - UserID
+     * @returns {tagComparsionGroup} - Tag Group
+     */ 
     getTagsBoth = async (req, res)=> {
         // Get list of tags
         let tagQuery = 'SELECT ID, Name FROM [dbo].[Tag]';
@@ -306,7 +393,18 @@ module.exports = class AnalyticsPageController {
 
         res.json(ret);
     }
-
+    
+     /**
+    * @typedef {object} tagGroup
+    * @prop {Array<string>} name - name of tags
+    * @prop {Array<number>} count - count of tag 
+    */
+    /**
+     * @method getTagsBoth 
+     * @description get tags and their count
+     * @param {string} query - query
+     * @returns {tagGroup} - Tag Group
+     */ 
     async getTags(query) {
         let result = await dbOps.executeQuery(query);
         let name = [];
@@ -329,7 +427,14 @@ module.exports = class AnalyticsPageController {
 
         return ret
     }
+    
 
+    /**
+     * @method getAnalyticsArtist 
+     * @description execute getAnalyticsArtist procedure
+     * @param {number} userID - userID
+     * @returns {Object} - Result of analytics
+     */ 
     getAnalyticsArtist = async (req, res)=> {
         /*
             EXEC GetAnalyticsArtist @userID = 1
@@ -350,6 +455,12 @@ module.exports = class AnalyticsPageController {
     // Buyer Tab Methods
     // -----------------
     
+    /**
+     * @method getAnalyticsBuyer 
+     * @description execute getAnalyticsBuyer procedure
+     * @param {number} userID - userID
+     * @returns {Object} - Result of analytics
+     */ 
     getAnalyticsBuyer = async (req, res)=> {
         /*
             EXEC GetAnalyticsBuyer @userID = 1
@@ -363,6 +474,13 @@ module.exports = class AnalyticsPageController {
         res.json(ret);
     }
 
+    
+    /**
+     * @method getTagsBuyer 
+     * @description get buyer tag group
+     * @param {number} userID - userID
+     * @returns {tagGroup} - Result of tag group
+     */ 
     getTagsBuyer = async (req, res)=> {
         /*
 	    SELECT T.Name, COUNT(T.ID) AS 'Count' FROM [dbo].[ProductToTag] PT
@@ -400,6 +518,11 @@ module.exports = class AnalyticsPageController {
     // General
     // -------
     
+    /**
+     * @method getTagsGlobal 
+     * @description get global tags
+     * @returns {Array<tagGroup>} - Result of global tag groups
+     */ 
     getTagsGlobal = async (req, res)=> {
         /*
         SELECT T.Name, COUNT(T.ID) AS 'Count' FROM [dbo].[ProductToTag] PT
@@ -413,7 +536,12 @@ module.exports = class AnalyticsPageController {
 
         res.json(ret);
     }    
-
+    
+    /**
+     * @method getTagList 
+     * @description get tag list
+     * @returns {Array<tagGroup>} - Result of tag groups
+     */ 
     getTagList = async (req, res)=> {
         let query = 'SELECT ID, Name FROM [dbo].[Tag];';
         let ret = await dbOps.executeQuery(query);
