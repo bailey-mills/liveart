@@ -26,7 +26,7 @@ export default function Auction(props){
     const [allTags, setAllTags] = useState([]);
     const [eventInfo, setEventInfo] = useState([]);
     const [currentOnBiddingItem, setCurrentOnBiddingItem] = useState(-1);
-    const [currentItemCode, setCurrentItemCode] = useState(<div className="mt-3 ml-3 h3"><strong>Currently No item On Auctioned</strong></div>);
+    const [currentItemCode, setCurrentItemCode] = useState(<div className="empty-auction">The auction has concluded.</div>);
     const [currentHighestBidding, setCurrentHighestBidding] = useState(0);
     const [currentItemBasePrice, setCurrentItemBasePrice] = useState(0);
     const [role, setRole] = useState("");
@@ -226,7 +226,7 @@ export default function Auction(props){
               if(res.status === 201)
               {
                 setMylastbid(bidinput);
-                setFeedback("You successfully bidded. $"+bidinput);
+                setFeedback("You successfully bid $"+bidinput);
                 setBidinput("");
               }
                 
@@ -338,6 +338,7 @@ export default function Auction(props){
                     <div className="title-area atitle rounded">
                         <h2>{eventInfo!==null ? eventInfo.EventTitle : "event title"}</h2>
                         <div className="mt-2">
+                        {eventInfo ? <div className="event-tags-category-light auction-tags">{eventInfo.CategoryName}</div> : ''}
                         {eventInfo!==null ? 
                             allTags.map((tag, index)=>{
                                 return(
